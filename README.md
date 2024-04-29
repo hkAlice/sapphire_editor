@@ -1,4 +1,4 @@
-## Use the web UI editor here.
+## Use the web UI editor in the link below.
 
 ### https://hkalice.github.io/sapphire_editor/
 
