@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sapphirexiv_timeline_editor/views/timeline_editor_view.dart';
+import 'package:sapphire_editor/views/timeline_editor_view.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timeline_model.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timeline_phase_model.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/add_generic_widget.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/timeline/timeline_phase_item.dart';
+import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 
 class TimelineList extends StatefulWidget {
   final TimelineModel timeline;

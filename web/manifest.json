@@ -1,6 +1,6 @@
 {
-    "name": "sapphirexiv_timeline_editor",
-    "short_name": "sapphirexiv_timeline_editor",
+    "name": "sapphire_editor",
+    "short_name": "sapphire_editor",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

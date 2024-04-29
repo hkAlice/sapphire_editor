@@ -1,3 +1,7 @@
+## Use the web UI editor here.
+
+### https://hkalice.github.io/sapphire_editor/
+
 # Sapphire Editor - FFXIV Server Emulator UI Editor
 
 <p align="center">

@@ -1,4 +1,4 @@
-package com.example.sapphirexiv_timeline_editor
+package com.example.sapphire_editor
 
 import io.flutter.embedding.android.FlutterActivity
 

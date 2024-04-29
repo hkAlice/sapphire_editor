@@ -1,9 +1,9 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timeline_phase_model.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timepoint_model.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/add_generic_widget.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/timeline/generic_timepoint_item.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
+import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/generic_timepoint_item.dart';
 
 class TimelinePhaseItem extends StatefulWidget {
   final TimelinePhaseModel phaseModel;

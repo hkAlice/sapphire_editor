@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
-import 'package:sapphirexiv_timeline_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
 
 class GenericTimepointItem extends StatefulWidget {
   late TimepointModel timepointModel;

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_text_field/json_text_field.dart';
-import 'package:sapphirexiv_timeline_editor/models/timeline/timeline_model.dart';
-import 'package:sapphirexiv_timeline_editor/utils/snackbar_utils.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/add_generic_widget.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/page_header_widget.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/timeline/timeline_list.dart';
-import 'package:sapphirexiv_timeline_editor/widgets/timeline/timeline_phase_item.dart';
+import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/utils/snackbar_utils.dart';
+import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/page_header_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:toastification/toastification.dart';
 
 class TimelineEditorView extends StatefulWidget {
