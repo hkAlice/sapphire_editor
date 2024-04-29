@@ -9,7 +9,11 @@ class TimelineModel {
 
   List<TimelinePhaseModel> phases;
 
+  final int version = VERSION_MODEL;
+
   TimelineModel({required this.name, phaseList}) : phases = phaseList ?? [];
+
+  static const VERSION_MODEL = 1;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 
