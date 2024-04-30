@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/small_heading_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/phase_condition/phase_condition_item.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 
 class TimelineList extends StatefulWidget {
@@ -23,13 +26,29 @@ class _TimelineListState extends State<TimelineList> {
     super.initState();
   }
 
-  void _addNewState() {
+  void _addNewPhase() {
     widget.timeline.phases.add(TimelinePhaseModel(name: "Phase ${widget.timeline.phases.length}"));
     setState(() {
       
     });
     widget.onUpdate(widget.timeline);
     print("added");
+  }
+
+  void _addNewPhaseCondition() {
+    widget.timeline.conditions.add(PhaseConditionModel(
+      condition: PhaseConditionType.hpPctLessThan,
+      params: [50],
+      phase: widget.timeline.phases.isEmpty ? "Undefined" : widget.timeline.phases.first.name,
+      description: "",
+      loop: false,
+    ));
+
+    setState(() {
+      
+    });
+
+    widget.onUpdate(widget.timeline);
   }
 
   @override
@@ -49,6 +68,36 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           },
         ),
+        SmallHeadingWidget(title: "Conditions"),
+        ReorderableListView.builder(
+          buildDefaultDragHandles: false,
+          onReorder: (int oldindex, int newindex) {
+            setState(() {
+              if(newindex > oldindex) {
+                newindex -= 1;
+              }
+              final items = widget.timeline.conditions.removeAt(oldindex);
+              widget.timeline.conditions.insert(newindex, items);
+              widget.onUpdate(widget.timeline);
+            });
+          },
+          itemCount: widget.timeline.conditions.length,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, i) {
+            return PhaseConditionItem(
+              key: Key("phase_condition_$i"),
+              index: i,
+              timelineModel: widget.timeline,
+              phaseConditionModel: widget.timeline.conditions[i],
+              onUpdate: (phaseConditionModel) {
+                widget.onUpdate(widget.timeline);
+              },
+            );
+          }
+        ),
+        AddGenericWidget(text: "Add new condition", onTap: () { _addNewPhaseCondition(); }),
+        SmallHeadingWidget(title: "Phases"),
         ReorderableListView.builder(
           buildDefaultDragHandles: false,
           onReorder: (int oldindex, int newindex) {
@@ -75,7 +124,7 @@ class _TimelineListState extends State<TimelineList> {
             );
           }
         ),
-        AddGenericWidget(text: "Add new phase", onTap: () { _addNewState(); })
+        AddGenericWidget(text: "Add new phase", onTap: () { _addNewPhase(); })
       ],
     );
   }

@@ -11,13 +11,18 @@ TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       version:
           (json['version'] as num?)?.toInt() ?? TimelineModel.VERSION_MODEL,
-    )..phases = (json['phases'] as List<dynamic>)
-        .map((e) => TimelinePhaseModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    )
+      ..conditions = (json['conditions'] as List<dynamic>)
+          .map((e) => PhaseConditionModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..phases = (json['phases'] as List<dynamic>)
+          .map((e) => TimelinePhaseModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$TimelineModelToJson(TimelineModel instance) =>
     <String, dynamic>{
       'name': instance.name,
+      'conditions': instance.conditions,
       'phases': instance.phases,
       'version': instance.version,
     };

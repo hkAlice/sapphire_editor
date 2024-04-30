@@ -22,6 +22,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
     _descriptionTextEditingController = TextEditingController(text: widget.timepointModel.description);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,7 +47,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   child: DropdownButtonFormField<TimepointType>(
                     decoration: InputDecoration(
                       filled: true,
-                      labelText: 'Point type',
+                      labelText: "Point type",
                       border: null
                     ),
                     value: widget.timepointModel.type,
@@ -75,7 +76,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     controller: _descriptionTextEditingController,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
-                      labelText: "Description (optional)",
+                      hintText: "Description (optional)",
                     ),
                     onChanged: (value) {
                       widget.timepointModel.description = value;

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/snackbar_utils.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
@@ -25,6 +26,12 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
   TimelineModel _timeline = TimelineModel(name: "Brand new timeline");
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
 
+  @override
+  void initState() {
+    _timeline.phases.add(TimelinePhaseModel(name: "Phase ${_timeline.phases.length}"));
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,6 +53,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
+                      flex: 6,
                       child: SingleChildScrollView(
                         child: TimelineList(
                           timeline: _timeline,
@@ -60,6 +68,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                     ),
                     const VerticalDivider(),
                     Flexible(
+                      flex: 4,
                       child: Stack(
                         children: [
                           JsonTextField(
