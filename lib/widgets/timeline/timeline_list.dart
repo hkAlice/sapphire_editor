@@ -34,52 +34,49 @@ class _TimelineListState extends State<TimelineList> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextFormField(
-            maxLines: 1,
-            controller: _nameTextEditingController,
-            decoration: const InputDecoration(
-
-              border: InputBorder.none,
-            ),
-            onChanged: (value) {
-              widget.timeline.name = value;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          maxLines: 1,
+          controller: _nameTextEditingController,
+          decoration: const InputDecoration(
+    
+            border: InputBorder.none,
+          ),
+          onChanged: (value) {
+            widget.timeline.name = value;
+            widget.onUpdate(widget.timeline);
+          },
+        ),
+        ReorderableListView.builder(
+          buildDefaultDragHandles: false,
+          onReorder: (int oldindex, int newindex) {
+            setState(() {
+              if(newindex > oldindex) {
+                newindex -= 1;
+              }
+              final items = widget.timeline.phases.removeAt(oldindex);
+              widget.timeline.phases.insert(newindex, items);
               widget.onUpdate(widget.timeline);
-            },
-          ),
-          ReorderableListView.builder(
-            buildDefaultDragHandles: false,
-            onReorder: (int oldindex, int newindex) {
-              setState(() {
-                if(newindex > oldindex) {
-                  newindex -= 1;
-                }
-                final items = widget.timeline.phases.removeAt(oldindex);
-                widget.timeline.phases.insert(newindex, items);
+            });
+          },
+          itemCount: widget.timeline.phases.length,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, i) {
+            return TimelinePhaseItem(
+              key: Key("phase_$i"),
+              index: i,
+              phaseModel: widget.timeline.phases[i],
+              onUpdate: (phaseModel) {
                 widget.onUpdate(widget.timeline);
-              });
-            },
-            itemCount: widget.timeline.phases.length,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, i) {
-              return TimelinePhaseItem(
-                key: Key("phase_$i"),
-                index: i,
-                phaseModel: widget.timeline.phases[i],
-                onUpdate: (phaseModel) {
-                  widget.onUpdate(widget.timeline);
-                },
-              );
-            }
-          ),
-          AddGenericWidget(text: "Add new phase", onTap: () { _addNewState(); })
-        ],
-      ),
+              },
+            );
+          }
+        ),
+        AddGenericWidget(text: "Add new phase", onTap: () { _addNewState(); })
+      ],
     );
   }
 }

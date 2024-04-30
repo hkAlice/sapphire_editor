@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/snackbar_utils.dart';
@@ -24,88 +26,102 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return SafeArea(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
         children: [
           PageHeaderWidget(
             title: "Timeline Editor",
             subtitle: "Outputs encounter timeline data in JSON.",
             heading: Image.asset("assets/images/icon_trials.png"),
           ),
-          Divider(),
-          Wrap(
-            children: [
-              Container(
-                constraints: BoxConstraints(maxWidth: 1000),
-                child: TimelineList(
-                  timeline: _timeline,
-                  onUpdate: (timeline) {
-                    _jsonTextFieldController.text = jsonEncode(timeline.toJson());
-                    _jsonTextFieldController.formatJson(sortJson: true);
-                    setState(() {
-                      
-                    });
-                },),
-              ),
-              Container(
-                constraints: BoxConstraints(minHeight: 500, maxWidth: 500),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          const Divider(),
+          Expanded(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 1400),
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    JsonTextField(
-                      controller: _jsonTextFieldController,
-                      keyboardType: TextInputType.multiline,
-                      isFormatting: true,
-                      maxLines: 50,
-                      showErrorMessage: true,
-                      decoration: const InputDecoration(
-                        fillColor: Color(0xFF141414),
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        // plugin unfortunately does not allow for testing for JSON errors
-                        try {
-                          var jsonDec = jsonDecode(_jsonTextFieldController.text);
-                          if(jsonDec != null) {
-                            _timeline = TimelineModel.fromJson(jsonDec);
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: TimelineList(
+                          timeline: _timeline,
+                          onUpdate: (timeline) {
+                            _jsonTextFieldController.text = jsonEncode(timeline.toJson());
+                            _jsonTextFieldController.formatJson(sortJson: true);
                             setState(() {
                               
                             });
-                          }
-                        }
-                        catch(e) {
-                          // ignore error
-                        }
-                      },
-                      commonTextStyle: TextStyle(fontFamily: "monospace"),
-                      keyHighlightStyle: TextStyle(color: Color(0xFF7587A6)),
-                      stringHighlightStyle: TextStyle(color: Color(0xFF8F9D6A)),
-                      numberHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
-                      boolHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
-                      nullHighlightStyle: TextStyle(color: Colors.white),
-                      specialCharHighlightStyle: TextStyle(color: Colors.white),
-                      enableSuggestions: false,
-                      enableIMEPersonalizedLearning: false,
+                        },),
+                      ),
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        await Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
-                        toastification.show(
-                          context: context,
-                          type: ToastificationType.success,
-                          style: ToastificationStyle.fillColored,
-                          title: Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
-                          autoCloseDuration: const Duration(seconds: 3),
-                        );
-                      },
-                      icon: Icon(Icons.copy),
-                      label: Text("Copy to clipboard")
+                    const VerticalDivider(),
+                    Flexible(
+                      child: Stack(
+                        children: [
+                          JsonTextField(
+                            controller: _jsonTextFieldController,
+                            keyboardType: TextInputType.multiline,
+                            isFormatting: true,
+                            maxLines: null,
+                            expands: true,
+                            showErrorMessage: true,
+                            decoration: const InputDecoration(
+                              fillColor: Color(0xFF141414),
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {
+                              // plugin unfortunately does not allow for testing for JSON errors
+                              try {
+                                var jsonDec = jsonDecode(_jsonTextFieldController.text);
+                                if(jsonDec != null) {
+                                  _timeline = TimelineModel.fromJson(jsonDec);
+                                  setState(() {
+                                    
+                                  });
+                                }
+                              }
+                              catch(e) {
+                                // ignore error
+                              }
+                            },
+                            commonTextStyle: TextStyle(fontFamily: "monospace"),
+                            keyHighlightStyle: TextStyle(color: Color(0xFF7587A6)),
+                            stringHighlightStyle: TextStyle(color: Color(0xFF8F9D6A)),
+                            numberHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
+                            boolHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
+                            nullHighlightStyle: TextStyle(color: Colors.white),
+                            specialCharHighlightStyle: TextStyle(color: Colors.white),
+                            enableSuggestions: false,
+                            enableIMEPersonalizedLearning: false,
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                await Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
+                                toastification.show(
+                                  context: context,
+                                  type: ToastificationType.success,
+                                  style: ToastificationStyle.fillColored,
+                                  title: Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
+                                  autoCloseDuration: const Duration(seconds: 3),
+                                );
+                              },
+                              icon: Icon(Icons.copy),
+                              label: Text("Copy to clipboard")
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
-              )
-            ],
+              ),
+            ),
           )
         ],
       ),
