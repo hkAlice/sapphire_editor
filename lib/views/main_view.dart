@@ -33,12 +33,12 @@ class _MainViewState extends State<MainView> {
         showUnselectedLabels: true,
         onTap: (i) {},
         currentIndex: _tabIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Image.asset("assets/images/icon_trials_rounded.png", width: 24.0,),
             label: "Timeline"
           ), 
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings"
           )
