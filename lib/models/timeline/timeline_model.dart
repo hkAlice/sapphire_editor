@@ -9,9 +9,9 @@ class TimelineModel {
 
   List<TimelinePhaseModel> phases;
 
-  final int version = VERSION_MODEL;
+  final int version;
 
-  TimelineModel({required this.name, phaseList}) : phases = phaseList ?? [];
+  TimelineModel({required this.name, phaseList, this.version = TimelineModel.VERSION_MODEL}) : phases = phaseList ?? [];
 
   static const VERSION_MODEL = 1;
 

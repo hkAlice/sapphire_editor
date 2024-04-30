@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/snackbar_utils.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
@@ -39,7 +40,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
           Expanded(
             child: Container(
               constraints: BoxConstraints(maxWidth: 1400),
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
               child: Center(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,21 +99,44 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                             enableIMEPersonalizedLearning: false,
                           ),
                           Positioned(
-                            right: 0,
-                            top: 0,
-                            child: ElevatedButton.icon(
-                              onPressed: () async {
-                                await Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
-                                toastification.show(
-                                  context: context,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.fillColored,
-                                  title: Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
-                                  autoCloseDuration: const Duration(seconds: 3),
-                                );
-                              },
-                              icon: Icon(Icons.copy),
-                              label: Text("Copy to clipboard")
+                            right: 8,
+                            top: 8,
+                            child: Row(
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
+                                    try {
+                                      toastification.show(
+                                        context: context,
+                                        type: ToastificationType.success,
+                                        style: ToastificationStyle.fillColored,
+                                        title: Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
+                                        autoCloseDuration: const Duration(seconds: 3),
+                                      );
+                                    }
+                                    catch(e) {
+                                      // this plugin seems to fire errors at random
+                                    }
+                                  },
+                                  icon: Icon(Icons.copy),
+                                  label: Text("Copy")
+                                ),
+                                SizedBox(width: 8.0,),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
+                                    try {
+                                      exportStringAsJson(_jsonTextFieldController.text, "${_timeline.name}.json");
+                                    }
+                                    catch(e) {
+                                      // this plugin seems to fire errors at random
+                                    }
+                                  },
+                                  icon: Icon(Icons.download),
+                                  label: Text("Save")
+                                ),
+                              ],
                             ),
                           )
                         ],
