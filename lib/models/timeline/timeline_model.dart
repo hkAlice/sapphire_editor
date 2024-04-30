@@ -8,7 +8,7 @@ part 'timeline_model.g.dart';
 class TimelineModel {
   String name;
 
-  List<PhaseConditionModel> conditions;
+  List<PhaseConditionModel> phaseConditions;
   List<TimelinePhaseModel> phases;
 
   final int version;
@@ -18,7 +18,7 @@ class TimelineModel {
     phaseList,
     conditionList,
     this.version = TimelineModel.VERSION_MODEL
-  }) : phases = phaseList ?? [], conditions = conditionList ?? [];
+  }) : phases = phaseList ?? [], phaseConditions = conditionList ?? [];
 
   static const VERSION_MODEL = 1;
 

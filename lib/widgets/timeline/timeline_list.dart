@@ -36,7 +36,7 @@ class _TimelineListState extends State<TimelineList> {
   }
 
   void _addNewPhaseCondition() {
-    widget.timeline.conditions.add(PhaseConditionModel(
+    widget.timeline.phaseConditions.add(PhaseConditionModel(
       condition: PhaseConditionType.hpPctLessThan,
       params: [50],
       phase: widget.timeline.phases.isEmpty ? "Undefined" : widget.timeline.phases.first.name,
@@ -76,12 +76,12 @@ class _TimelineListState extends State<TimelineList> {
               if(newindex > oldindex) {
                 newindex -= 1;
               }
-              final items = widget.timeline.conditions.removeAt(oldindex);
-              widget.timeline.conditions.insert(newindex, items);
+              final items = widget.timeline.phaseConditions.removeAt(oldindex);
+              widget.timeline.phaseConditions.insert(newindex, items);
               widget.onUpdate(widget.timeline);
             });
           },
-          itemCount: widget.timeline.conditions.length,
+          itemCount: widget.timeline.phaseConditions.length,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, i) {
@@ -89,7 +89,7 @@ class _TimelineListState extends State<TimelineList> {
               key: Key("phase_condition_$i"),
               index: i,
               timelineModel: widget.timeline,
-              phaseConditionModel: widget.timeline.conditions[i],
+              phaseConditionModel: widget.timeline.phaseConditions[i],
               onUpdate: (phaseConditionModel) {
                 widget.onUpdate(widget.timeline);
               },
