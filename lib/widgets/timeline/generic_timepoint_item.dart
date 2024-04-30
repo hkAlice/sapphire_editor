@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
   late TimepointModel timepointModel;
@@ -16,6 +17,15 @@ class GenericTimepointItem extends StatefulWidget {
 
 class _GenericTimepointItemState extends State<GenericTimepointItem> {
   late TextEditingController _descriptionTextEditingController;
+
+  Widget _generateTypedTimepoint() {
+    switch(widget.timepointModel.type) {
+      case TimepointType.idle:
+        return IdlePointWidget();
+      default:
+        return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
+    }
+  }
 
   @override
   void initState() {

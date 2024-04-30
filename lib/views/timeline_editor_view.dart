@@ -26,6 +26,35 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
   TimelineModel _timeline = TimelineModel(name: "Brand new timeline");
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
 
+  bool _parseJSONToTimeline() {
+    try {
+      var jsonDec = jsonDecode(_jsonTextFieldController.text);
+      if(jsonDec != null) {
+        _timeline = TimelineModel.fromJson(jsonDec);
+        setState(() {
+          
+        });
+
+        return true;
+      }
+    }
+    catch(e) {
+      // ignore error
+    }
+
+    return false;
+  }
+
+  bool _parseTimelineToJSON() {
+    _jsonTextFieldController.text = jsonEncode(_timeline.toJson());
+    _jsonTextFieldController.formatJson(sortJson: true);
+    setState(() {
+      
+    });
+
+    return true;
+  }
+
   @override
   void initState() {
     _timeline.phases.add(TimelinePhaseModel(name: "Phase ${_timeline.phases.length}"));
@@ -58,11 +87,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                         child: TimelineList(
                           timeline: _timeline,
                           onUpdate: (timeline) {
-                            _jsonTextFieldController.text = jsonEncode(timeline.toJson());
-                            _jsonTextFieldController.formatJson(sortJson: true);
-                            setState(() {
-                              
-                            });
+                            _parseTimelineToJSON();
                         },),
                       ),
                     ),
@@ -81,21 +106,10 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                             decoration: const InputDecoration(
                               fillColor: Color(0xFF141414),
                               border: InputBorder.none,
+                              hintText: "To load a timeline, paste the JSON here."
                             ),
                             onChanged: (value) {
-                              // plugin unfortunately does not allow for testing for JSON errors
-                              try {
-                                var jsonDec = jsonDecode(_jsonTextFieldController.text);
-                                if(jsonDec != null) {
-                                  _timeline = TimelineModel.fromJson(jsonDec);
-                                  setState(() {
-                                    
-                                  });
-                                }
-                              }
-                              catch(e) {
-                                // ignore error
-                              }
+                              _parseJSONToTimeline();
                             },
                             commonTextStyle: TextStyle(fontFamily: "monospace"),
                             keyHighlightStyle: TextStyle(color: Color(0xFF7587A6)),
