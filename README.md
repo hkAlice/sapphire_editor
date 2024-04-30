@@ -25,8 +25,8 @@ We provide a wiki with all sorts of information such as details, how to get star
 [Sapphire Wiki](https://sapphire.xiv.dev/)
 
 ## Dependencies + Compiling
-Flutter 3.x is required. Ensure that any PRs compile on all platforms (if adding a package, make sure all platforms are supported).
-This project is intended to be deployed for all platforms supported (Web, Windows, Linux, Mac, Android and iOS).
+Flutter 3.x is required. Ensure that all PRs compile on all platforms (if adding a package, make sure all supported platforms are listed).
+This project is intended to be deployed to all Flutter platforms (Web, Windows, Linux, Mac, Android and iOS).
 
 ## Links
 
