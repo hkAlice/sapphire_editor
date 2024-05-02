@@ -27,22 +27,15 @@ class _TimelineListState extends State<TimelineList> {
   }
 
   void _addNewPhase() {
-    widget.timeline.phases.add(TimelinePhaseModel(name: "Phase ${widget.timeline.phases.length}"));
+    widget.timeline.addNewPhase();
     setState(() {
       
     });
     widget.onUpdate(widget.timeline);
-    print("added");
   }
 
   void _addNewPhaseCondition() {
-    widget.timeline.phaseConditions.add(PhaseConditionModel(
-      condition: PhaseConditionType.hpPctLessThan,
-      params: [50],
-      phase: widget.timeline.phases.isEmpty ? "Undefined" : widget.timeline.phases.first.name,
-      description: "",
-      loop: false,
-    ));
+    widget.timeline.addNewCondition();
 
     setState(() {
       

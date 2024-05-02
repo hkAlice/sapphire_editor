@@ -27,8 +27,18 @@ class PhaseConditionModel {
 
   Map<String, dynamic> toJson() => _$PhaseConditionModelToJson(this);
 
-  String readableConditionStr() {
+  void resetParams() {
+    params.clear();
+    var paramParser = getConditionParamParser();
+    for(var paramData in paramParser) {
+      params.add(paramData.initialValue);
+    }
+  }
+
+  String getReadableConditionStr() {
     String summary = "If ";
+    String actorIdStr = params.elementAtOrNull(0) == 0 ? "Self" : "Actor ${params.elementAtOrNull(0).toString()}";
+
     switch(condition) {
       case PhaseConditionType.directorVarGreaterThan:
         summary += "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16).toUpperCase()} >= ${params.elementAtOrNull(1)}";
@@ -37,10 +47,10 @@ class PhaseConditionModel {
         summary += "Elapsed time > ${params.elementAtOrNull(0)}ms";
         break;
       case PhaseConditionType.hpPctBetween:
-        summary += "HP% between ${params.elementAtOrNull(0)} and ${params.elementAtOrNull(1)}";
+        summary += "$actorIdStr HP% between ${params.elementAtOrNull(1)}% and ${params.elementAtOrNull(2)}%";
         break;
       case PhaseConditionType.hpPctLessThan:
-        summary += "HP% < ${params.elementAtOrNull(0)}";
+        summary += "$actorIdStr HP% < ${params.elementAtOrNull(1)}%";
         break;
       default:
         summary += "${treatEnumName(condition)} (${params.join(", ")})";
@@ -49,6 +59,44 @@ class PhaseConditionModel {
 
     summary += ", ${loop ? "loop" : "push"} $phase";
     return summary;
+  }
+  
+  List<PhaseConditionParamParser> getConditionParamParser() {
+
+    switch(condition) {
+      case PhaseConditionType.directorVarGreaterThan: {
+        return [
+          PhaseConditionParamParser(label: "Director", initialValue: 8, isHex: true),
+          PhaseConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
+        ];
+      }
+      case PhaseConditionType.elapsedTimeGreaterThan: {
+        return [
+          PhaseConditionParamParser(label: "Elapsed time (ms)", initialValue: 30000),
+        ];
+      }
+      case PhaseConditionType.hpPctBetween: {
+        return [
+          PhaseConditionParamParser(label: "Actor", initialValue: 0),
+          PhaseConditionParamParser(label: "HP Min", initialValue: 25),
+          PhaseConditionParamParser(label: "HP Max", initialValue: 50),
+        ];
+      }
+      case PhaseConditionType.hpPctLessThan: {
+        return [
+          PhaseConditionParamParser(label: "Actor", initialValue: 0),
+          PhaseConditionParamParser(label: "HP Less Than", initialValue: 70),
+        ];
+      }
+      default: {
+        return [
+          PhaseConditionParamParser(label: "Param1",),
+          PhaseConditionParamParser(label: "Param2",),
+          PhaseConditionParamParser(label: "Param3",),
+          PhaseConditionParamParser(label: "Param4",),
+        ];
+      }
+    }
   }
 }
 
@@ -63,3 +111,16 @@ enum PhaseConditionType {
   hpPctLessThan,
 }
 
+class PhaseConditionParamParser {
+  final String label;
+  final String type;
+  final int initialValue;
+  final bool isHex;
+
+  PhaseConditionParamParser({
+    required this.label,
+    this.type = "input",
+    this.initialValue = 50,
+    this.isHex = false
+  });
+}

@@ -4,6 +4,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/phase_condition/generic_condition_param.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -54,7 +55,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
             const VerticalDivider(),
           ],
         ),
-        title: Text(widget.phaseConditionModel.readableConditionStr()),
+        title: Text(widget.phaseConditionModel.getReadableConditionStr()),
         subtitle: widget.phaseConditionModel.description?.isNotEmpty ?? false ? Text(widget.phaseConditionModel.description!) : null,
         trailing: IconButton(
           icon: const Icon(Icons.clear),
@@ -118,7 +119,9 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                       
                           setState(() {
                             widget.phaseConditionModel.condition = value;
+                            widget.phaseConditionModel.resetParams();
                           });
+
                           widget.onUpdate(widget.phaseConditionModel);
                         },
                         items: PhaseConditionType.values.map((PhaseConditionType type) {
@@ -146,6 +149,14 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                       ),
                     )
                   ],
+                ),
+                GenericConditionParam(
+                  phaseConditionModel: widget.phaseConditionModel,
+                  paramData: widget.phaseConditionModel.getConditionParamParser(),
+                  onUpdate: () {
+                    widget.onUpdate(widget.phaseConditionModel);
+
+                  },
                 ),
               ],
             ),

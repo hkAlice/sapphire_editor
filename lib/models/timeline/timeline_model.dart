@@ -25,4 +25,27 @@ class TimelineModel {
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
+
+  TimelinePhaseModel addNewPhase() {
+    var newPhase = TimelinePhaseModel(id: phases.length + 1, name: "Phase ${phases.length + 1}");
+    phases.add(newPhase);
+
+    return newPhase;
+  }
+
+  PhaseConditionModel addNewCondition() {
+    var newCondition = PhaseConditionModel(
+      condition: PhaseConditionType.hpPctLessThan,
+      params: [],
+      phase: phases.isEmpty ? "Undefined" : phases.first.name,
+      description: "",
+      loop: false,
+    );
+
+    newCondition.resetParams();
+
+    phaseConditions.add(newCondition);
+
+    return newCondition;
+  }
 }

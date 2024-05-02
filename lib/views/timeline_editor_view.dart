@@ -52,7 +52,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
 
   @override
   void initState() {
-    _timeline.phases.add(TimelinePhaseModel(name: "Phase ${_timeline.phases.length}"));
+    _timeline.addNewPhase();
 
     super.initState();
   }
