@@ -14,6 +14,7 @@ PhaseConditionModel _$PhaseConditionModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       phase: json['phase'] as String,
       loop: json['loop'] as bool,
+      enabled: json['enabled'] as bool? ?? true,
       description: json['description'] as String? ?? "",
     );
 
@@ -25,6 +26,7 @@ Map<String, dynamic> _$PhaseConditionModelToJson(
       'params': instance.params,
       'phase': instance.phase,
       'loop': instance.loop,
+      'enabled': instance.enabled,
     };
 
 const _$PhaseConditionTypeEnumMap = {

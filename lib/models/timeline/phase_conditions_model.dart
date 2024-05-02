@@ -9,6 +9,7 @@ class PhaseConditionModel {
   List<int> params;
   String phase;
   bool loop;
+  bool enabled;
 
   //final List<ActorFlag> overrideFlags;
 
@@ -17,6 +18,7 @@ class PhaseConditionModel {
     required this.params,
     required this.phase,
     required this.loop,
+    this.enabled = true,
     this.description = "",
   });
 
