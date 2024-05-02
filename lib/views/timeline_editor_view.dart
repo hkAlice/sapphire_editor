@@ -145,7 +145,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                                   onPressed: () {
                                     Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
                                     try {
-                                      exportStringAsJson(_jsonTextFieldController.text, "${_timeline.name}.json");
+                                      exportStringAsJson(_jsonTextFieldController.text, "$_timeline.name");
                                     }
                                     catch(e) {
                                       // this plugin seems to fire errors at random
