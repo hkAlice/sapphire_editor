@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
 String treatEnumName(Enum type) {
@@ -10,9 +11,19 @@ String treatEnumName(Enum type) {
 }
 
 Future<void> exportStringAsJson(String json, String fileName) async {
-  await FileSaver.instance.saveAs(
+  if(!kIsWeb) {
+    await FileSaver.instance.saveAs(
+      name: fileName,
+      ext: ".json",
+      mimeType: MimeType.json,
+      bytes: Uint8List.fromList(json.codeUnits),
+    );
+
+    return;
+  }
+
+  await FileSaver.instance.saveFile(
     name: fileName,
-    ext: ".json",
     mimeType: MimeType.json,
     bytes: Uint8List.fromList(json.codeUnits),
   );
