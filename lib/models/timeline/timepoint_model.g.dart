@@ -28,4 +28,5 @@ const _$TimepointTypeEnumMap = {
   TimepointType.setActorFlags: 'setActorFlags',
   TimepointType.logMessage: 'logMessage',
   TimepointType.battleTalk: 'battleTalk',
+  TimepointType.switchCondition: 'switchCondition',
 };

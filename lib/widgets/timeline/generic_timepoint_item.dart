@@ -36,7 +36,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          left: BorderSide(color: getColorForTimepointType(widget.timepointModel.type), width: 5.0),
+          left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 5.0),
           top: BorderSide(color: Colors.grey.shade800, width: 1.0)
         )
       ),
@@ -100,22 +100,4 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
       ),
     );
   }
-}
-
-Color getColorForTimepointType(TimepointType type) {
-  switch(type) {
-    case TimepointType.idle:
-      return Colors.grey;
-    case TimepointType.setDirectorVar:
-      return Colors.redAccent;
-    case TimepointType.castAction:
-      return Colors.orangeAccent;
-    case TimepointType.moveTo:
-      return Colors.blueGrey;
-    case TimepointType.setActorFlags:
-      return Colors.deepPurpleAccent;
-    default:
-      return Colors.greenAccent;
-  }
-  
 }

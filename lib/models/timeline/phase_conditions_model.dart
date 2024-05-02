@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'phase_conditions_model.g.dart';
 
@@ -25,15 +26,31 @@ class PhaseConditionModel {
   factory PhaseConditionModel.fromJson(Map<String, dynamic> json) => _$PhaseConditionModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$PhaseConditionModelToJson(this);
+
+  String readableConditionType() {
+    switch(condition) {
+      case PhaseConditionType.directorVarGreaterThan:
+        return "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16)} >= ${params.elementAtOrNull(1)}";
+      case PhaseConditionType.elapsedTimeGreaterThan:
+        return "Elapsed time >= ${params.elementAtOrNull(0)}ms";
+      case PhaseConditionType.hpPctBetween:
+        return "HP% between ${params.elementAtOrNull(0)} and ${params.elementAtOrNull(1)}";
+      case PhaseConditionType.hpPctLessThan:
+        return "HP% <= ${params.elementAtOrNull(0)}";
+      default:
+        return "${treatEnumName(condition)} (${params.join(", ")})";
+    }
+  }
 }
 
 enum PhaseConditionType {
-  @JsonValue("hpPctLessThan")
-  hpPctLessThan,
+  @JsonValue("directorVarGreaterThan")
+  directorVarGreaterThan,
   @JsonValue("elapsedTimeGreaterThan")
   elapsedTimeGreaterThan,
   @JsonValue("hpPctBetween")
   hpPctBetween,
-  @JsonValue("directorVarGreaterThan")
-  directorVarGreaterThan,
+  @JsonValue("hpPctLessThan")
+  hpPctLessThan,
 }
+

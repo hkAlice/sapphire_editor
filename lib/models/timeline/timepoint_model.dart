@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'timepoint_model.g.dart';
@@ -14,6 +15,25 @@ class TimepointModel {
   factory TimepointModel.fromJson(Map<String, dynamic> json) => _$TimepointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TimepointModelToJson(this);
+  
+  Color getColorForTimepointType() {
+  switch(type) {
+    case TimepointType.idle:
+      return Colors.grey;
+    case TimepointType.setDirectorVar:
+      return Colors.redAccent;
+    case TimepointType.castAction:
+      return Colors.orangeAccent;
+    case TimepointType.moveTo:
+      return Colors.blueGrey;
+    case TimepointType.setActorFlags:
+      return Colors.deepPurpleAccent;
+    case TimepointType.switchCondition:
+      return Colors.brown;
+    default:
+      return Colors.greenAccent;
+    }
+  }
 }
 
 enum TimepointType {
@@ -30,5 +50,7 @@ enum TimepointType {
   @JsonValue("logMessage")
   logMessage,
   @JsonValue("battleTalk")
-  battleTalk
+  battleTalk,
+  @JsonValue("switchCondition")
+  switchCondition
 }

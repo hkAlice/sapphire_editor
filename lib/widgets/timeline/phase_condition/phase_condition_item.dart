@@ -21,9 +21,8 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
   late TextEditingController _descriptionTextEditingController;
 
   String _generateConditionSummary() {
-    String summary = "If " + treatEnumName(widget.phaseConditionModel.condition);
-    summary += " (" + widget.phaseConditionModel.params.join(", ");
-    summary += "), push ${widget.phaseConditionModel.phase}";
+    String summary = "If ${widget.phaseConditionModel.readableConditionType()}";
+    summary += ", push ${widget.phaseConditionModel.phase}";
     return summary;
   }
 
