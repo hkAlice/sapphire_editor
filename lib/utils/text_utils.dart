@@ -12,7 +12,7 @@ String treatEnumName(Enum type) {
 Future<void> exportStringAsJson(String json, String fileName) async {
   await FileSaver.instance.saveAs(
     name: fileName,
-    ext: "json",
+    ext: ".json",
     mimeType: MimeType.json,
     bytes: Uint8List.fromList(json.codeUnits),
   );
