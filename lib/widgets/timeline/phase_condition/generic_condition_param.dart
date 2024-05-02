@@ -77,6 +77,7 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
               }
 
               paramTextController.text = paramParser.isHex ? newParamValue.toRadixString(16) : newParamValue.toString();
+              paramTextController.selection = TextSelection.collapsed(offset: paramTextController.text.length);
           
               widget.phaseConditionModel.params[i] = newParamValue;
               widget.onUpdate();

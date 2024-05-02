@@ -66,7 +66,7 @@ class PhaseConditionModel {
     switch(condition) {
       case PhaseConditionType.directorVarGreaterThan: {
         return [
-          PhaseConditionParamParser(label: "Director", initialValue: 8, isHex: true),
+          PhaseConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
           PhaseConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
         ];
       }
