@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
-import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
-  late TimepointModel timepointModel;
+  final TimepointModel timepointModel;
   final Function(TimepointModel) onUpdate;
 
   GenericTimepointItem({super.key, required this.timepointModel, required this.onUpdate});
@@ -52,10 +50,10 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
+                SizedBox(
                   width: 170,
                   child: DropdownButtonFormField<TimepointType>(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       filled: true,
                       labelText: "Point type",
                       border: null
@@ -78,7 +76,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     }).toList()
                   ),
                 ),
-                SizedBox(width: 18.0,),
+                const SizedBox(width: 18.0,),
                 Expanded(
                   child: TextFormField(
                     keyboardType: TextInputType.multiline,

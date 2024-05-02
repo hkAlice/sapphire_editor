@@ -13,7 +13,7 @@ class SmallHeadingWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: Theme.of(context).textTheme.bodyLarge!,),
-          Divider(),
+          const Divider(),
         ],
       ),
     );

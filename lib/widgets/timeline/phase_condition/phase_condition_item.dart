@@ -1,12 +1,8 @@
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/generic_timepoint_item.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -48,11 +44,11 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                   index: widget.index,
                   child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.75, color: Theme.of(context).primaryColor),)
                 ),
-                SizedBox(width: 18.0,),
-                Container(
+                const SizedBox(width: 18.0,),
+                SizedBox(
                   width: 250,
                   child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       filled: true,
                       labelText: "Phase",
                       border: null
@@ -76,11 +72,11 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                     }).toList()
                   ),
                 ),
-                SizedBox(width: 18.0,),
-                Container(
+                const SizedBox(width: 18.0,),
+                SizedBox(
                   width: 250,
                   child: DropdownButtonFormField<PhaseConditionType>(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       filled: true,
                       labelText: "Condition",
                       border: null
@@ -103,7 +99,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                     }).toList()
                   ),
                 ),
-                SizedBox(width: 18.0,),
+                const SizedBox(width: 18.0,),
                 Expanded(
                   child: TextFormField(
                     keyboardType: TextInputType.multiline,

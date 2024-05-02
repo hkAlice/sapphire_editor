@@ -1,18 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
-import 'package:sapphire_editor/utils/snackbar_utils.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:toastification/toastification.dart';
 
 class TimelineEditorView extends StatefulWidget {
@@ -75,7 +70,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
           const Divider(),
           Expanded(
             child: Container(
-              constraints: BoxConstraints(maxWidth: 1400),
+              constraints: const BoxConstraints(maxWidth: 1400),
               padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
               child: Center(
                 child: Row(
@@ -111,13 +106,13 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                             onChanged: (value) {
                               _parseJSONToTimeline();
                             },
-                            commonTextStyle: TextStyle(fontFamily: "monospace"),
-                            keyHighlightStyle: TextStyle(color: Color(0xFF7587A6)),
-                            stringHighlightStyle: TextStyle(color: Color(0xFF8F9D6A)),
-                            numberHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
-                            boolHighlightStyle: TextStyle(color: Color(0xFFCF6A4C)),
-                            nullHighlightStyle: TextStyle(color: Colors.white),
-                            specialCharHighlightStyle: TextStyle(color: Colors.white),
+                            commonTextStyle: const TextStyle(fontFamily: "monospace"),
+                            keyHighlightStyle: const TextStyle(color: Color(0xFF7587A6)),
+                            stringHighlightStyle: const TextStyle(color: Color(0xFF8F9D6A)),
+                            numberHighlightStyle: const TextStyle(color: Color(0xFFCF6A4C)),
+                            boolHighlightStyle: const TextStyle(color: Color(0xFFCF6A4C)),
+                            nullHighlightStyle: const TextStyle(color: Colors.white),
+                            specialCharHighlightStyle: const TextStyle(color: Colors.white),
                             enableSuggestions: false,
                             enableIMEPersonalizedLearning: false,
                           ),
@@ -134,7 +129,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                                         context: context,
                                         type: ToastificationType.success,
                                         style: ToastificationStyle.fillColored,
-                                        title: Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
+                                        title: const Text("Touch your monitor. It is warm, like flesh.\nBut it is not flesh.\nNot yet."),
                                         autoCloseDuration: const Duration(seconds: 3),
                                       );
                                     }
@@ -142,10 +137,10 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                                       // this plugin seems to fire errors at random
                                     }
                                   },
-                                  icon: Icon(Icons.copy),
-                                  label: Text("Copy")
+                                  icon: const Icon(Icons.copy),
+                                  label: const Text("Copy")
                                 ),
-                                SizedBox(width: 8.0,),
+                                const SizedBox(width: 8.0,),
                                 ElevatedButton.icon(
                                   onPressed: () {
                                     Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
@@ -156,8 +151,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                                       // this plugin seems to fire errors at random
                                     }
                                   },
-                                  icon: Icon(Icons.download),
-                                  label: Text("Save")
+                                  icon: const Icon(Icons.download),
+                                  label: const Text("Save")
                                 ),
                               ],
                             ),

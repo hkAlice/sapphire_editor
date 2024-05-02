@@ -1,4 +1,3 @@
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
@@ -29,7 +28,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: 12.0),
+      margin: const EdgeInsets.only(bottom: 12.0),
       shadowColor: Colors.transparent,
       borderOnForeground: false,
       elevation: 1.0,
@@ -37,8 +36,8 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         shape: const Border(),
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
-        subtitle: Text(widget.phaseModel.timepoints.length.toString() + " timepoint" + (widget.phaseModel.timepoints.length != 1 ? "s" : "")),
-        trailing: Text("00:00"),
+        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint" + (widget.phaseModel.timepoints.length != 1 ? "s" : "")),
+        trailing: const Text("00:00"),
         children: [
           for(var point in widget.phaseModel.timepoints)
             GenericTimepointItem(timepointModel: point, onUpdate: (timepoint) {

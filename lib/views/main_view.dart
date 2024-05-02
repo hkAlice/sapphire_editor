@@ -12,7 +12,7 @@ class _MainViewState extends State<MainView> {
   int _tabIndex = 0;
 
   final List<Widget> _navChildren = [
-    TimelineEditorView(),
+    const TimelineEditorView(),
   ];
 
   void onTabTapped(int index) {

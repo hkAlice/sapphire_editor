@@ -68,7 +68,7 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           },
         ),
-        SmallHeadingWidget(title: "Conditions"),
+        const SmallHeadingWidget(title: "Conditions"),
         ReorderableListView.builder(
           buildDefaultDragHandles: false,
           onReorder: (int oldindex, int newindex) {
@@ -97,7 +97,7 @@ class _TimelineListState extends State<TimelineList> {
           }
         ),
         AddGenericWidget(text: "Add new condition", onTap: () { _addNewPhaseCondition(); }),
-        SmallHeadingWidget(title: "Phases"),
+        const SmallHeadingWidget(title: "Phases"),
         ReorderableListView.builder(
           buildDefaultDragHandles: false,
           onReorder: (int oldindex, int newindex) {
