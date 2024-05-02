@@ -86,7 +86,7 @@ class _TimelineListState extends State<TimelineList> {
           shrinkWrap: true,
           itemBuilder: (context, i) {
             return PhaseConditionItem(
-              key: Key("phase_condition_$i"),
+              key: Key("condition_${widget.timeline.phaseConditions[i].hashCode}"),
               index: i,
               timelineModel: widget.timeline,
               phaseConditionModel: widget.timeline.phaseConditions[i],
@@ -115,7 +115,7 @@ class _TimelineListState extends State<TimelineList> {
           shrinkWrap: true,
           itemBuilder: (context, i) {
             return TimelinePhaseItem(
-              key: Key("phase_$i"),
+              key: Key("phase_${widget.timeline.phases[i].hashCode}"),
               index: i,
               phaseModel: widget.timeline.phases[i],
               onUpdate: (phaseModel) {

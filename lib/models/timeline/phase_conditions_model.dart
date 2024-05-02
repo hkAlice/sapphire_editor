@@ -27,19 +27,28 @@ class PhaseConditionModel {
 
   Map<String, dynamic> toJson() => _$PhaseConditionModelToJson(this);
 
-  String readableConditionType() {
+  String readableConditionStr() {
+    String summary = "If ";
     switch(condition) {
       case PhaseConditionType.directorVarGreaterThan:
-        return "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16)} >= ${params.elementAtOrNull(1)}";
+        summary += "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16).toUpperCase()} >= ${params.elementAtOrNull(1)}";
+        break;
       case PhaseConditionType.elapsedTimeGreaterThan:
-        return "Elapsed time >= ${params.elementAtOrNull(0)}ms";
+        summary += "Elapsed time > ${params.elementAtOrNull(0)}ms";
+        break;
       case PhaseConditionType.hpPctBetween:
-        return "HP% between ${params.elementAtOrNull(0)} and ${params.elementAtOrNull(1)}";
+        summary += "HP% between ${params.elementAtOrNull(0)} and ${params.elementAtOrNull(1)}";
+        break;
       case PhaseConditionType.hpPctLessThan:
-        return "HP% <= ${params.elementAtOrNull(0)}";
+        summary += "HP% < ${params.elementAtOrNull(0)}";
+        break;
       default:
-        return "${treatEnumName(condition)} (${params.join(", ")})";
+        summary += "${treatEnumName(condition)} (${params.join(", ")})";
+        break;
     }
+
+    summary += ", ${loop ? "loop" : "push"} $phase";
+    return summary;
   }
 }
 

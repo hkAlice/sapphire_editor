@@ -20,12 +20,6 @@ class PhaseConditionItem extends StatefulWidget {
 class _PhaseConditionItemState extends State<PhaseConditionItem> {
   late TextEditingController _descriptionTextEditingController;
 
-  String _generateConditionSummary() {
-    String summary = "If ${widget.phaseConditionModel.readableConditionType()}";
-    summary += ", push ${widget.phaseConditionModel.phase}";
-    return summary;
-  }
-
   @override
   void initState() {
     _descriptionTextEditingController = TextEditingController(text: widget.phaseConditionModel.description);
@@ -36,6 +30,9 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      borderOnForeground: false,
+      shadowColor: Colors.transparent,
+      elevation: 1.0,
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ExpansionTile(
         leading: Row(
@@ -43,7 +40,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
           children: [
             ReorderableDragStartListener(
               index: widget.index,
-              child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.75, color: Theme.of(context).primaryColor),)
+              child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.70, color: Theme.of(context).primaryColor),)
             ),
             SwitchTextWidget(
               enabled: widget.phaseConditionModel.enabled,
@@ -54,12 +51,13 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                 widget.onUpdate(widget.phaseConditionModel);
               },
             ),
-            VerticalDivider(),
+            const VerticalDivider(),
           ],
         ),
-        title: Text(_generateConditionSummary()),
+        title: Text(widget.phaseConditionModel.readableConditionStr()),
+        subtitle: widget.phaseConditionModel.description?.isNotEmpty ?? false ? Text(widget.phaseConditionModel.description!) : null,
         trailing: IconButton(
-          icon: Icon(Icons.clear),
+          icon: const Icon(Icons.clear),
           onPressed: () {
             widget.timelineModel.phaseConditions.removeAt(widget.index);
             widget.onUpdate(widget.phaseConditionModel);
@@ -76,7 +74,6 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(width: 18.0,),
                     SizedBox(
                       width: 250,
                       child: DropdownButtonFormField<String>(
