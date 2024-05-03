@@ -416,6 +416,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.7"
+  input_slider:
+    dependency: "direct main"
+    description:
+      name: input_slider
+      sha256: d88e70774950db0499280d9e26b084db494d644cd27adc5e796026d84bce09de
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   intl:
     dependency: "direct main"
     description:

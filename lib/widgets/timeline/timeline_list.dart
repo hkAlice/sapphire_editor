@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/phase_condition/phase_condition_item.dart';
@@ -61,6 +59,8 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           },
         ),
+        const SmallHeadingWidget(title: "Actors"),
+        const Placeholder(),
         const SmallHeadingWidget(title: "Conditions"),
         ReorderableListView.builder(
           buildDefaultDragHandles: false,

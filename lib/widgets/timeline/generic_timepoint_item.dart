@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
+import 'package:flutter/services.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/moveto_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
+  final TimelinePhaseModel phaseModel;
   final TimepointModel timepointModel;
   final Function(TimepointModel) onUpdate;
 
-  GenericTimepointItem({super.key, required this.timepointModel, required this.onUpdate});
+  GenericTimepointItem({super.key, required this.phaseModel, required this.timepointModel, required this.onUpdate});
 
   @override
   State<GenericTimepointItem> createState() => _GenericTimepointItemState();
@@ -15,11 +19,19 @@ class GenericTimepointItem extends StatefulWidget {
 
 class _GenericTimepointItemState extends State<GenericTimepointItem> {
   late TextEditingController _descriptionTextEditingController;
+  late TextEditingController _durationTextEditingController;
 
   Widget _generateTypedTimepoint() {
     switch(widget.timepointModel.type) {
       case TimepointType.idle:
         return IdlePointWidget();
+      case TimepointType.moveTo:
+        return MoveToPointWidget(
+          timepointModel: widget.timepointModel,
+          onUpdate: () {
+            widget.onUpdate(widget.timepointModel);
+          },
+        );
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }
@@ -28,7 +40,17 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   @override
   void initState() {
     _descriptionTextEditingController = TextEditingController(text: widget.timepointModel.description);
+    _durationTextEditingController = TextEditingController(text: widget.timepointModel.duration.toString());
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionTextEditingController.dispose();
+    _durationTextEditingController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -49,13 +71,14 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(
                   width: 170,
                   child: DropdownButtonFormField<TimepointType>(
                     decoration: const InputDecoration(
                       filled: true,
-                      labelText: "Point type",
+                      //labelText: "Point type",
                       border: null
                     ),
                     value: widget.timepointModel.type,
@@ -65,7 +88,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         return;
                   
                       setState(() {
-                        widget.timepointModel.type = value;
+                        widget.timepointModel.changeType(value);
                       });
                       widget.onUpdate(widget.timepointModel);
                     },
@@ -74,6 +97,29 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         value: type,
                         child: Text(treatEnumName(type)));
                     }).toList()
+                  ),
+                ),
+                const SizedBox(width: 18.0,),
+                Container(
+                  width: 100,
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    maxLines: 1,
+                    controller: _durationTextEditingController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: "Duration (ms)",
+                    ),
+                    onChanged: (value) {
+                      if(value.isEmpty)
+                        value = "0";
+                      
+                      widget.timepointModel.duration = int.parse(value);
+                      widget.onUpdate(widget.timepointModel);
+                    },
                   ),
                 ),
                 const SizedBox(width: 18.0,),
@@ -91,10 +137,22 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       widget.onUpdate(widget.timepointModel);
                     },
                   ),
+                ),
+                Container(
+                  width: 36,
+                  height: 50,
+                  child: IconButton(
+                    onPressed: () {
+                      widget.phaseModel.timepoints.remove(widget.timepointModel);
+                      widget.onUpdate(widget.timepointModel);
+                    },
+                    icon: Icon(Icons.clear),
+                    
+                  ),
                 )
               ],
             ),
-            
+            _generateTypedTimepoint()
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 
 part 'timeline_phase_model.g.dart';
 

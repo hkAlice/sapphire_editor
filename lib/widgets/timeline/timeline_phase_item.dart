@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/generic_timepoint_item.dart';
 
@@ -16,6 +16,27 @@ class TimelinePhaseItem extends StatefulWidget {
 }
 
 class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
+  String _calcDuration() {
+    int durationTotalMs = 0;
+    for(var timepoint in widget.phaseModel.timepoints) {
+      durationTotalMs += timepoint.duration;
+    }
+
+    Duration duration = Duration(milliseconds: durationTotalMs);
+
+    String twoDigits(int n) {
+      if (n >= 10) return "$n";
+      return "0$n";
+    }
+
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    if (duration.inHours > 0)
+      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    else
+      return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
   void _addNewTimepoint() {
     widget.phaseModel.timepoints.add(TimepointModel(type: TimepointType.idle));
     setState(() {
@@ -37,16 +58,20 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
         subtitle: Text("${widget.phaseModel.timepoints.length} timepoint" + (widget.phaseModel.timepoints.length != 1 ? "s" : "")),
-        trailing: const Text("00:00"),
+        trailing: Text(_calcDuration()),
         children: [
           for(var point in widget.phaseModel.timepoints)
-            GenericTimepointItem(timepointModel: point, onUpdate: (timepoint) {
-              setState(() {
-      
-              });
+            GenericTimepointItem(
+              timepointModel: point,
+              phaseModel: widget.phaseModel,
+              onUpdate: (timepoint) {
+                setState(() {
+        
+                });
 
-              widget.onUpdate(widget.phaseModel);
-            },),
+                widget.onUpdate(widget.phaseModel);
+                },
+            ),
           AddGenericWidget(text: "Add new timepoint", onTap: _addNewTimepoint)
         ],
       ),

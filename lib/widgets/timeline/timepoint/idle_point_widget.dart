@@ -10,6 +10,6 @@ class IdlePointWidget extends StatefulWidget {
 class _IdlePointWidgetState extends State<IdlePointWidget> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container();
   }
 }

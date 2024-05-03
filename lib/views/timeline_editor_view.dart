@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
@@ -66,6 +64,21 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
             title: "Timeline Editor",
             subtitle: "Outputs encounter timeline data in JSON.",
             heading: Image.asset("assets/images/icon_trials.png"),
+            trailing: Row(
+              children: [
+                OutlinedButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Icon(Icons.done),
+                      SizedBox(width: 8.0,),
+                      Text("No warnings, for now."),
+                    ]
+                  )
+                ),
+                
+              ],
+            ),
           ),
           const Divider(),
           Expanded(
@@ -148,7 +161,13 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                                       exportStringAsJson(_jsonTextFieldController.text, _timeline.name);
                                     }
                                     catch(e) {
-                                      // this plugin seems to fire errors at random
+                                      toastification.show(
+                                        context: context,
+                                        type: ToastificationType.error,
+                                        style: ToastificationStyle.fillColored,
+                                        title: const Text("Failed to save JSON.\nWe are beyond salvation."),
+                                        autoCloseDuration: const Duration(seconds: 3),
+                                      );
                                     }
                                   },
                                   icon: const Icon(Icons.download),
