@@ -11,7 +11,8 @@ TimepointModel _$TimepointModelFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$TimepointTypeEnumMap, json['type']),
       description: json['description'] as String? ?? "",
       duration: (json['duration'] as num?)?.toInt() ?? 5000,
-    )..data = json['data'];
+      data: json['data'],
+    );
 
 Map<String, dynamic> _$TimepointModelToJson(TimepointModel instance) =>
     <String, dynamic>{

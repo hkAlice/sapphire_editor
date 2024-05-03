@@ -5,7 +5,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/moveto_point_mod
 
 part 'timepoint_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class TimepointModel {
   // todo: private field this + expose to json -> JsonKey(includeFromJson: true, includeToJson: true)
   TimepointType type;
@@ -13,9 +13,12 @@ class TimepointModel {
 
   int duration;
 
-  dynamic data;
+  dynamic data = {};
 
-  TimepointModel({required this.type, this.description = "", this.duration = 5000});
+  TimepointModel({required this.type, this.description = "", this.duration = 5000, this.data}) {
+    print("testlol");
+    changeType(type);
+  }
 
   factory TimepointModel.fromJson(Map<String, dynamic> json) => _$TimepointModelFromJson(json);
 
@@ -24,12 +27,26 @@ class TimepointModel {
   // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
   void changeType(TimepointType pointType) {
     type = pointType;
-    switch(type) {
-      case TimepointType.moveTo: {
-        data = MoveToPointModel();
+
+    // holy hell
+    if(data is Map<String, dynamic>) {
+      switch(type) {
+        case TimepointType.moveTo: {
+          data = MoveToPointModel.fromJson(data);
+        }
+        default: {
+          data = IdlePointModel.fromJson(data);
+        }
       }
-      default: {
-        data = IdlePointModel();
+    }
+    else {
+      switch(type) {
+        case TimepointType.moveTo: {
+          data = MoveToPointModel();
+        }
+        default: {
+          data = IdlePointModel();
+        }
       }
     }
   }
