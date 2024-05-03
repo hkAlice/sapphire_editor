@@ -15,9 +15,12 @@ class TimelineEditorView extends StatefulWidget {
   State<TimelineEditorView> createState() => _TimelineEditorViewState();
 }
 
-class _TimelineEditorViewState extends State<TimelineEditorView> {
+class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticKeepAliveClientMixin<TimelineEditorView> {
   TimelineModel _timeline = TimelineModel(name: "Brand new timeline");
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
+
+  @override
+  bool get wantKeepAlive => true;
 
   bool _parseJSONToTimeline() {
     try {
@@ -56,6 +59,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
   }
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,

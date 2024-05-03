@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/views/settings_view.dart';
 import 'package:sapphire_editor/views/timeline_editor_view.dart';
 
 class MainView extends StatefulWidget {
@@ -10,12 +11,14 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int _tabIndex = 0;
+  final _pageViewController = PageController();
 
   final List<Widget> _navChildren = [
     const TimelineEditorView(),
+    const SettingsView()
   ];
 
-  void onTabTapped(int index) {
+  void _onTabTapped(int index) {
    setState(() {
      _tabIndex = index;
    });
@@ -24,14 +27,20 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _navChildren[_tabIndex],
+      body: PageView(
+        controller: _pageViewController,
+        onPageChanged: (i) => _onTabTapped(i),
+        children: _navChildren,
+      ),
       extendBody: true,
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: true,
         showUnselectedLabels: true,
-        onTap: (i) {},
+        onTap: (i) {
+          _pageViewController.jumpToPage(i);
+        },
         currentIndex: _tabIndex,
         items: [
           BottomNavigationBarItem(
