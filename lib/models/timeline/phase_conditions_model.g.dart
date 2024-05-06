@@ -30,6 +30,7 @@ Map<String, dynamic> _$PhaseConditionModelToJson(
     };
 
 const _$PhaseConditionTypeEnumMap = {
+  PhaseConditionType.combatState: 'combatState',
   PhaseConditionType.directorVarGreaterThan: 'directorVarGreaterThan',
   PhaseConditionType.elapsedTimeGreaterThan: 'elapsedTimeGreaterThan',
   PhaseConditionType.hpPctBetween: 'hpPctBetween',

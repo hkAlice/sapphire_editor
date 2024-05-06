@@ -40,6 +40,19 @@ class PhaseConditionModel {
     String actorIdStr = params.elementAtOrNull(0) == 0 ? "Self" : "Actor ${params.elementAtOrNull(0).toString()}";
 
     switch(condition) {
+      case PhaseConditionType.combatState:
+        // todo: i don't like params only being ints
+        // todo: ENUM THIS, STOP BEING LAZY
+        String combatStateStr = "Idle";
+        if(params.elementAtOrNull(1) == 1) {
+          combatStateStr = "In Combat";
+        }
+        if(params.elementAtOrNull(1) == 2) {
+          combatStateStr = "Retreating";
+        }
+
+        summary += "$actorIdStr combat state is $combatStateStr";
+        break;
       case PhaseConditionType.directorVarGreaterThan:
         summary += "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16).toUpperCase()} >= ${params.elementAtOrNull(1)}";
         break;
@@ -64,6 +77,12 @@ class PhaseConditionModel {
   List<PhaseConditionParamParser> getConditionParamParser() {
 
     switch(condition) {
+      case PhaseConditionType.combatState: {
+        return [
+          PhaseConditionParamParser(label: "Actor", initialValue: 0),
+          PhaseConditionParamParser(label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
+        ];
+      }
       case PhaseConditionType.directorVarGreaterThan: {
         return [
           PhaseConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
@@ -101,6 +120,8 @@ class PhaseConditionModel {
 }
 
 enum PhaseConditionType {
+  @JsonValue("combatState")
+  combatState,
   @JsonValue("directorVarGreaterThan")
   directorVarGreaterThan,
   @JsonValue("elapsedTimeGreaterThan")
@@ -110,6 +131,11 @@ enum PhaseConditionType {
   @JsonValue("hpPctLessThan")
   hpPctLessThan,
 }
+
+/*
+extension PhaseConditionTypeExt on PhaseConditionType {
+  List<PhaseConditionParamParser> getConditionParamParser() {
+}*/
 
 class PhaseConditionParamParser {
   final String label;

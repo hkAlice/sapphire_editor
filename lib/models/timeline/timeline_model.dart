@@ -26,6 +26,7 @@ class TimelineModel {
 
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
 
+  // todo: move this to timelinesvc ideally
   TimelinePhaseModel addNewPhase() {
     var newPhase = TimelinePhaseModel(id: phases.length + 1, name: "Phase ${phases.length + 1}");
     phases.add(newPhase);
@@ -33,19 +34,24 @@ class TimelineModel {
     return newPhase;
   }
 
-  PhaseConditionModel addNewCondition() {
-    var newCondition = PhaseConditionModel(
-      condition: PhaseConditionType.hpPctLessThan,
-      params: [],
+  PhaseConditionModel addNewCondition([PhaseConditionModel? condition]) {
+    condition ??= PhaseConditionModel(
+      condition: PhaseConditionType.combatState,
+      params: [0, 1],
       phase: phases.isEmpty ? "Undefined" : phases.first.name,
       description: "",
-      loop: false,
+      loop: true,
     );
+    
+    // todo: yucky sucky for bucky??? sussyyy???? sussy baka?
+    condition.resetParams();
 
-    newCondition.resetParams();
+    phaseConditions.add(condition);
 
-    phaseConditions.add(newCondition);
+    return condition;
+  }
 
-    return newCondition;
+  void checkSanity() {
+
   }
 }

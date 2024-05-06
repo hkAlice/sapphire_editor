@@ -16,7 +16,6 @@ class TimepointModel {
   dynamic data = {};
 
   TimepointModel({required this.type, this.description = "", this.duration = 5000, this.data}) {
-    print("testlol");
     changeType(type);
   }
 

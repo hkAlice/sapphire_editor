@@ -47,6 +47,7 @@ dependencies:
   toastification: ^1.2.1
   file_saver: ^0.2.12
   input_slider: ^0.3.1
+  image_sequence_animator: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/loading/
 
 flutter_launcher_icons:
   android: "launcher_icon"

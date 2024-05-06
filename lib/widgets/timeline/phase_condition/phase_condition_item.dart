@@ -95,7 +95,6 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                           widget.onUpdate(widget.phaseConditionModel);
                         },
                         items: widget.timelineModel.phases.map((TimelinePhaseModel phase) {
-                          print(phase.name);
                           return DropdownMenuItem<String>(
                             value: phase.name,
                             child: Text(phase.name));

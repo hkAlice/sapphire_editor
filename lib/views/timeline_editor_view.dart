@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/utils/timeline_sanity.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
+import 'package:sapphire_editor/widgets/sanity/sanity_call_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
 import 'package:toastification/toastification.dart';
 
@@ -18,6 +20,7 @@ class TimelineEditorView extends StatefulWidget {
 class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticKeepAliveClientMixin<TimelineEditorView> {
   TimelineModel _timeline = TimelineModel(name: "Brand new timeline");
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
+  List<SanityItem> _sanityCheck = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -27,6 +30,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
       var jsonDec = jsonDecode(_jsonTextFieldController.text);
       if(jsonDec != null) {
         _timeline = TimelineModel.fromJson(jsonDec);
+        _sanityCheck = TimelineSanitySvc.run(_timeline);
         setState(() {
           
         });
@@ -41,12 +45,18 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
     return false;
   }
 
-  bool _parseTimelineToJSON() {
-    _jsonTextFieldController.text = jsonEncode(_timeline.toJson());
-    _jsonTextFieldController.formatJson(sortJson: true);
+  void _onTimelineDataUpdate() {
+    _parseTimelineToJSON();
+    _sanityCheck = TimelineSanitySvc.run(_timeline);
+
     setState(() {
       
     });
+  }
+
+  bool _parseTimelineToJSON() {
+    _jsonTextFieldController.text = jsonEncode(_timeline.toJson());
+    _jsonTextFieldController.formatJson(sortJson: true);
 
     return true;
   }
@@ -54,6 +64,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
   @override
   void initState() {
     _timeline.addNewPhase();
+    _timeline.addNewCondition();
 
     super.initState();
   }
@@ -67,23 +78,9 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
         children: [
           PageHeaderWidget(
             title: "Timeline Editor",
-            subtitle: "Outputs encounter timeline data in JSON.",
+            subtitle: "Outputs encounter timeline data in JSON",
             heading: Image.asset("assets/images/icon_trials.png"),
-            trailing: Row(
-              children: [
-                OutlinedButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      Icon(Icons.done),
-                      SizedBox(width: 8.0,),
-                      Text("No warnings, for now."),
-                    ]
-                  )
-                ),
-                
-              ],
-            ),
+            trailing: SanityCallWidget(items: _sanityCheck,)
           ),
           const Divider(),
           Expanded(
@@ -100,7 +97,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                         child: TimelineList(
                           timeline: _timeline,
                           onUpdate: (timeline) {
-                            _parseTimelineToJSON();
+                            _onTimelineDataUpdate();
                         },),
                       ),
                     ),

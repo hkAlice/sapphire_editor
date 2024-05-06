@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:sapphire_editor/widgets/loading_spinner.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 
@@ -14,11 +15,12 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   Future<dynamic> _fetchGithubInfo() async {
+    // todo: fetch this on app init
     final response = await http.get(Uri.parse('https://api.github.com/repos/hkAlice/sapphire_editor/commits?per_page=1'));
     if(response.statusCode == 200)
       return jsonDecode(response.body);
-    
-    return null;
+    else
+      throw Exception(response.body);
   }
 
   @override
@@ -40,6 +42,8 @@ class _SettingsViewState extends State<SettingsView> {
                   FutureBuilder<dynamic>(
                     future: _fetchGithubInfo(),
                     builder: (context, snapshot) {
+                      if(snapshot.hasError)
+                        return Icon(Icons.baby_changing_station);
                       if(snapshot.hasData) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -50,7 +54,7 @@ class _SettingsViewState extends State<SettingsView> {
                         );
                       }
                   
-                      return Container();
+                      return LoadingSpinner();
                     }
                   ),
                 ],
