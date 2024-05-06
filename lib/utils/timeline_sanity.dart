@@ -1,5 +1,8 @@
 // todo: ideally this would be a service and handle everything timeline based (adding, etc)
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 
@@ -7,12 +10,15 @@ class TimelineSanitySvc {
   static List<SanityItem> run(TimelineModel timeline) {
     List<SanityItem> items = [];
 
+    // todo: copy and ignore disabled conditions and phases
+
     _checkStalls(timeline, items);
     
-    return items..sortBy<num>((e) => e.severity.index);;
+    return items..sortBy<num>((e) => e.severity.index);
   }
 
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
+    bool hasCombatPhaseCondition = timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
     if(timeline.phases.isEmpty) {
       items.add(const SanityItem(SanitySeverity.error, "StallNoPhases", "No phases to push. Ensure that the timeline has phases."));
     }
@@ -21,6 +27,17 @@ class TimelineSanitySvc {
       items.add(const SanityItem(SanitySeverity.error, "StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions."));
     }
 
+    {
+      // check condition conflictsz (only check if the *NEXT* condition is a duplicate, allow inbetween conditions)
+      for(int i = 0; i < timeline.phaseConditions.length - 1; i++) {
+        final cond1 = timeline.phaseConditions[i];
+        final cond2 = timeline.phaseConditions[i + 1];
+        if(listEquals(cond1.params, cond2.params) && cond1.condition == cond2.condition) {
+          items.add(SanityItem(SanitySeverity.warning, "DuplicateConditionConflict", "Condition of type ${cond1.condition} and params ${cond1.params.join(", ")} is duplicate of next condition"));
+        }
+      }
+      
+    }
 
     {
       // check if last phase loops and has end scenario
@@ -29,10 +46,8 @@ class TimelineSanitySvc {
       }
 
       // check if timeline has on combat check
-      if(timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isEmpty) {
-        if(timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.elapsedTimeGreaterThan).isEmpty) {
-          items.add(const SanityItem(SanitySeverity.warning, "NoCombatPhase", "Timeline is indifferent to whether mob is in combat or not."));
-        }
+      if(!hasCombatPhaseCondition) {
+        items.add(const SanityItem(SanitySeverity.warning, "NoCombatPhaseCondition", "Timeline is indifferent to whether mob is in combat or not."));
       }
     }
 
@@ -42,22 +57,55 @@ class TimelineSanitySvc {
       List<PhaseConditionModel?> hpCondList = timeline.phaseConditions.where((e) { if(hpCondCheck.contains(e.condition)) return true; return false; }).toList();
       if(hpCondList.isNotEmpty) {
         List<(int, int)> hpRanges = [];
-        int lastMin = 100;
+        int lastMax = -1;
+        bool hasFirstCondAsHp = false;
         for(var cond in hpCondList) {
           if(cond == null)
             continue;
+
+          if(cond == timeline.phaseConditions.first) {
+            hasFirstCondAsHp = true;
+          }
+
+          if(cond.params[1] == 100) {
+            items.add(const SanityItem(SanitySeverity.warning, "AvoidHP100Usage", "Avoid usage of HP% conditions == 100. Prefer checking if mob is in combat."));
+          }
+
+          if(hasFirstCondAsHp && !hasCombatPhaseCondition) {
+            if(cond.params[1] != 100) {
+              items.add(const SanityItem(SanitySeverity.warning, "PossibleHPGapStall", "Avoid priority of HP condition as initial phase as mob may not take damage and stall. Prefer checking if mob is in combat."));
+            }
+          }
           
           if(cond.condition == PhaseConditionType.hpPctLessThan) {
-            hpRanges.add((cond.params[1], lastMin));
+            if(cond.params[1] > 100) {
+              items.add(const SanityItem(SanitySeverity.error, "InvalidHPVal", "Condition target HP is greater than 100."));
+            }
+
+            hpRanges.add((cond.params[1], lastMax));
+            lastMax = cond.params[1];
           }
 
           if(cond.condition == PhaseConditionType.hpPctBetween) {
             if(cond.params[2] < cond.params[1]) {
               items.add(const SanityItem(SanitySeverity.error, "InvalidHPMinMax", "Minimum HP is greater than maximum HP for condition type hpPctBetween."));
             }
+            if(cond.params[1] > 100 || cond.params[2] > 100) {
+              items.add(const SanityItem(SanitySeverity.error, "InvalidHPVal", "Condition target HP is greater than 100."));
+            }
             hpRanges.add((cond.params[1], cond.params[2]));
           }
         }
+        
+        for(var hpRange in hpRanges) {
+          if(hpRange.$2 == -1) {
+            items.add(SanityItem(SanitySeverity.warning, "UnconfirmedHPConditionGap", "HP condition gap between Min HP ${hpRange.$1}% and 100%. Ignore in complex cases."));
+          }
+          else if(hpRange.$1 > hpRange.$2) {
+            items.add(SanityItem(SanitySeverity.warning, "UnorderedHPCondition", "Condition order does not match HP condition sequence. Min HP ${hpRange.$1}% > Max HP ${hpRange.$2}%"));
+          }
+        }
+        print("1");
       }
     }
   }

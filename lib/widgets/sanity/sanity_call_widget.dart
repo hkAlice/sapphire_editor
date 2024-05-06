@@ -13,7 +13,7 @@ class _SanityCallWidgetState extends State<SanityCallWidget> {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {
+      onPressed: widget.items.isEmpty ? null : () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
