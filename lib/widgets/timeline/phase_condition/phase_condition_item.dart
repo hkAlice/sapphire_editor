@@ -3,6 +3,7 @@ import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/phase_condition/generic_condition_param.dart';
 
@@ -57,12 +58,28 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
         ),
         title: Text(widget.phaseConditionModel.getReadableConditionStr()),
         subtitle: widget.phaseConditionModel.description?.isNotEmpty ?? false ? Text(widget.phaseConditionModel.description!) : null,
-        trailing: IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () {
-            widget.timelineModel.phaseConditions.removeAt(widget.index);
-            widget.onUpdate(widget.phaseConditionModel);
-          },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SwitchIconWidget(
+              icon: Icons.loop,
+              enabled: widget.phaseConditionModel.loop,
+              onPressed: () {
+                setState(() {
+                  widget.phaseConditionModel.loop = !widget.phaseConditionModel.loop;
+                });
+                widget.onUpdate(widget.phaseConditionModel);
+              }
+            ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                widget.timelineModel.phaseConditions.removeAt(widget.index);
+                widget.onUpdate(widget.phaseConditionModel);
+              },
+            ),
+            
+          ],
         ),
         children: [
           Padding(
@@ -146,7 +163,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                           widget.onUpdate(widget.phaseConditionModel);
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
                 GenericConditionParam(

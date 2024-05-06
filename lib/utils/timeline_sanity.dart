@@ -30,8 +30,9 @@ class TimelineSanitySvc {
 
       // check if timeline has on combat check
       if(timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isEmpty) {
-        if(timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.elapsedTimeGreaterThan).isEmpty)
+        if(timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.elapsedTimeGreaterThan).isEmpty) {
           items.add(const SanityItem(SanitySeverity.warning, "NoCombatPhase", "Timeline is indifferent to whether mob is in combat or not."));
+        }
       }
     }
 
