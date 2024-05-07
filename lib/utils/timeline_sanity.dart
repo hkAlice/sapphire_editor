@@ -21,13 +21,30 @@ class TimelineSanitySvc {
     bool hasCombatPhaseCondition = timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
     bool hasPhases = false;
 
+    List<String> actorNameList = [];
+    List<int> layoutIdList = [];
+
     for(var actor in timeline.actors) {
       if(actor.phases.isNotEmpty) {
         hasPhases = true;
       }
+
+      if(actorNameList.contains(actor.name)) {
+        items.add(SanityItem(SanitySeverity.error, "UnresolvedDuplicateActorRef", "Duplicate actor name ${actor.name}. Ensure that actors have distinct names."));
+      }
+      if(layoutIdList.contains(actor.layoutId)) {
+        items.add(SanityItem(SanitySeverity.error, "UnresolvedDuplicateActorRef", "Duplicate actor layoutId ${actor.layoutId}. Ensure that actors have distinct layoutId."));
+      }
+
+      actorNameList.add(actor.name);
+      layoutIdList.add(actor.layoutId);
     }
 
-    if(hasPhases) {
+    actorNameList.where((e) => actorNameList.where((element) => element == e).length > 1).toSet().toList();
+    layoutIdList.where((e) => layoutIdList.where((element) => element == e).length > 1).toSet().toList();
+    //if(actorNameList.length)
+
+    if(!hasPhases) {
       items.add(const SanityItem(SanitySeverity.error, "StallNoPhases", "No phases to push. Ensure that the timeline has phases."));
     }
 
