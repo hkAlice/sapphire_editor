@@ -8,9 +8,13 @@ part of 'moveto_point_model.dart';
 
 MoveToPointModel _$MoveToPointModelFromJson(Map<String, dynamic> json) =>
     MoveToPointModel(
+      pos: (json['pos'] as List<dynamic>?)
+              ?.map((e) => (e as num).toDouble())
+              .toList() ??
+          [0.0, 0.0, 0.0],
       rot: (json['rot'] as num?)?.toDouble() ?? 0.0,
       pathRequest: json['pathRequest'] as bool? ?? true,
-    )..pos = Position3.fromJson(json['pos'] as Map<String, dynamic>);
+    );
 
 Map<String, dynamic> _$MoveToPointModelToJson(MoveToPointModel instance) =>
     <String, dynamic>{

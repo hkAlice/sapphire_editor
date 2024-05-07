@@ -86,9 +86,11 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     onChanged: (TimepointType? value) {
                       if(value == null)
                         return;
-                  
+
+                      widget.timepointModel.changeType(value);
+                      
                       setState(() {
-                        widget.timepointModel.changeType(value);
+                        
                       });
                       widget.onUpdate(widget.timepointModel);
                     },

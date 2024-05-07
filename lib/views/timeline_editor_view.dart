@@ -63,7 +63,10 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
 
   @override
   void initState() {
-    _timeline.addNewPhase();
+    _timeline.addNewActor();
+    _timeline.addNewActor();
+    _timeline.addNewActor();
+    _timeline.addNewPhase(_timeline.actors.first);
     _timeline.addNewCondition();
 
     super.initState();

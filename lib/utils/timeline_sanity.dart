@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 
 class TimelineSanitySvc {
@@ -19,7 +19,15 @@ class TimelineSanitySvc {
 
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
     bool hasCombatPhaseCondition = timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
-    if(timeline.phases.isEmpty) {
+    bool hasPhases = false;
+
+    for(var actor in timeline.actors) {
+      if(actor.phases.isNotEmpty) {
+        hasPhases = true;
+      }
+    }
+
+    if(hasPhases) {
       items.add(const SanityItem(SanitySeverity.error, "StallNoPhases", "No phases to push. Ensure that the timeline has phases."));
     }
 
@@ -29,20 +37,21 @@ class TimelineSanitySvc {
 
     {
       // check condition conflictsz (only check if the *NEXT* condition is a duplicate, allow inbetween conditions)
-      for(int i = 0; i < timeline.phaseConditions.length - 1; i++) {
+      // todo: there may be valid instances of duplicate conditions, not much point in raising warning issue here
+      /*for(int i = 0; i < timeline.phaseConditions.length - 1; i++) {
         final cond1 = timeline.phaseConditions[i];
         final cond2 = timeline.phaseConditions[i + 1];
-        if(listEquals(cond1.params, cond2.params) && cond1.condition == cond2.condition) {
+        if(cond1.paramData == cond && cond1.condition == cond2.condition) {
           items.add(SanityItem(SanitySeverity.warning, "DuplicateConditionConflict", "Condition of type ${cond1.condition} and params ${cond1.params.join(", ")} is duplicate of next condition"));
         }
-      }
+      }*/
       
     }
 
     {
-      // check if last phase loops and has end scenario
+      // check if last phase in actor loops and has end scenario
       if(timeline.phaseConditions.isNotEmpty && !timeline.phaseConditions.last.loop) {
-        items.add(SanityItem(SanitySeverity.warning, "MissingTailPhaseClosure", "Last phase ${timeline.phaseConditions.last.phase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase."));
+        items.add(SanityItem(SanitySeverity.warning, "MissingTailPhaseClosure", "Last phase ${timeline.phaseConditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase."));
       }
 
       // check if timeline has on combat check
@@ -67,6 +76,7 @@ class TimelineSanitySvc {
             hasFirstCondAsHp = true;
           }
 
+          /*
           if(cond.params[1] == 100) {
             items.add(const SanityItem(SanitySeverity.warning, "AvoidHP100Usage", "Avoid usage of HP% conditions == 100. Prefer checking if mob is in combat."));
           }
@@ -94,7 +104,7 @@ class TimelineSanitySvc {
               items.add(const SanityItem(SanitySeverity.error, "InvalidHPVal", "Condition target HP is greater than 100."));
             }
             hpRanges.add((cond.params[1], cond.params[2]));
-          }
+          }*/
         }
         
         for(var hpRange in hpRanges) {

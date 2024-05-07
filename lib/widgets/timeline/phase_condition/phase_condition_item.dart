@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
+import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/phase_condition/combatState_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/phase_condition/generic_condition_param.dart';
+import 'package:sapphire_editor/widgets/timeline/phase_condition/hpMinMax_condition_widget.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -21,10 +25,36 @@ class PhaseConditionItem extends StatefulWidget {
 
 class _PhaseConditionItemState extends State<PhaseConditionItem> {
   late TextEditingController _descriptionTextEditingController;
+  late ActorModel _selectedActor;
+
+  List<DropdownMenuItem<String>> _generateDropPhaseItems() {
+    return _selectedActor.phases.map((TimelinePhaseModel phase) {
+      return DropdownMenuItem<String>(
+        value: phase.name,
+        child: Text(phase.name));
+    }).toList();
+  }
+
+  Widget _getCondDataWidget() {
+    void genericCallback() {
+      widget.onUpdate(widget.phaseConditionModel);
+      setState(() {
+        
+      });
+    }
+    if(widget.phaseConditionModel.condition == PhaseConditionType.hpPctBetween) {
+      return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.phaseConditionModel.condition == PhaseConditionType.combatState) {
+      return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else {
+      return Text("Unimplemented condition type $widget.phaseConditionModel.condition");
+    }
+  }
 
   @override
   void initState() {
     _descriptionTextEditingController = TextEditingController(text: widget.phaseConditionModel.description);
+    _selectedActor = widget.timelineModel.actors.first;
       
     super.initState();
   }
@@ -92,6 +122,27 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Container(
+                      width: 150,
+                      child: GenericItemPickerWidget<ActorModel>(
+                        label: "Target Actor",
+                        items: widget.timelineModel.actors,
+                        onChanged: (newValue) {
+                          _selectedActor = newValue as ActorModel;
+                          
+                          if(_selectedActor.phases.isEmpty) {
+                            widget.phaseConditionModel.targetPhase = null;
+                          }
+                          else {
+                            widget.phaseConditionModel.targetPhase = _selectedActor.phases.first.name;
+                          }
+                          
+                          setState(() {
+                            
+                          });
+                        },
+                      )
+                    ),
                     SizedBox(
                       width: 250,
                       child: DropdownButtonFormField<String>(
@@ -100,22 +151,19 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                           labelText: "Phase",
                           border: null
                         ),
-                        value: widget.phaseConditionModel.phase,
+                        value: widget.phaseConditionModel.targetPhase,
                         isDense: true,
                         onChanged: (String? value) {
                           if(value == null)
                             return;
-                      
+
+                          widget.phaseConditionModel.targetPhase = value;
                           setState(() {
-                            widget.phaseConditionModel.phase = value;
+                            
                           });
                           widget.onUpdate(widget.phaseConditionModel);
                         },
-                        items: widget.timelineModel.phases.map((TimelinePhaseModel phase) {
-                          return DropdownMenuItem<String>(
-                            value: phase.name,
-                            child: Text(phase.name));
-                        }).toList()
+                        items: _generateDropPhaseItems()
                       ),
                     ),
                     const SizedBox(width: 18.0,),
@@ -132,10 +180,10 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         onChanged: (PhaseConditionType? value) {
                           if(value == null)
                             return;
-                      
+
+                          widget.phaseConditionModel.changeType(value);
                           setState(() {
-                            widget.phaseConditionModel.condition = value;
-                            widget.phaseConditionModel.resetParams();
+                            
                           });
 
                           widget.onUpdate(widget.phaseConditionModel);
@@ -166,14 +214,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                     ),
                   ],
                 ),
-                GenericConditionParam(
-                  phaseConditionModel: widget.phaseConditionModel,
-                  paramData: widget.phaseConditionModel.getConditionParamParser(),
-                  onUpdate: () {
-                    widget.onUpdate(widget.phaseConditionModel);
-
-                  },
-                ),
+                _getCondDataWidget()
               ],
             ),
           ),

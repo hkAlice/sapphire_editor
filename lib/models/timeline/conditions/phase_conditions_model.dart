@@ -1,76 +1,75 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/conditions/types/combatState_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/conditions/types/hpPctBetween_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'phase_conditions_model.g.dart';
 
+// todo: wish generics would work well here instead of infinite cast for paramData
 @JsonSerializable()
 class PhaseConditionModel {
   String? description;
   PhaseConditionType condition;
-  List<int> params;
-  String phase;
+  dynamic paramData = {};
   bool loop;
   bool enabled;
-
-  //final List<ActorFlag> overrideFlags;
+  
+  String? targetActor;
+  String? targetPhase;
 
   PhaseConditionModel({
     required this.condition,
-    required this.params,
-    required this.phase,
     required this.loop,
+    this.paramData,
     this.enabled = true,
     this.description = "",
-  });
+    this.targetActor,
+    this.targetPhase
+  }) {
+    changeType(condition);
+  }
 
   factory PhaseConditionModel.fromJson(Map<String, dynamic> json) => _$PhaseConditionModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$PhaseConditionModelToJson(this);
 
-  void resetParams() {
-    params.clear();
-    var paramParser = getConditionParamParser();
-    for(var paramData in paramParser) {
-      params.add(paramData.initialValue);
+  // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
+  void changeType(PhaseConditionType type) {
+    if(type != condition) {
+      paramData = <String, dynamic>{};
     }
+
+    condition = type;
+
+    paramData ??= <String, dynamic>{};
+
+    if(paramData is Map<String, dynamic>) {
+      if(type == PhaseConditionType.hpPctBetween) {
+        paramData = HPPctBetweenConditionModel.fromJson(paramData);
+      } else if(type == PhaseConditionType.combatState) {
+        paramData = CombatStateConditionModel.fromJson(paramData);
+      } else {
+        // keep as is, break shit
+      }
+    }
+    
   }
 
   String getReadableConditionStr() {
     String summary = "If ";
-    String actorIdStr = params.elementAtOrNull(0) == 0 ? "Self" : "Actor ${params.elementAtOrNull(0).toString()}";
 
-    switch(condition) {
-      case PhaseConditionType.combatState:
-        // todo: i don't like params only being ints
-        // todo: ENUM THIS, STOP BEING LAZY
-        String combatStateStr = "Idle";
-        if(params.elementAtOrNull(1) == 1) {
-          combatStateStr = "In Combat";
-        }
-        if(params.elementAtOrNull(1) == 2) {
-          combatStateStr = "Retreating";
-        }
-
-        summary += "$actorIdStr combat state is $combatStateStr";
-        break;
-      case PhaseConditionType.directorVarGreaterThan:
-        summary += "Director var 0x${params.elementAtOrNull(0)!.toRadixString(16).toUpperCase()} >= ${params.elementAtOrNull(1)}";
-        break;
-      case PhaseConditionType.elapsedTimeGreaterThan:
-        summary += "Elapsed time > ${params.elementAtOrNull(0)}ms";
-        break;
-      case PhaseConditionType.hpPctBetween:
-        summary += "$actorIdStr HP% between ${params.elementAtOrNull(1)}% and ${params.elementAtOrNull(2)}%";
-        break;
-      case PhaseConditionType.hpPctLessThan:
-        summary += "$actorIdStr HP% < ${params.elementAtOrNull(1)}%";
-        break;
-      default:
-        summary += "${treatEnumName(condition)} (${params.join(", ")})";
-        break;
+    if(condition == PhaseConditionType.hpPctBetween) {
+      var param = paramData as HPPctBetweenConditionModel;
+      summary += "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
+    } else if (condition == PhaseConditionType.combatState) {
+      var param = paramData as CombatStateConditionModel;
+      summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
+    } else {
+      // keep as is, break shit
+      summary += "condition ${treatEnumName(condition)}";
     }
 
-    summary += ", ${loop ? "loop" : "push"} $phase";
+    summary += ", ${loop ? "loop" : "push"} $targetPhase to $targetActor";
     return summary;
   }
   

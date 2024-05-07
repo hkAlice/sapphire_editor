@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sapphire_editor/models/timeline/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
 
 // TODO: a class of object for each param eg. <Label, isHex, InputType (Actor, Phase, etc)>
 class GenericConditionParam extends StatefulWidget {
@@ -79,7 +79,7 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
               paramTextController.text = paramParser.isHex ? newParamValue.toRadixString(16) : newParamValue.toString();
               paramTextController.selection = TextSelection.collapsed(offset: paramTextController.text.length);
           
-              widget.phaseConditionModel.params[i] = newParamValue;
+              //widget.phaseConditionModel.params[i] = newParamValue;
               widget.onUpdate();
 
               setState(() {

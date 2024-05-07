@@ -25,29 +25,23 @@ class TimepointModel {
 
   // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
   void changeType(TimepointType pointType) {
+    if(type != pointType) {
+      data = <String, dynamic>{};
+    }
+
     type = pointType;
 
-    // holy hell
+    data ??= <String, dynamic>{};
+
     if(data is Map<String, dynamic>) {
-      switch(type) {
-        case TimepointType.moveTo: {
-          data = MoveToPointModel.fromJson(data);
-        }
-        default: {
-          data = IdlePointModel.fromJson(data);
-        }
+      if(type == TimepointType.moveTo) {
+        data = MoveToPointModel.fromJson(data);
+      } else {
+        data = IdlePointModel.fromJson(data);
       }
     }
-    else {
-      switch(type) {
-        case TimepointType.moveTo: {
-          data = MoveToPointModel();
-        }
-        default: {
-          data = IdlePointModel();
-        }
-      }
-    }
+
+    print(data);
   }
   
   Color getColorForTimepointType() {

@@ -23,9 +23,9 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
 
   @override
   void initState() {
-    _xPosTextEditingController = TextEditingController(text: pointData.pos.x.toString());
-    _yPosTextEditingController = TextEditingController(text: pointData.pos.y.toString());
-    _zPosTextEditingController = TextEditingController(text: pointData.pos.z.toString());
+    _xPosTextEditingController = TextEditingController(text: pointData.pos[0].toString());
+    _yPosTextEditingController = TextEditingController(text: pointData.pos[1].toString());
+    _zPosTextEditingController = TextEditingController(text: pointData.pos[2].toString());
     _rotPosTextEditingController = TextEditingController(text: pointData.rot.toString());
 
     super.initState();
@@ -68,7 +68,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             double newParamValue = 0.0;
             try {
               newParamValue = double.tryParse(value) ?? 0;
-              pointData.pos.x = newParamValue;
+              pointData.pos[0] = newParamValue;
               widget.onUpdate();
             }
             catch(e) { }
@@ -85,7 +85,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             double newParamValue = 0.0;
             try {
               newParamValue = double.tryParse(value) ?? 0;
-              pointData.pos.y = newParamValue;
+              pointData.pos![1] = newParamValue;
               widget.onUpdate();
             }
             catch(e) { }
@@ -102,7 +102,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             double newParamValue = 0.0;
             try {
               newParamValue = double.tryParse(value) ?? 0;
-              pointData.pos.z = newParamValue;
+              pointData.pos![2] = newParamValue;
               widget.onUpdate();
             }
             catch(e) {}
@@ -136,11 +136,11 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
           }
         ),
         SwitchTextWidget(
-          leading: Text("Request Path"),
-          enabled: pointData.pathRequest,
+          leading: const Text("Request Path"),
+          enabled: pointData.pathRequest!,
           onPressed: () {
             setState(() {
-              pointData.pathRequest = !pointData.pathRequest;
+              pointData.pathRequest = !pointData.pathRequest!;
             });
             widget.onUpdate();
           }

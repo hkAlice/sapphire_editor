@@ -9,13 +9,12 @@ part of 'phase_conditions_model.dart';
 PhaseConditionModel _$PhaseConditionModelFromJson(Map<String, dynamic> json) =>
     PhaseConditionModel(
       condition: $enumDecode(_$PhaseConditionTypeEnumMap, json['condition']),
-      params: (json['params'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
-      phase: json['phase'] as String,
       loop: json['loop'] as bool,
+      paramData: json['paramData'],
       enabled: json['enabled'] as bool? ?? true,
       description: json['description'] as String? ?? "",
+      targetActor: json['targetActor'] as String?,
+      targetPhase: json['targetPhase'] as String?,
     );
 
 Map<String, dynamic> _$PhaseConditionModelToJson(
@@ -23,10 +22,11 @@ Map<String, dynamic> _$PhaseConditionModelToJson(
     <String, dynamic>{
       'description': instance.description,
       'condition': _$PhaseConditionTypeEnumMap[instance.condition]!,
-      'params': instance.params,
-      'phase': instance.phase,
+      'paramData': instance.paramData,
       'loop': instance.loop,
       'enabled': instance.enabled,
+      'targetActor': instance.targetActor,
+      'targetPhase': instance.targetPhase,
     };
 
 const _$PhaseConditionTypeEnumMap = {

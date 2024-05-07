@@ -1,15 +1,15 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sapphire_editor/models/timeline/position3_model.dart';
 
 part 'moveto_point_model.g.dart';
 
 @JsonSerializable()
 class MoveToPointModel {
-  Position3 pos;
+  @JsonKey(defaultValue: [0.0, 0.0, 0.0])
+  List<double> pos = [0.0, 0.0, 0.0];
   double rot;
   bool pathRequest; // todo: probably PathingType enum?
 
-  MoveToPointModel({position, this.rot = 0.0, this.pathRequest = true}) : pos = position ?? Position3(0.0, 0.0, 0.0);
+  MoveToPointModel({required this.pos, this.rot = 0.0, this.pathRequest = true});
 
   factory MoveToPointModel.fromJson(Map<String, dynamic> json) => _$MoveToPointModelFromJson(json);
 
