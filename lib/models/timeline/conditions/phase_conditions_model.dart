@@ -69,7 +69,7 @@ class PhaseConditionModel {
       summary += "condition ${treatEnumName(condition)}";
     }
 
-    summary += ", ${loop ? "loop" : "push"} $targetPhase to $targetActor";
+    summary += ", ${loop ? "loop" : "push"} $targetActor->$targetPhase";
     return summary;
   }
   
