@@ -130,16 +130,20 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         onChanged: (newValue) {
                           _selectedActor = newValue as ActorModel;
                           
+                          widget.phaseConditionModel.targetActor = _selectedActor.name;
+                          
                           if(_selectedActor.phases.isEmpty) {
                             widget.phaseConditionModel.targetPhase = null;
                           }
                           else {
                             widget.phaseConditionModel.targetPhase = _selectedActor.phases.first.name;
                           }
-                          
+
                           setState(() {
                             
                           });
+
+                          widget.onUpdate(widget.phaseConditionModel);
                         },
                       )
                     ),
