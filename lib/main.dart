@@ -17,7 +17,7 @@ class TimelineEditorApp extends StatelessWidget {
       title: "Sapphire Editor",
       theme: FlexThemeData.light(scheme: FlexScheme.indigoM3).copyWith(),
       darkTheme: FlexThemeData.dark(scheme: FlexScheme.indigoM3),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark, // todo: toggle instead of system
       home: const MainView(),
     );
   }
