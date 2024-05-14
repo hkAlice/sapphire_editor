@@ -19,14 +19,13 @@ class TimelineSanitySvc {
 
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
     bool hasCombatPhaseCondition = timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
-    bool hasPhases = false;
 
     List<String> actorNameList = [];
     List<int> layoutIdList = [];
 
     for(var actor in timeline.actors) {
-      if(actor.phases.isNotEmpty) {
-        hasPhases = true;
+      if(actor.phases.isEmpty) {
+        items.add(SanityItem(SanitySeverity.warning, "StallActor", "Actor ${actor.name} has no phases and may stall."));
       }
 
       if(actorNameList.contains(actor.name)) {
@@ -42,11 +41,6 @@ class TimelineSanitySvc {
 
     actorNameList.where((e) => actorNameList.where((element) => element == e).length > 1).toSet().toList();
     layoutIdList.where((e) => layoutIdList.where((element) => element == e).length > 1).toSet().toList();
-    //if(actorNameList.length)
-
-    if(!hasPhases) {
-      items.add(const SanityItem(SanitySeverity.error, "StallNoPhases", "No phases to push. Ensure that the timeline has phases."));
-    }
 
     if(timeline.phaseConditions.isEmpty) {
       items.add(const SanityItem(SanitySeverity.error, "StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions."));
