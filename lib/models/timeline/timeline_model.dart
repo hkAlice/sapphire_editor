@@ -22,7 +22,7 @@ class TimelineModel {
     actorList,
   }) : phaseConditions = conditionList ?? [], actors = actorList ?? [];
 
-  static const VERSION_MODEL = 2;
+  static const VERSION_MODEL = 3;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 
