@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 typedef PropertyBuilderCallback<T> = String Function(T value);

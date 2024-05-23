@@ -1,8 +1,5 @@
 // todo: ideally this would be a service and handle everything timeline based (adding, etc)
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 
@@ -73,11 +70,11 @@ class TimelineSanitySvc {
 
     {
       // check hp sanity
-      List<PhaseConditionType> hpCondCheck = [PhaseConditionType.hpPctBetween, PhaseConditionType.hpPctLessThan];
+      /*List<PhaseConditionType> hpCondCheck = [PhaseConditionType.hpPctBetween, PhaseConditionType.hpPctLessThan];
       List<PhaseConditionModel?> hpCondList = timeline.phaseConditions.where((e) { if(hpCondCheck.contains(e.condition)) return true; return false; }).toList();
       if(hpCondList.isNotEmpty) {
         List<(int, int)> hpRanges = [];
-        int lastMax = -1;
+        //int lastMax = -1;
         bool hasFirstCondAsHp = false;
         for(var cond in hpCondList) {
           if(cond == null)
@@ -87,7 +84,7 @@ class TimelineSanitySvc {
             hasFirstCondAsHp = true;
           }
 
-          /*
+          
           if(cond.params[1] == 100) {
             items.add(const SanityItem(SanitySeverity.warning, "AvoidHP100Usage", "Avoid usage of HP% conditions == 100. Prefer checking if mob is in combat."));
           }
@@ -115,7 +112,7 @@ class TimelineSanitySvc {
               items.add(const SanityItem(SanitySeverity.error, "InvalidHPVal", "Condition target HP is greater than 100."));
             }
             hpRanges.add((cond.params[1], cond.params[2]));
-          }*/
+          }
         }
         
         for(var hpRange in hpRanges) {
@@ -127,7 +124,7 @@ class TimelineSanitySvc {
           }
         }
         print("1");
-      }
+      }*/
     }
   }
 }

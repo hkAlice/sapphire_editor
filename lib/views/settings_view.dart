@@ -17,10 +17,11 @@ class _SettingsViewState extends State<SettingsView> {
   Future<dynamic> _fetchGithubInfo() async {
     // todo: fetch this on app init
     final response = await http.get(Uri.parse('https://api.github.com/repos/hkAlice/sapphire_editor/commits?per_page=1'));
-    if(response.statusCode == 200)
+    if(response.statusCode == 200) {
       return jsonDecode(response.body);
-    else
+    } else {
       throw Exception(response.body);
+    }
   }
 
   @override
@@ -28,7 +29,7 @@ class _SettingsViewState extends State<SettingsView> {
     return SafeArea(
       child: Column(
         children: [
-          PageHeaderWidget(title: "Settings"),
+          const PageHeaderWidget(title: "Settings"),
           const Divider(),
           Expanded(
             child: Container(
@@ -42,8 +43,9 @@ class _SettingsViewState extends State<SettingsView> {
                   FutureBuilder<dynamic>(
                     future: _fetchGithubInfo(),
                     builder: (context, snapshot) {
-                      if(snapshot.hasError)
-                        return Icon(Icons.baby_changing_station);
+                      if(snapshot.hasError) {
+                        return const Icon(Icons.baby_changing_station);
+                      }
                       if(snapshot.hasData) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,7 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
                         );
                       }
                   
-                      return LoadingSpinner();
+                      return const LoadingSpinner();
                     }
                   ),
                 ],

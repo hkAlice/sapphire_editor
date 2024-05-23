@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class SwitchTextWidget extends StatefulWidget {
   final bool enabled;
   final Function() onPressed;
-  Widget? leading;
-  SwitchTextWidget({super.key, required this.enabled, required this.onPressed, this.leading});
+  final Widget? leading;
+
+  const SwitchTextWidget({super.key, required this.enabled, required this.onPressed, this.leading});
 
   @override
   State<SwitchTextWidget> createState() => _SwitchTextWidgetState();
@@ -21,7 +22,7 @@ class _SwitchTextWidgetState extends State<SwitchTextWidget> {
             margin: widget.leading == null ? null : const EdgeInsets.only(right: 8.0),
             child: widget.leading,
           ),
-          Container(
+          SizedBox(
             width: 28,
             child: Center(
               child: widget.enabled ? Text(

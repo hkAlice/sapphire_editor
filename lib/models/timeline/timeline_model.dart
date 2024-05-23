@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
-import 'package:sapphire_editor/models/timeline/conditions/types/combatState_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/conditions/types/combatstate_condition_model.dart';
 import 'timeline_phase_model.dart';
 
 part 'timeline_model.g.dart';

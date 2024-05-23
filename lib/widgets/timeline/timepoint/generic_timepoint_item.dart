@@ -13,7 +13,7 @@ class GenericTimepointItem extends StatefulWidget {
   final TimepointModel timepointModel;
   final Function(TimepointModel) onUpdate;
 
-  GenericTimepointItem({super.key, required this.phaseModel, required this.timepointModel, required this.onUpdate});
+  const GenericTimepointItem({super.key, required this.phaseModel, required this.timepointModel, required this.onUpdate});
 
   @override
   State<GenericTimepointItem> createState() => _GenericTimepointItemState();
@@ -95,8 +95,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     value: widget.timepointModel.type,
                     isDense: true,
                     onChanged: (TimepointType? value) {
-                      if(value == null)
-                        return;
+                      if(value == null) { return; }
 
                       widget.timepointModel.changeType(value);
                       
@@ -113,7 +112,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   ),
                 ),
                 const SizedBox(width: 18.0,),
-                Container(
+                SizedBox(
                   width: 100,
                   child: TextFormField(
                     keyboardType: TextInputType.number,
@@ -127,8 +126,9 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       hintText: "Duration (ms)",
                     ),
                     onChanged: (value) {
-                      if(value.isEmpty)
+                      if(value.isEmpty) {
                         value = "0";
+                      }
                       
                       widget.timepointModel.duration = int.parse(value);
                       widget.onUpdate(widget.timepointModel);
@@ -151,7 +151,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     },
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 36,
                   height: 50,
                   child: IconButton(
@@ -159,13 +159,12 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       widget.phaseModel.timepoints.remove(widget.timepointModel);
                       widget.onUpdate(widget.timepointModel);
                     },
-                    icon: Icon(Icons.clear),
-                    
+                    icon: const Icon(Icons.clear),
                   ),
                 )
               ],
             ),
-            Divider(),
+            const Divider(),
             _generateTypedTimepoint()
           ],
         ),

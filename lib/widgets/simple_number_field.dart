@@ -5,10 +5,10 @@ class SimpleNumberField extends StatefulWidget {
   final String? label;
   final int? initialValue;
   final bool isHex;
-  late TextEditingController? controller;
+  final TextEditingController? controller;
   final Function(int) onChanged;
 
-  SimpleNumberField({super.key, required this.onChanged, this.label, this.initialValue, this.controller, this.isHex = false});
+  const SimpleNumberField({super.key, required this.onChanged, this.label, this.initialValue, this.controller, this.isHex = false});
 
   @override
   State<SimpleNumberField> createState() => _SimpleNumberFieldState();

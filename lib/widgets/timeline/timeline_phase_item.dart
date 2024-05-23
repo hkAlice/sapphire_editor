@@ -25,16 +25,17 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
     Duration duration = Duration(milliseconds: durationTotalMs);
 
     String twoDigits(int n) {
-      if (n >= 10) return "$n";
+      if(n >= 10) return "$n";
       return "0$n";
     }
 
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    if (duration.inHours > 0)
+    if(duration.inHours > 0) {
       return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-    else
+    } else {
       return "$twoDigitMinutes:$twoDigitSeconds";
+    }
   }
 
   void _addNewTimepoint() {
@@ -57,7 +58,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         shape: const Border(),
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
-        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint" + (widget.phaseModel.timepoints.length != 1 ? "s" : "")),
+        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint ${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}"),
         trailing: Text(_calcDuration()),
         children: [
           for(var point in widget.phaseModel.timepoints)

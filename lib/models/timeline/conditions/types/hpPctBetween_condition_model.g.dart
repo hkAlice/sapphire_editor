@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hpPctBetween_condition_model.dart';
+part of 'hppctbetween_condition_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

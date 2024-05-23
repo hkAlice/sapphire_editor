@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'combatState_condition_model.g.dart';
+part 'combatstate_condition_model.g.dart';
 
 @JsonSerializable()
 class CombatStateConditionModel {

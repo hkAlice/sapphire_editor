@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
-import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 
 class SetBgmPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
@@ -34,7 +33,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
   }
 
   Widget _generateIntInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: TextFormField(
         maxLines: 1,
@@ -64,7 +63,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
               pointData.bgmId = newParamValue;
               widget.onUpdate();
             }
-            catch(e) { }
+            catch(_) { }
 
             setState(() {
               

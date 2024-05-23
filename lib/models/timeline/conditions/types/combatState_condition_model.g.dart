@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'combatState_condition_model.dart';
+part of 'combatstate_condition_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

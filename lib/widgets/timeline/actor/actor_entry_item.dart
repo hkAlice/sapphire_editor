@@ -28,9 +28,8 @@ class _ActorEntryListState extends State<ActorEntryList> {
             value: i,
             groupValue: _currValue,
             onChanged: (newVal) {
-              if(newVal == null)
-                return;
-              
+              if(newVal == null) { return; }
+
               setState(() {
                 _currValue = newVal;
               });

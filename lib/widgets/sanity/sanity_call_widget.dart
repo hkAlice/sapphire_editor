@@ -29,7 +29,7 @@ class _SanityCallWidgetState extends State<SanityCallWidget> {
 }
 
 class _SanityCallDoneWidget extends StatelessWidget {
-  const _SanityCallDoneWidget({super.key});
+  const _SanityCallDoneWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +48,14 @@ class _SanityCallErrorWidget extends StatelessWidget {
   final int errCount;
   final int warnCount;
 
-  const _SanityCallErrorWidget({super.key, required this.errCount, required this.warnCount});
+  const _SanityCallErrorWidget({required this.errCount, required this.warnCount});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.warning_rounded),
-        SizedBox(width: 8.0,),
+        const Icon(Icons.warning_rounded),
+        const SizedBox(width: 8.0,),
         Text("$errCount errors, $warnCount warnings"),
       ]
     );
@@ -65,7 +65,7 @@ class _SanityCallErrorWidget extends StatelessWidget {
 class _SanityCallDialog extends StatelessWidget {
   final List<SanityItem> items;
   
-  const _SanityCallDialog({super.key, required this.items});
+  const _SanityCallDialog({required this.items});
 
   List<Widget> _buildWidgetList() {
     List<Widget> widgets = [];
@@ -75,7 +75,7 @@ class _SanityCallDialog extends StatelessWidget {
       
       widgets.add(ListTile(
         tileColor: isError ? Colors.red.shade900 : Colors.orange.shade900,
-        trailing: isError ? Icon(Icons.error) : Icon(Icons.warning),
+        trailing: isError ? const Icon(Icons.error) : const Icon(Icons.warning),
         title: Text(sanityItem.type),
         subtitle: Text(sanityItem.desc),
       ));

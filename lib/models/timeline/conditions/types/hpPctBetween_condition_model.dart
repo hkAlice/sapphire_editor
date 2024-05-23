@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'hpPctBetween_condition_model.g.dart';
+part 'hppctbetween_condition_model.g.dart';
 
 @JsonSerializable()
 class HPPctBetweenConditionModel {

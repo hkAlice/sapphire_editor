@@ -13,8 +13,8 @@ class AddGenericWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.add),
-          SizedBox(height: 36.0,),
+          const Icon(Icons.add),
+          const SizedBox(height: 36.0,),
           Text(text)
         ],
       ),

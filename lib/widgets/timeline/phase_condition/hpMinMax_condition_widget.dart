@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/conditions/types/hpPctBetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
@@ -12,7 +11,7 @@ class HPMinMaxConditionWidget extends StatefulWidget {
   final HPPctBetweenConditionModel paramData;
   final Function(HPPctBetweenConditionModel) onUpdate;
   
-  HPMinMaxConditionWidget({super.key, required this.timelineModel, required this.paramData, required this.onUpdate});
+  const HPMinMaxConditionWidget({super.key, required this.timelineModel, required this.paramData, required this.onUpdate});
 
   @override
   State<HPMinMaxConditionWidget> createState() => _HPMinMaxConditionWidgetState();
@@ -27,7 +26,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: 150,
           child: SimpleNumberField(
             label: "HP Min",
@@ -41,7 +40,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
             },
           )
         ),
-        Container(
+        SizedBox(
           width: 150,
           child: SimpleNumberField(
             label: "HP Max",
@@ -55,7 +54,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
             },
           )
         ),
-        Container(
+        SizedBox(
           width: 150,
           child: GenericItemPickerWidget<ActorModel>(
             label: "Actor",

@@ -42,7 +42,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
   }
 
   Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: TextFormField(
         maxLines: 1,
@@ -71,7 +71,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
               pointData.pos[0] = newParamValue;
               widget.onUpdate();
             }
-            catch(e) { }
+            catch(_) { }
 
             setState(() {
               
@@ -85,10 +85,10 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             double newParamValue = 0.0;
             try {
               newParamValue = double.tryParse(value) ?? 0;
-              pointData.pos![1] = newParamValue;
+              pointData.pos[1] = newParamValue;
               widget.onUpdate();
             }
-            catch(e) { }
+            catch(_) { }
 
             setState(() {
               
@@ -102,10 +102,10 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             double newParamValue = 0.0;
             try {
               newParamValue = double.tryParse(value) ?? 0;
-              pointData.pos![2] = newParamValue;
+              pointData.pos[2] = newParamValue;
               widget.onUpdate();
             }
-            catch(e) {}
+            catch(_) { }
 
             setState(() {
               
@@ -122,13 +122,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
               pointData.rot = newParamValue;
               widget.onUpdate();
             }
-            catch(e) {
-              // failed to parse, ignore
-              //return;
-            }
-
-            //_xPosTextEditingController.text = newParamValue.toString();
-            //_xPosTextEditingController.selection = TextSelection.collapsed(offset: _xPosTextEditingController.text.length);
+            catch(_) { }
 
             setState(() {
               
@@ -137,10 +131,10 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
         ),
         SwitchTextWidget(
           leading: const Text("Request Path"),
-          enabled: pointData.pathRequest!,
+          enabled: pointData.pathRequest,
           onPressed: () {
             setState(() {
-              pointData.pathRequest = !pointData.pathRequest!;
+              pointData.pathRequest = !pointData.pathRequest;
             });
             widget.onUpdate();
           }

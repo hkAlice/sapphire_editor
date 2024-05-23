@@ -8,8 +8,7 @@ import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/phase_condition/combatState_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/phase_condition/generic_condition_param.dart';
-import 'package:sapphire_editor/widgets/timeline/phase_condition/hpMinMax_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/phase_condition/hpminmax_condition_widget.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -122,7 +121,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 150,
                       child: GenericItemPickerWidget<ActorModel>(
                         label: "Target Actor",
@@ -158,8 +157,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         value: widget.phaseConditionModel.targetPhase,
                         isDense: true,
                         onChanged: (String? value) {
-                          if(value == null)
-                            return;
+                          if(value == null) { return; }
 
                           widget.phaseConditionModel.targetPhase = value;
                           setState(() {
@@ -182,8 +180,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         value: widget.phaseConditionModel.condition,
                         isDense: true,
                         onChanged: (PhaseConditionType? value) {
-                          if(value == null)
-                            return;
+                          if(value == null) { return; }
 
                           widget.phaseConditionModel.changeType(value);
                           setState(() {

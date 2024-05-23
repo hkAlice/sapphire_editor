@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
-import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 
 class LogMessagePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
@@ -37,7 +35,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
   }
 
   Widget _generateIntInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: TextFormField(
         maxLines: 1,
@@ -53,7 +51,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
   }
 
   Widget _generateStrSplitInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: TextFormField(
         maxLines: 1,
@@ -82,14 +80,14 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
               pointData.messageId = newParamValue;
               widget.onUpdate();
             }
-            catch(e) { }
+            catch(_) { }
 
             setState(() {
               
             });
           }
         ),
-        SizedBox(width: 18.0,),
+        const SizedBox(width: 18.0,),
         _generateStrSplitInput(
           textEditingController: _paramsTextEditingController,
           label: "Params (split by ,)",
@@ -99,7 +97,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
               pointData.params = listParams;
               widget.onUpdate();
             }
-            catch(e) { }
+            catch(_) { }
 
             setState(() {
               

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-
 import 'package:image_sequence_animator/image_sequence_animator.dart';
 
 class LoadingSpinner extends StatefulWidget {

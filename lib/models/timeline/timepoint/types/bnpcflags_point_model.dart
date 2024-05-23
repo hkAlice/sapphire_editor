@@ -18,13 +18,13 @@ class BNpcFlagsPointModel {
 // TODO: xdd
 // enum extensions are "cleaner", but also more than double the verbose + overhead of branching/LUT
 class BNpcFlag {
-  static const None               = 0x00;
-  static const Immobile           = 0x01;
-  static const TurningDisabled    = 0x02;
-  static const Invincible         = 0x04;
-  static const InvincibleRefill   = 0x08;
-  static const NoDeaggro          = 0x10;
-  static const Untargetable       = 0x20;
-  static const AutoAttackDisabled = 0x40;
-  static const Intermission       = 0x80;
+  static const none               = 0x00;
+  static const immobile           = 0x01;
+  static const turningDisabled    = 0x02;
+  static const invincible         = 0x04;
+  static const invincibleRefill   = 0x08;
+  static const noDeaggro          = 0x10;
+  static const untargetable       = 0x20;
+  static const autoAttackDisabled = 0x40;
+  static const intermission       = 0x80;
 }

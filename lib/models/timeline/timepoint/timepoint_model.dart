@@ -70,8 +70,6 @@ class TimepointModel {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
       }
     }
-
-    print(data);
   }
   
   Color getColorForTimepointType() {

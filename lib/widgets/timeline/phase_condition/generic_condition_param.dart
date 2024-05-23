@@ -15,8 +15,8 @@ class GenericConditionParam extends StatefulWidget {
 }
 
 class _GenericConditionParamState extends State<GenericConditionParam> {
-  List<TextEditingController> _paramTextControllers = [];
-  List<Widget> _paramWidgets = [];
+  final List<TextEditingController> _paramTextControllers = [];
+  final List<Widget> _paramWidgets = [];
   late PhaseConditionType _lastConditionType;
 
   @override
@@ -53,7 +53,7 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
       _paramTextControllers.add(paramTextController);
 
       _paramWidgets.add(
-        Container(
+        SizedBox(
           width: 150,
           child: TextFormField(
             maxLines: 1,
@@ -96,8 +96,9 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lastConditionType != widget.phaseConditionModel.condition)
+    if(_lastConditionType != widget.phaseConditionModel.condition) {
       _buildParamWidgets();
+    }
 
     return Row(
       children: _paramWidgets,
