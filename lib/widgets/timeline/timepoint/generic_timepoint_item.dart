@@ -4,7 +4,9 @@ import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/moveto_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
   final TimelinePhaseModel phaseModel;
@@ -22,16 +24,25 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   late TextEditingController _durationTextEditingController;
 
   Widget _generateTypedTimepoint() {
+    // todo: can also use cast type "is".. though slower
+    var timepointModel = widget.timepointModel;
+
+    onUpdate() {
+      widget.onUpdate(widget.timepointModel);
+    }
+
     switch(widget.timepointModel.type) {
       case TimepointType.idle:
-        return IdlePointWidget();
+        return const IdlePointWidget();
       case TimepointType.moveTo:
         return MoveToPointWidget(
-          timepointModel: widget.timepointModel,
-          onUpdate: () {
-            widget.onUpdate(widget.timepointModel);
-          },
+          timepointModel: timepointModel,
+          onUpdate: onUpdate,
         );
+      case TimepointType.setBGM:
+        return SetBgmPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.logMessage:
+        return LogMessagePointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }

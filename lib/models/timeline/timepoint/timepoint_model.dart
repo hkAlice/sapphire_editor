@@ -36,8 +36,11 @@ class TimepointModel {
     if(data is Map<String, dynamic>) {
       if(type == TimepointType.moveTo) {
         data = MoveToPointModel.fromJson(data);
-      } else {
+      } else if(type == TimepointType.idle) {
         data = IdlePointModel.fromJson(data);
+      }
+      else {
+        throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
       }
     }
 
@@ -49,12 +52,19 @@ class TimepointModel {
       case TimepointType.idle:
         return Colors.grey;
       case TimepointType.directorVar:
+      case TimepointType.directorSeq:
+      case TimepointType.directorFlags:
         return Colors.redAccent;
       case TimepointType.castAction:
         return Colors.orangeAccent;
       case TimepointType.moveTo:
         return Colors.blueGrey;
-      case TimepointType.actorFlags:
+      case TimepointType.setBGM:
+      case TimepointType.logMessage:
+      case TimepointType.battleTalk:
+        return Colors.green;
+      case TimepointType.bnpcFlags:
+      case TimepointType.spawnBNpc:
         return Colors.deepPurpleAccent;
       case TimepointType.setCondition:
         return Colors.brown;
@@ -71,14 +81,22 @@ enum TimepointType {
   castAction,
   @JsonValue("moveTo")
   moveTo,
+  @JsonValue("directorFlags")
+  directorFlags,
+  @JsonValue("directorSeq")
+  directorSeq,
   @JsonValue("directorVar")
   directorVar,
-  @JsonValue("actorFlags")
-  actorFlags,
+  @JsonValue("bnpcFlags")
+  bnpcFlags,
+  @JsonValue("spawnBNpc")
+  spawnBNpc,
   @JsonValue("logMessage")
   logMessage,
   @JsonValue("battleTalk")
   battleTalk,
+  @JsonValue("setBGM")
+  setBGM,
   @JsonValue("setCondition")
   setCondition
 }
