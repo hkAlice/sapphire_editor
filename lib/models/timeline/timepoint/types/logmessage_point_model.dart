@@ -7,11 +7,11 @@ class LogMessagePointModel {
   int messageId;
 
   @JsonKey(defaultValue: [0])
-  List<int> params;
+  List<int> params = [0];
 
-  LogMessagePointModel({required this.messageId, required this.params});
+  LogMessagePointModel({this.messageId = 0, required this.params});
 
   factory LogMessagePointModel.fromJson(Map<String, dynamic> json) => _$LogMessagePointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogMessagePointModelToJson(this);
-}
+} 

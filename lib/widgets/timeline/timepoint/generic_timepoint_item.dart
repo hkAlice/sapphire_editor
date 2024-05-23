@@ -165,6 +165,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                 )
               ],
             ),
+            Divider(),
             _generateTypedTimepoint()
           ],
         ),

@@ -58,7 +58,6 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
       child: TextFormField(
         maxLines: 1,
         controller: textEditingController,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           border: InputBorder.none,
           label: Text(label),
@@ -71,7 +70,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _generateIntInput(
           textEditingController: _logMsgTextEditingController,
@@ -90,6 +89,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
             });
           }
         ),
+        SizedBox(width: 18.0,),
         _generateStrSplitInput(
           textEditingController: _paramsTextEditingController,
           label: "Params (split by ,)",
