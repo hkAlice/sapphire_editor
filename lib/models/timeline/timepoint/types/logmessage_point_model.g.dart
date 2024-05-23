@@ -9,7 +9,7 @@ part of 'logmessage_point_model.dart';
 LogMessagePointModel _$LogMessagePointModelFromJson(
         Map<String, dynamic> json) =>
     LogMessagePointModel(
-      messageId: (json['messageId'] as num?)?.toInt() ?? 0,
+      messageId: (json['messageId'] as num?)?.toInt() ?? 409,
       params: (json['params'] as List<dynamic>?)
               ?.map((e) => (e as num).toInt())
               .toList() ??

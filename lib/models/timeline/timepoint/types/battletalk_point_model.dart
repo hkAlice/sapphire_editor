@@ -14,7 +14,7 @@ class BattleTalkPointModel {
   @JsonKey(defaultValue: [0])
   List<int> params = [0];
 
-  BattleTalkPointModel({this.handlerId = 0, this.talkerId = 0, this.kind = 0, this.nameId = 1, this.battleTalkId = 2939, required this.params});
+  BattleTalkPointModel({this.handlerId = 0, this.talkerId = 0, this.kind = 0, this.nameId = 2961, this.battleTalkId = 2939, required this.params});
 
   factory BattleTalkPointModel.fromJson(Map<String, dynamic> json) => _$BattleTalkPointModelFromJson(json);
 

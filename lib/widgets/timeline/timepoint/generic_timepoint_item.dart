@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
@@ -9,13 +10,15 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dar
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/moveto_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
+  final TimelineModel timelineModel;
   final TimelinePhaseModel phaseModel;
   final TimepointModel timepointModel;
   final Function(TimepointModel) onUpdate;
 
-  const GenericTimepointItem({super.key, required this.phaseModel, required this.timepointModel, required this.onUpdate});
+  const GenericTimepointItem({super.key, required this.timelineModel, required this.phaseModel, required this.timepointModel, required this.onUpdate});
 
   @override
   State<GenericTimepointItem> createState() => _GenericTimepointItemState();
@@ -28,6 +31,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   Widget _generateTypedTimepoint() {
     // todo: can also use cast type "is".. though slower
     var timepointModel = widget.timepointModel;
+    var timelineModel = widget.timelineModel;
 
     onUpdate() {
       widget.onUpdate(widget.timepointModel);
@@ -49,6 +53,8 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
         return BNpcFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.battleTalk:
         return BattleTalkPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.spawnBNpc:
+        return SpawnBNpcPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }
@@ -79,13 +85,13 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
           top: BorderSide(color: Colors.grey.shade800, width: 1.0)
         )
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -102,7 +108,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     isDense: true,
                     onChanged: (TimepointType? value) {
                       if(value == null) { return; }
-
+            
                       widget.timepointModel.changeType(value);
                       
                       setState(() {
@@ -170,10 +176,14 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                 )
               ],
             ),
-            const Divider(),
-            _generateTypedTimepoint()
-          ],
-        ),
+          ),
+          const Divider(height: 1.0,),
+          Container(
+            color: Theme.of(context).canvasColor,
+            padding: const EdgeInsets.all(8.0),
+            child: _generateTypedTimepoint(),
+          )
+        ],
       ),
     );
   }

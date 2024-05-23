@@ -12,7 +12,7 @@ BattleTalkPointModel _$BattleTalkPointModelFromJson(
       handlerId: (json['handlerId'] as num?)?.toInt() ?? 0,
       talkerId: (json['talkerId'] as num?)?.toInt() ?? 0,
       kind: (json['kind'] as num?)?.toInt() ?? 0,
-      nameId: (json['nameId'] as num?)?.toInt() ?? 1,
+      nameId: (json['nameId'] as num?)?.toInt() ?? 2961,
       battleTalkId: (json['battleTalkId'] as num?)?.toInt() ?? 2939,
       params: (json['params'] as List<dynamic>?)
               ?.map((e) => (e as num).toInt())

@@ -4,13 +4,13 @@ part 'spawnbnpc_point_model.g.dart';
 
 @JsonSerializable()
 class SpawnBNpcPointModel {
-  String targetActor;
-  
+  String spawnActor;
   int flags;
+  HateSourceModel? hateSource;
 
-  HateSourceModel hateSource;
-
-  SpawnBNpcPointModel({required this.targetActor, required this.flags, required this.hateSource});
+  SpawnBNpcPointModel({this.spawnActor = "<unknown>", this.flags = 0, this.hateSource}) {
+    hateSource ??= HateSourceModel();
+  }
 
   factory SpawnBNpcPointModel.fromJson(Map<String, dynamic> json) => _$SpawnBNpcPointModelFromJson(json);
 
@@ -20,10 +20,9 @@ class SpawnBNpcPointModel {
 @JsonSerializable()
 class HateSourceModel {
   String hateType;
-  
   String source;
 
-  HateSourceModel({required this.hateType, required this.source});
+  HateSourceModel({this.hateType = "<to-be-defined>", this.source = "<to-de-befined>"});
 
   factory HateSourceModel.fromJson(Map<String, dynamic> json) => _$HateSourceModelFromJson(json);
 

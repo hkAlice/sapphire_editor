@@ -8,24 +8,26 @@ part of 'spawnbnpc_point_model.dart';
 
 SpawnBNpcPointModel _$SpawnBNpcPointModelFromJson(Map<String, dynamic> json) =>
     SpawnBNpcPointModel(
-      targetActor: json['targetActor'] as String,
-      flags: (json['flags'] as num).toInt(),
-      hateSource:
-          HateSourceModel.fromJson(json['hateSource'] as Map<String, dynamic>),
+      spawnActor: json['spawnActor'] as String? ?? "<unknown>",
+      flags: (json['flags'] as num?)?.toInt() ?? 0,
+      hateSource: json['hateSource'] == null
+          ? null
+          : HateSourceModel.fromJson(
+              json['hateSource'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SpawnBNpcPointModelToJson(
         SpawnBNpcPointModel instance) =>
     <String, dynamic>{
-      'targetActor': instance.targetActor,
+      'spawnActor': instance.spawnActor,
       'flags': instance.flags,
       'hateSource': instance.hateSource,
     };
 
 HateSourceModel _$HateSourceModelFromJson(Map<String, dynamic> json) =>
     HateSourceModel(
-      hateType: json['hateType'] as String,
-      source: json['source'] as String,
+      hateType: json['hateType'] as String? ?? "<to-be-defined>",
+      source: json['source'] as String? ?? "<to-de-befined>",
     );
 
 Map<String, dynamic> _$HateSourceModelToJson(HateSourceModel instance) =>
