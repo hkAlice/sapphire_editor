@@ -7,8 +7,8 @@ import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/phase_condition/combatstate_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/phase_condition/hpminmax_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;

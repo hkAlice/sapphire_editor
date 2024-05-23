@@ -4,7 +4,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/actor/actor_entry_item.dart';
-import 'package:sapphire_editor/widgets/timeline/phase_condition/phase_condition_item.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 
 class TimelineList extends StatefulWidget {
@@ -18,26 +18,21 @@ class TimelineList extends StatefulWidget {
 
 class _TimelineListState extends State<TimelineList> {
   late TextEditingController _nameTextEditingController;
-  late ActorModel _selectedActor;
+  int _selectedActor = 0;
 
   @override
   void initState() {
     _nameTextEditingController = TextEditingController(text: widget.timeline.name);
 
-    _selectedActor = widget.timeline.actors.first;
-
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    print('didChangeDependencies');
-    print(Theme.of(context));           // OK
-    super.didChangeDependencies();
+  ActorModel _getCurrentActor() {
+    return widget.timeline.actors[_selectedActor];
   }
 
   void _addNewPhase() {
-    widget.timeline.addNewPhase(_selectedActor);
+    widget.timeline.addNewPhase(_getCurrentActor());
     setState(() {
       
     });
@@ -104,7 +99,7 @@ class _TimelineListState extends State<TimelineList> {
         ActorEntryList(
           actors: widget.timeline.actors,
           onChanged: (currActor) {
-            _selectedActor = currActor;
+            _selectedActor = widget.timeline.actors.indexOf(currActor);
             setState(() {
               
             });
@@ -121,20 +116,20 @@ class _TimelineListState extends State<TimelineList> {
               if(newindex > oldindex) {
                 newindex -= 1;
               }
-              final items = _selectedActor.phases.removeAt(oldindex);
-              _selectedActor.phases.insert(newindex, items);
+              final items = _getCurrentActor().phases.removeAt(oldindex);
+              _getCurrentActor().phases.insert(newindex, items);
             });
 
             widget.onUpdate(widget.timeline);
           },
-          itemCount: _selectedActor.phases.length,
+          itemCount: _getCurrentActor().phases.length,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, i) {
             return TimelinePhaseItem(
-              key: Key("phase_${_selectedActor.phases[i].hashCode}"),
+              key: Key("phase_${_getCurrentActor().phases[i].hashCode}"),
               index: i,
-              phaseModel: _selectedActor.phases[i],
+              phaseModel: _getCurrentActor().phases[i],
               onUpdate: (phaseModel) {
                 widget.onUpdate(widget.timeline);
               },
