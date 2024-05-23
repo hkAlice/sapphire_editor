@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
@@ -46,6 +47,8 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
         return LogMessagePointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.bNpcFlags:
         return BNpcFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.battleTalk:
+        return BattleTalkPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }

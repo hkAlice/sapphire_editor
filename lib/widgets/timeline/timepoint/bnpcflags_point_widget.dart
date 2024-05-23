@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 
 class BNpcFlagsPointWidget extends StatefulWidget {

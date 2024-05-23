@@ -29,6 +29,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
 
   @override
   void dispose() {
+    _logMsgTextEditingController.dispose();
     _paramsTextEditingController.dispose();
 
     super.dispose();
