@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
@@ -31,7 +32,7 @@ class _SpawnBNpcPointWidgetState extends State<SpawnBNpcPointWidget> {
             children: [
               Row(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 150,
                     child: GenericItemPickerWidget<ActorModel>(
                       label: "Actor",

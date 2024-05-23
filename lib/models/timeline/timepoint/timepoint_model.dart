@@ -10,6 +10,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/moveto_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/spawnbnpc_point_model.dart';
 
 part 'timepoint_model.g.dart';
@@ -58,13 +59,15 @@ class TimepointModel {
       } else if(type == TimepointType.bNpcFlags) {
         data = BNpcFlagsPointModel.fromJson(data);
       } else if(type == TimepointType.castAction) {
-        data = CastActionModel.fromJson(data);
+        data = CastActionPointModel.fromJson(data);
       } else if(type == TimepointType.directorFlags) {
         data = DirectorFlagsPointModel.fromJson(data);
       } else if(type == TimepointType.directorSeq) {
         data = DirectorSeqPointModel.fromJson(data);
       } else if(type == TimepointType.directorVar) {
         data = DirectorVarPointModel.fromJson(data);
+      } else if(type == TimepointType.setCondition) {
+        data = SetConditionPointModel.fromJson(data);
       }
       else {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");

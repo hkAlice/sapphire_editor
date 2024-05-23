@@ -15,7 +15,7 @@ class TimelineSanitySvc {
   }
 
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
-    bool hasCombatPhaseCondition = timeline.phaseConditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
+    bool hasCombatPhaseCondition = timeline.conditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
 
     List<String> actorNameList = [];
     List<int> layoutIdList = [];
@@ -39,7 +39,7 @@ class TimelineSanitySvc {
     actorNameList.where((e) => actorNameList.where((element) => element == e).length > 1).toSet().toList();
     layoutIdList.where((e) => layoutIdList.where((element) => element == e).length > 1).toSet().toList();
 
-    if(timeline.phaseConditions.isEmpty) {
+    if(timeline.conditions.isEmpty) {
       items.add(const SanityItem(SanitySeverity.error, "StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions."));
     }
 
@@ -58,8 +58,8 @@ class TimelineSanitySvc {
 
     {
       // check if last phase in actor loops and has end scenario
-      if(timeline.phaseConditions.isNotEmpty && !timeline.phaseConditions.last.loop) {
-        items.add(SanityItem(SanitySeverity.warning, "MissingTailPhaseClosure", "Last phase ${timeline.phaseConditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase."));
+      if(timeline.conditions.isNotEmpty && !timeline.conditions.last.loop) {
+        items.add(SanityItem(SanitySeverity.warning, "MissingTailPhaseClosure", "Last phase ${timeline.conditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase."));
       }
 
       // check if timeline has on combat check

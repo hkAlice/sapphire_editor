@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
+import 'package:sapphire_editor/widgets/simple_number_field.dart';
 
 class SetBgmPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
@@ -31,44 +31,21 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
 
     super.dispose();
   }
-
-  Widget _generateIntInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return SizedBox(
-      width: 150,
-      child: TextFormField(
-        maxLines: 1,
-        controller: textEditingController,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          label: Text(label),
-        ),
-        onChanged: (value) { onChanged(value); }
-      ),
-    );
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _generateIntInput(
-          textEditingController: _bgmTextEditingController,
-          label: "BGM ID",
-          onChanged: (value) {
-            int newParamValue = 0;
-            try {
-              newParamValue = int.tryParse(value) ?? 0;
-              pointData.bgmId = newParamValue;
+        SizedBox(
+          width: 150,
+          child: SimpleNumberField(
+            label: "BGM ID",
+            initialValue: pointData.bgmId,
+            onChanged: (value) {
+              pointData.bgmId = value;
               widget.onUpdate();
             }
-            catch(_) { }
-
-            setState(() {
-              
-            });
-          }
+          ),
         ),
       ],
     );

@@ -4,12 +4,12 @@ part 'directorvar_point_model.g.dart';
 
 @JsonSerializable()
 class DirectorVarPointModel {
-  String opc;
+  DirectorOpcode opc;
   
   int idx;
   int val;
 
-  DirectorVarPointModel({required this.opc, required this.idx, required this.val});
+  DirectorVarPointModel({this.opc = DirectorOpcode.set, this.idx = 0, this.val = 1});
 
   factory DirectorVarPointModel.fromJson(Map<String, dynamic> json) => _$DirectorVarPointModelFromJson(json);
 
@@ -18,16 +18,28 @@ class DirectorVarPointModel {
 
 // assume immediate for all opcodes
 enum DirectorOpcode {
+  @JsonValue("set")
   set, // idx  = val
+  @JsonValue("add")
   add, // idx += val
+  @JsonValue("sub")
   sub, // idx -= val
+  @JsonValue("mul")
   mul, // idx *= val
+  @JsonValue("div")
   div, // idx /= val
+  @JsonValue("mod")
   mod, // idx %= val
-  sll, // idx << val
-  srl, // idx >> val
+  @JsonValue("or")
   or,  // idx |= val
+  @JsonValue("xor")
   xor, // idx ^= val
+  @JsonValue("nor")
   nor, // idx ~= val
-  and  // idx &= val
+  @JsonValue("and")
+  and,  // idx &= val
+  @JsonValue("sll")
+  sll, // idx << val
+  @JsonValue("srl")
+  srl // idx >> val
 }

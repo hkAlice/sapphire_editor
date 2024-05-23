@@ -12,15 +12,14 @@ class TimelineModel {
   final int version = TimelineModel.VERSION_MODEL;
 
   List<ActorModel> actors;
-  List<PhaseConditionModel> phaseConditions;
-  //List<TimelinePhaseModel> phases;
+  List<PhaseConditionModel> conditions;
 
   TimelineModel({
     required this.name,
     phaseList,
     conditionList,
     actorList,
-  }) : phaseConditions = conditionList ?? [], actors = actorList ?? [];
+  }) : conditions = conditionList ?? [], actors = actorList ?? [];
 
   static const VERSION_MODEL = 3;
 
@@ -56,6 +55,7 @@ class TimelineModel {
 
   PhaseConditionModel addNewCondition([PhaseConditionModel? condition]) {
     condition ??= PhaseConditionModel(
+      id: conditions.length + 1,
       condition: PhaseConditionType.combatState,
       paramData: CombatStateConditionModel(combatState: ActorCombatState.combat, sourceActor: actors.first.name),
       targetActor: actors.first.name,
@@ -64,7 +64,7 @@ class TimelineModel {
       loop: true,
     );
 
-    phaseConditions.add(condition);
+    conditions.add(condition);
 
     return condition;
   }

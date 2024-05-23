@@ -8,6 +8,7 @@ part 'phase_conditions_model.g.dart';
 // todo: wish generics would work well here instead of infinite cast for paramData
 @JsonSerializable()
 class PhaseConditionModel {
+  int id;
   String? description;
   PhaseConditionType condition;
   dynamic paramData = {};
@@ -18,6 +19,7 @@ class PhaseConditionModel {
   String? targetPhase;
 
   PhaseConditionModel({
+    required this.id,
     required this.condition,
     required this.loop,
     this.paramData,

@@ -6,10 +6,15 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/directorflags_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/directorseq_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/directorvar_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/moveto_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/setcondition_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
@@ -41,10 +46,9 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
       case TimepointType.idle:
         return const IdlePointWidget();
       case TimepointType.moveTo:
-        return MoveToPointWidget(
-          timepointModel: timepointModel,
-          onUpdate: onUpdate,
-        );
+        return MoveToPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.castAction:
+        return CastActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.setBGM:
         return SetBgmPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.logMessage:
@@ -55,6 +59,14 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
         return BattleTalkPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.spawnBNpc:
         return SpawnBNpcPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.directorFlags:
+        return DirectorFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.directorSeq:
+        return DirectorSeqPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.directorVar:
+        return DirectorVarPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.setCondition:
+        return SetConditionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }

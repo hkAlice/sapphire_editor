@@ -35,8 +35,8 @@ class _SimpleNumberFieldState extends State<SimpleNumberField> {
   Widget build(BuildContext context) {
     return TextFormField(
         maxLines: 1,
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
+        keyboardType: widget.isHex ? TextInputType.text : TextInputType.number,
+        inputFormatters: widget.isHex ? null : <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
         ],
         controller: _controller,

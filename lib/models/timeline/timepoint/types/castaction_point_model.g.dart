@@ -6,14 +6,16 @@ part of 'castaction_point_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CastActionModel _$CastActionModelFromJson(Map<String, dynamic> json) =>
-    CastActionModel(
-      targetActor: json['targetActor'] as String,
-      actionId: (json['actionId'] as num).toInt(),
+CastActionPointModel _$CastActionPointModelFromJson(
+        Map<String, dynamic> json) =>
+    CastActionPointModel(
+      sourceActor: json['sourceActor'] as String? ?? "<unknown>",
+      actionId: (json['actionId'] as num?)?.toInt() ?? 6116,
     );
 
-Map<String, dynamic> _$CastActionModelToJson(CastActionModel instance) =>
+Map<String, dynamic> _$CastActionPointModelToJson(
+        CastActionPointModel instance) =>
     <String, dynamic>{
-      'targetActor': instance.targetActor,
+      'sourceActor': instance.sourceActor,
       'actionId': instance.actionId,
     };

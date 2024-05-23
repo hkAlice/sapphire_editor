@@ -3,14 +3,13 @@ import 'package:json_annotation/json_annotation.dart';
 part 'castaction_point_model.g.dart';
 
 @JsonSerializable()
-class CastActionModel {
-  String targetActor;
-  
+class CastActionPointModel {
+  String sourceActor;
   int actionId;
 
-  CastActionModel({required this.targetActor, required this.actionId});
+  CastActionPointModel({this.sourceActor = "<unknown>", this.actionId = 6116});
 
-  factory CastActionModel.fromJson(Map<String, dynamic> json) => _$CastActionModelFromJson(json);
+  factory CastActionPointModel.fromJson(Map<String, dynamic> json) => _$CastActionPointModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CastActionModelToJson(this);
+  Map<String, dynamic> toJson() => _$CastActionPointModelToJson(this);
 }

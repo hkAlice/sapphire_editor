@@ -103,7 +103,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                widget.timelineModel.phaseConditions.removeAt(widget.index);
+                widget.timelineModel.conditions.removeAt(widget.index);
                 widget.onUpdate(widget.phaseConditionModel);
               },
             ),

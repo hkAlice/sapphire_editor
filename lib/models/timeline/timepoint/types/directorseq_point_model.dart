@@ -1,14 +1,15 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/directorvar_point_model.dart';
 
 part 'directorseq_point_model.g.dart';
 
 @JsonSerializable()
 class DirectorSeqPointModel {
-  String opc;
+  DirectorOpcode opc;
 
   int val;
 
-  DirectorSeqPointModel({required this.opc, required this.val});
+  DirectorSeqPointModel({this.opc = DirectorOpcode.set, this.val = 1});
 
   factory DirectorSeqPointModel.fromJson(Map<String, dynamic> json) => _$DirectorSeqPointModelFromJson(json);
 

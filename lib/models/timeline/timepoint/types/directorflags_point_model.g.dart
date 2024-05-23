@@ -9,13 +9,29 @@ part of 'directorflags_point_model.dart';
 DirectorFlagsPointModel _$DirectorFlagsPointModelFromJson(
         Map<String, dynamic> json) =>
     DirectorFlagsPointModel(
-      opc: json['opc'] as String,
-      val: (json['val'] as num).toInt(),
+      opc: $enumDecodeNullable(_$DirectorOpcodeEnumMap, json['opc']) ??
+          DirectorOpcode.set,
+      val: (json['val'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$DirectorFlagsPointModelToJson(
         DirectorFlagsPointModel instance) =>
     <String, dynamic>{
-      'opc': instance.opc,
+      'opc': _$DirectorOpcodeEnumMap[instance.opc]!,
       'val': instance.val,
     };
+
+const _$DirectorOpcodeEnumMap = {
+  DirectorOpcode.set: 'set',
+  DirectorOpcode.add: 'add',
+  DirectorOpcode.sub: 'sub',
+  DirectorOpcode.mul: 'mul',
+  DirectorOpcode.div: 'div',
+  DirectorOpcode.mod: 'mod',
+  DirectorOpcode.or: 'or',
+  DirectorOpcode.xor: 'xor',
+  DirectorOpcode.nor: 'nor',
+  DirectorOpcode.and: 'and',
+  DirectorOpcode.sll: 'sll',
+  DirectorOpcode.srl: 'srl',
+};

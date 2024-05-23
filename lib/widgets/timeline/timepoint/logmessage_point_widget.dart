@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
+import 'package:sapphire_editor/widgets/simple_number_field.dart';
 
 class LogMessagePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
@@ -35,22 +35,6 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
     super.dispose();
   }
 
-  Widget _generateIntInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
-    return SizedBox(
-      width: 150,
-      child: TextFormField(
-        maxLines: 1,
-        controller: textEditingController,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          label: Text(label),
-        ),
-        onChanged: (value) { onChanged(value); }
-      ),
-    );
-  }
-
   Widget _generateStrSplitInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
     return SizedBox(
       width: 150,
@@ -71,22 +55,16 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _generateIntInput(
-          textEditingController: _logMsgTextEditingController,
-          label: "Message ID",
-          onChanged: (value) {
-            int newParamValue = 0;
-            try {
-              newParamValue = int.tryParse(value) ?? 0;
-              pointData.messageId = newParamValue;
+        SizedBox(
+          width: 150,
+          child: SimpleNumberField(
+            label: "Message ID",
+            initialValue: pointData.messageId,
+            onChanged: (value) {
+              pointData.messageId = value;
               widget.onUpdate();
             }
-            catch(_) { }
-
-            setState(() {
-              
-            });
-          }
+          ),
         ),
         const SizedBox(width: 18.0,),
         _generateStrSplitInput(

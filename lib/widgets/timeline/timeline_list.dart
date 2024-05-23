@@ -74,20 +74,20 @@ class _TimelineListState extends State<TimelineList> {
               if(newindex > oldindex) {
                 newindex -= 1;
               }
-              final items = widget.timeline.phaseConditions.removeAt(oldindex);
-              widget.timeline.phaseConditions.insert(newindex, items);
+              final items = widget.timeline.conditions.removeAt(oldindex);
+              widget.timeline.conditions.insert(newindex, items);
               widget.onUpdate(widget.timeline);
             });
           },
-          itemCount: widget.timeline.phaseConditions.length,
+          itemCount: widget.timeline.conditions.length,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, i) {
             return PhaseConditionItem(
-              key: Key("condition_${widget.timeline.phaseConditions[i].hashCode}"),
+              key: Key("condition_${widget.timeline.conditions[i].hashCode}"),
               index: i,
               timelineModel: widget.timeline,
-              phaseConditionModel: widget.timeline.phaseConditions[i],
+              phaseConditionModel: widget.timeline.conditions[i],
               onUpdate: (phaseConditionModel) {
                 widget.onUpdate(widget.timeline);
               },

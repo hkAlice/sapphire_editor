@@ -8,6 +8,7 @@ part of 'phase_conditions_model.dart';
 
 PhaseConditionModel _$PhaseConditionModelFromJson(Map<String, dynamic> json) =>
     PhaseConditionModel(
+      id: (json['id'] as num).toInt(),
       condition: $enumDecode(_$PhaseConditionTypeEnumMap, json['condition']),
       loop: json['loop'] as bool,
       paramData: json['paramData'],
@@ -20,6 +21,7 @@ PhaseConditionModel _$PhaseConditionModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PhaseConditionModelToJson(
         PhaseConditionModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'description': instance.description,
       'condition': _$PhaseConditionTypeEnumMap[instance.condition]!,
       'paramData': instance.paramData,
