@@ -29,7 +29,7 @@ const _$TimepointTypeEnumMap = {
   TimepointType.directorFlags: 'directorFlags',
   TimepointType.directorSeq: 'directorSeq',
   TimepointType.directorVar: 'directorVar',
-  TimepointType.bnpcFlags: 'bnpcFlags',
+  TimepointType.bNpcFlags: 'bNpcFlags',
   TimepointType.spawnBNpc: 'spawnBNpc',
   TimepointType.logMessage: 'logMessage',
   TimepointType.battleTalk: 'battleTalk',

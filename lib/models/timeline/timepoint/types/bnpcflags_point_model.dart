@@ -8,7 +8,7 @@ class BNpcFlagsPointModel {
 
   int flags;
 
-  BNpcFlagsPointModel({required this.targetActor, required this.flags});
+  BNpcFlagsPointModel({this.targetActor = "", this.flags = 0});
 
   factory BNpcFlagsPointModel.fromJson(Map<String, dynamic> json) => _$BNpcFlagsPointModelFromJson(json);
 
@@ -17,7 +17,7 @@ class BNpcFlagsPointModel {
 
 // TODO: xdd
 // enum extensions are "cleaner", but also more than double the verbose + overhead of branching/LUT
-class BNpcFlag {
+class BNpcFlags {
   static const none               = 0x00;
   static const immobile           = 0x01;
   static const turningDisabled    = 0x02;

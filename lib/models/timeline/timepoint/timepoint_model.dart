@@ -55,7 +55,7 @@ class TimepointModel {
         data = BattleTalkPointModel.fromJson(data);
       } else if(type == TimepointType.spawnBNpc) {
         data = SpawnBNpcPointModel.fromJson(data);
-      } else if(type == TimepointType.bnpcFlags) {
+      } else if(type == TimepointType.bNpcFlags) {
         data = BNpcFlagsPointModel.fromJson(data);
       } else if(type == TimepointType.castAction) {
         data = CastActionModel.fromJson(data);
@@ -88,7 +88,7 @@ class TimepointModel {
       case TimepointType.logMessage:
       case TimepointType.battleTalk:
         return Colors.green;
-      case TimepointType.bnpcFlags:
+      case TimepointType.bNpcFlags:
       case TimepointType.spawnBNpc:
         return Colors.deepPurpleAccent;
       case TimepointType.setCondition:
@@ -112,8 +112,8 @@ enum TimepointType {
   directorSeq,
   @JsonValue("directorVar")
   directorVar,
-  @JsonValue("bnpcFlags")
-  bnpcFlags,
+  @JsonValue("bNpcFlags")
+  bNpcFlags,
   @JsonValue("spawnBNpc")
   spawnBNpc,
   @JsonValue("logMessage")

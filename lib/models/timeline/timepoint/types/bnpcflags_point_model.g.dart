@@ -8,8 +8,8 @@ part of 'bnpcflags_point_model.dart';
 
 BNpcFlagsPointModel _$BNpcFlagsPointModelFromJson(Map<String, dynamic> json) =>
     BNpcFlagsPointModel(
-      targetActor: json['targetActor'] as String,
-      flags: (json['flags'] as num).toInt(),
+      targetActor: json['targetActor'] as String? ?? "",
+      flags: (json['flags'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$BNpcFlagsPointModelToJson(

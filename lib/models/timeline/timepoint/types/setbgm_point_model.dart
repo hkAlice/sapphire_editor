@@ -6,7 +6,7 @@ part 'setbgm_point_model.g.dart';
 class SetBgmPointModel {
   int bgmId;
 
-  SetBgmPointModel({required this.bgmId});
+  SetBgmPointModel({this.bgmId = 163});
 
   factory SetBgmPointModel.fromJson(Map<String, dynamic> json) => _$SetBgmPointModelFromJson(json);
 

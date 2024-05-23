@@ -4,8 +4,9 @@ class SwitchTextWidget extends StatefulWidget {
   final bool enabled;
   final Function() onPressed;
   final Widget? leading;
+  final (String onStr, String offStr) toggleText;
 
-  const SwitchTextWidget({super.key, required this.enabled, required this.onPressed, this.leading});
+  const SwitchTextWidget({super.key, required this.enabled, required this.onPressed, this.leading, this.toggleText = ("ON", "OFF")});
 
   @override
   State<SwitchTextWidget> createState() => _SwitchTextWidgetState();
@@ -17,16 +18,17 @@ class _SwitchTextWidgetState extends State<SwitchTextWidget> {
     return TextButton(
       onPressed: () { widget.onPressed(); } ,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container( 
             margin: widget.leading == null ? null : const EdgeInsets.only(right: 8.0),
             child: widget.leading,
           ),
           SizedBox(
-            width: 28,
+            width: 32,
             child: Center(
               child: widget.enabled ? Text(
-                  "On".toUpperCase(), style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  widget.toggleText.$1, style: Theme.of(context).textTheme.bodyMedium!.apply(
                     fontWeightDelta: 1,
                     color: const Color(0xFFE1EBD3),
                     shadows: <Shadow>[
@@ -39,7 +41,7 @@ class _SwitchTextWidgetState extends State<SwitchTextWidget> {
                   )
                 )
                 : Text(
-                  "Off".toUpperCase(), style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  widget.toggleText.$2, style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Colors.grey,
                     fontWeightDelta: 1,
                     shadows: <Shadow>[
