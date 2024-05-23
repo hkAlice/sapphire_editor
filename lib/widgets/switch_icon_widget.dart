@@ -4,7 +4,7 @@ class SwitchIconWidget extends StatefulWidget {
   final bool enabled;
   final Function() onPressed;
   final IconData icon;
-  SwitchIconWidget({super.key, required this.enabled, required this.onPressed, required this.icon});
+  const SwitchIconWidget({super.key, required this.enabled, required this.onPressed, required this.icon});
 
   @override
   State<SwitchIconWidget> createState() => _SwitchIconWidgetState();
