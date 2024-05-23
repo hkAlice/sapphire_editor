@@ -30,8 +30,6 @@ class TimelineModel {
 
   // todo: move this to timelinesvc ideally
   ActorModel addNewActor() {
-    // todo: enable adding phases to other actors
-
     var newActor = ActorModel(
       id: actors.length + 1,
       hp: 0xFF14,

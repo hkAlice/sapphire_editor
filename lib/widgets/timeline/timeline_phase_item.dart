@@ -58,7 +58,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         shape: const Border(),
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
-        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint ${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}"),
+        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}"),
         trailing: Text(_calcDuration()),
         children: [
           for(var point in widget.phaseModel.timepoints)

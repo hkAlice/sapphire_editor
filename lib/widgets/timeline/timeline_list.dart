@@ -29,6 +29,13 @@ class _TimelineListState extends State<TimelineList> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    print('didChangeDependencies');
+    print(Theme.of(context));           // OK
+    super.didChangeDependencies();
+  }
+
   void _addNewPhase() {
     widget.timeline.addNewPhase(_selectedActor);
     setState(() {
