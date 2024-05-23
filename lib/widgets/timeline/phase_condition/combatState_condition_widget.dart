@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/conditions/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';

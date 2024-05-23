@@ -1,6 +1,6 @@
 // todo: ideally this would be a service and handle everything timeline based (adding, etc)
 import 'package:collection/collection.dart';
-import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 
 class TimelineSanitySvc {

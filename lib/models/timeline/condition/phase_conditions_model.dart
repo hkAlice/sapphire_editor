@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sapphire_editor/models/timeline/conditions/types/combatstate_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/conditions/types/hpPctBetween_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'phase_conditions_model.g.dart';

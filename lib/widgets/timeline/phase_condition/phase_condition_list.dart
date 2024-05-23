@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 
 class PhaseConditionList extends StatefulWidget {
   final PhaseConditionModel phaseConditionsModel;

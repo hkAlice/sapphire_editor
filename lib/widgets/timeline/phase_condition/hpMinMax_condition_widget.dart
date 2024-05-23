@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/conditions/types/hpPctBetween_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';

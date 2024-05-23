@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sapphire_editor/models/timeline/conditions/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 
 // TODO: a class of object for each param eg. <Label, isHex, InputType (Actor, Phase, etc)>
 class GenericConditionParam extends StatefulWidget {
