@@ -33,6 +33,17 @@ class _ActorEntryListState extends State<ActorEntryList> {
       children: [
         GenericSearchPickerWidget(
           items: widget.actors,
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Icon(Icons.search),
+              ),
+              Image.asset("assets/images/icon_trials_rounded.png", width: 24.0,),
+              const SizedBox(width: 8.0),
+            ],
+          ),
           onChanged: (value) {
             if(value == null) {
               return;
