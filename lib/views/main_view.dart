@@ -27,11 +27,7 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageViewController,
-        onPageChanged: (i) => _onTabTapped(i),
-        children: _navChildren,
-      ),
+      body: _navChildren[_tabIndex],
       extendBody: true,
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
@@ -39,7 +35,7 @@ class _MainViewState extends State<MainView> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         onTap: (i) {
-          _pageViewController.jumpToPage(i);
+          _onTabTapped(i);
         },
         currentIndex: _tabIndex,
         items: [

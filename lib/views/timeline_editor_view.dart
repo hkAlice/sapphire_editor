@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_text_field/json_text_field.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/utils/timeline_sanity.dart';
@@ -63,9 +64,21 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
 
   @override
   void initState() {
-    _timeline.addNewActor();
-    _timeline.addNewActor();
-    _timeline.addNewActor();
+    _timeline.addNewActor(
+      bnpcName: "Ifrit",
+      layoutId: 4126276,
+      hp: 13884
+    );
+    _timeline.addNewActor(
+      bnpcName: "Ifrit Control",
+      layoutId: 4126284,
+      hp: 445
+    );
+    _timeline.addNewActor(
+      bnpcName: "Ifrit Nail 1",
+      layoutId: 4126285,
+      hp: 445
+    );
     _timeline.addNewPhase(_timeline.actors.first);
     _timeline.addNewCondition();
 

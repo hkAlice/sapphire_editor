@@ -28,18 +28,18 @@ class TimelineModel {
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
 
   // todo: move this to timelinesvc ideally
-  ActorModel addNewActor() {
-    var newActor = ActorModel(
+  ActorModel addNewActor({String bnpcName = "Unknown", int layoutId = 0, int hp = 0xFF14}) {
+    var actorModel = ActorModel(
       id: actors.length + 1,
-      hp: 0xFF14,
-      layoutId: 4126276,
-      name: "Ifrit ${actors.length + 1}",
+      hp: hp,
+      layoutId: layoutId,
+      name: bnpcName,
       type: "bnpc",
     );
 
-    actors.add(newActor);
+    actors.add(actorModel);
 
-    return newActor;
+    return actorModel;
   }
 
   // todo: move this to timelinesvc ideally

@@ -12,9 +12,12 @@ ActorModel _$ActorModelFromJson(Map<String, dynamic> json) => ActorModel(
       type: json['type'] as String,
       layoutId: (json['layoutId'] as num).toInt(),
       hp: (json['hp'] as num).toInt(),
-    )..phases = (json['phases'] as List<dynamic>)
-        .map((e) => TimelinePhaseModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    )
+      ..phases = (json['phases'] as List<dynamic>)
+          .map((e) => TimelinePhaseModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..subactors =
+          (json['subactors'] as List<dynamic>).map((e) => e as String).toList();
 
 Map<String, dynamic> _$ActorModelToJson(ActorModel instance) =>
     <String, dynamic>{
@@ -24,4 +27,5 @@ Map<String, dynamic> _$ActorModelToJson(ActorModel instance) =>
       'layoutId': instance.layoutId,
       'hp': instance.hp,
       'phases': instance.phases,
+      'subactors': instance.subactors,
     };

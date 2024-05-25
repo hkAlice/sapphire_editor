@@ -11,6 +11,7 @@ class ActorModel {
   int layoutId;
   int hp;
   List<TimelinePhaseModel> phases;
+  List<String> subactors;
 
   ActorModel({
     required this.id,
@@ -18,8 +19,9 @@ class ActorModel {
     required this.type,
     required this.layoutId,
     required this.hp,
-    phaseList,
-  }) : phases = phaseList ?? [];
+    subactorsList,
+    phasesList,
+  }) : phases = phasesList ?? [], subactors = subactorsList ?? [];
 
   factory ActorModel.fromJson(Map<String, dynamic> json) => _$ActorModelFromJson(json);
 

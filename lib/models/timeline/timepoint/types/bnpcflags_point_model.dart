@@ -26,5 +26,5 @@ class BNpcFlags {
   static const noDeaggro          = 0x10;
   static const untargetable       = 0x20;
   static const autoAttackDisabled = 0x40;
-  static const intermission       = 0x80;
+  static const intermission       = 0x77;
 }
