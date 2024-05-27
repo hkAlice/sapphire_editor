@@ -97,10 +97,13 @@ class _NumberButtonState extends State<NumberButton> {
                   )
                 ),
               ),
-              widget.builder != null ? widget.builder!(widget.value) : SizedBox(
-                width: 24,
-                child: Center(
-                  child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge,))
+              Transform.translate(
+                offset: const Offset(0.0, -3.0),
+                child: widget.builder != null ? widget.builder!(widget.value) : SizedBox(
+                  width: 24,
+                  child: Center(
+                    child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge,))
+                ),
               ),
               InkWell(
                 onTap: () {},
