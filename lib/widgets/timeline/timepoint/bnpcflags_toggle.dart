@@ -113,7 +113,7 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
 
                   widget.onUpdate(flags);
                 },
-                toggleText: ("0x80", "0x80"),
+                toggleText: ("0x77", "0x77"),
                 leading: const Text("Intermission"),
               ),
             ],
