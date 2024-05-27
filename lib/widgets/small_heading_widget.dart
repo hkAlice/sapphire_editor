@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class SmallHeadingWidget extends StatelessWidget {
   final String title;
-  final Widget? leading;
+  final Widget? trailing;
 
-  const SmallHeadingWidget({super.key, required this.title, this.leading});
+  const SmallHeadingWidget({super.key, required this.title, this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SmallHeadingWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: Theme.of(context).textTheme.headlineSmall!,),
-              leading ?? Container()
+              trailing ?? Container()
             ],
           ),
         ],

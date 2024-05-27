@@ -6,9 +6,9 @@ import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 
 class ActorGeneralWidget extends StatelessWidget {
   final ActorModel actor;
-  final Function() onChanged;
+  final Function() onUpdate;
 
-  const ActorGeneralWidget({super.key, required this.actor, required this.onChanged});
+  const ActorGeneralWidget({super.key, required this.actor, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class ActorGeneralWidget extends StatelessWidget {
           children: [
             SmallHeadingWidget(
               title: "General",
-              leading: OutlinedButton(
+              trailing: OutlinedButton(
                 onPressed: () {
 
                 },
@@ -52,7 +52,7 @@ class ActorGeneralWidget extends StatelessWidget {
                     label: "Layout ID",
                     onChanged: (value) {
                       actor.layoutId = value;
-                      onChanged();
+                      onUpdate();
                     },
                   ),
                 ),
@@ -64,7 +64,7 @@ class ActorGeneralWidget extends StatelessWidget {
                     label: "HP",
                     onChanged: (value) {
                       actor.hp = value;
-                      onChanged();
+                      onUpdate();
                     },
                   ),
                 ),
@@ -80,7 +80,7 @@ class ActorGeneralWidget extends StatelessWidget {
                       actor.subactors.add("${actor.name} <subactor ${i + 1}>");
                     }
             
-                    onChanged();
+                    onUpdate();
                   }
                 ),
               ],

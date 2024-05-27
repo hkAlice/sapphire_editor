@@ -29,7 +29,7 @@ class ActorTabView extends StatelessWidget {
             ),
             ActorGeneralWidget(
               actor: selectedActor,
-              onChanged: () {
+              onUpdate: () {
                 onChanged(currentActorIndex);
               }
             ),

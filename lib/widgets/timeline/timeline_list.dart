@@ -4,6 +4,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
+import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -36,16 +37,6 @@ class _TimelineListState extends State<TimelineList> {
     setState(() {
       
     });
-    widget.onUpdate(widget.timeline);
-  }
-
-  void _addNewPhaseCondition() {
-    widget.timeline.addNewCondition();
-
-    setState(() {
-      
-    });
-
     widget.onUpdate(widget.timeline);
   }
 
@@ -120,42 +111,14 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           }
         ),
-        Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ReorderableListView.builder(
-                buildDefaultDragHandles: false,
-                onReorder: (int oldindex, int newindex) {
-                  setState(() {
-                    if(newindex > oldindex) {
-                      newindex -= 1;
-                    }
-                    final items = widget.timeline.conditions.removeAt(oldindex);
-                    widget.timeline.conditions.insert(newindex, items);
-                    widget.onUpdate(widget.timeline);
-                  });
-                },
-                itemCount: widget.timeline.conditions.length,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, i) {
-                  return PhaseConditionItem(
-                    key: Key("condition_${widget.timeline.conditions[i].id}"),
-                    index: i,
-                    timelineModel: widget.timeline,
-                    phaseConditionModel: widget.timeline.conditions[i],
-                    onUpdate: (phaseConditionModel) {
-                      widget.onUpdate(widget.timeline);
-                    },
-                  );
-                }
-              ),
-              AddGenericWidget(text: "Add new condition", onTap: () { _addNewPhaseCondition(); }),
-              ],
-            ),
-          ),
+        ConditionTabView(
+          timelineModel: widget.timeline,
+          onUpdate: () {
+            setState(() {
+              
+            });
+            widget.onUpdate(widget.timeline);
+          }
         ),
         Padding(
           padding: const EdgeInsets.all(14.0),
