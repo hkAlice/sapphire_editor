@@ -1,9 +1,11 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/views/main_view.dart';
 
 void main() async {
-  // consider hive to persist timeline json
+  await StorageHelper().init();
 
   runApp(const TimelineEditorApp());
 }
