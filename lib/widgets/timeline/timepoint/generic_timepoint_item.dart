@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';

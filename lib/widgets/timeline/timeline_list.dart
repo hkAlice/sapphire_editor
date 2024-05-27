@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/actor/actor_entry_item.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
+import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -107,26 +107,18 @@ class _TimelineListState extends State<TimelineList> {
           ],
         )
       ],
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ActorEntryList(
-                actors: widget.timeline.actors,
-                onChanged: (currActor) {
-                  _selectedActor = currActor;
-                  setState(() {
-                    
-                  });
-            
-                  widget.onUpdate(widget.timeline);
-                }
-              ),
-              ],
-            ),
-          ),
+      children: <Widget>[ 
+        // todo: all this should be split into its own stl widgets
+        ActorTabView(
+          timelineModel: widget.timeline,
+          currentActorIndex: _selectedActor,
+          onChanged: (actorIdx) {
+            _selectedActor = actorIdx;
+            setState(() {
+              
+            });
+            widget.onUpdate(widget.timeline);
+          }
         ),
         Padding(
           padding: const EdgeInsets.all(14.0),

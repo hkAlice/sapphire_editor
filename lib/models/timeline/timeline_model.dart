@@ -21,7 +21,7 @@ class TimelineModel {
     actorList,
   }) : conditions = conditionList ?? [], actors = actorList ?? [];
 
-  static const VERSION_MODEL = 3;
+  static const VERSION_MODEL = 4;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 

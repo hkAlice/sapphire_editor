@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/widgets/generic_search_picker_widget.dart';
-import 'package:sapphire_editor/widgets/number_button.dart';
 
-class ActorEntryList extends StatefulWidget {
+class ActorDetailedSelect extends StatefulWidget {
   final List<ActorModel> actors;
   final Function(int) onChanged;
 
-  const ActorEntryList({super.key, required this.actors, required this.onChanged});
+  const ActorDetailedSelect({super.key, required this.actors, required this.onChanged});
 
   @override
-  State<ActorEntryList> createState() => _ActorEntryListState();
+  State<ActorDetailedSelect> createState() => _ActorDetailedSelectState();
 }
 
-class _ActorEntryListState extends State<ActorEntryList> {
+class _ActorDetailedSelectState extends State<ActorDetailedSelect> {
   int _selectedActorIdx = 0;
   final TextEditingController iconController = TextEditingController();
 
@@ -23,8 +22,6 @@ class _ActorEntryListState extends State<ActorEntryList> {
   }
   @override
   Widget build(BuildContext context) {
-    ActorModel _selectedActor = widget.actors.elementAt(_selectedActorIdx);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.max,
@@ -68,60 +65,7 @@ class _ActorEntryListState extends State<ActorEntryList> {
             );
           }
         ),
-        Card(
-          margin: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                NumberButton(
-                  min: 0,
-                  max: 32,
-                  value: _selectedActor.subactors.length,
-                  label: "Subactors",
-                  onChanged: (value) {
-                    _selectedActor.subactors.clear();
-                    for(int i = 0; i < value; i++) {
-                      _selectedActor.subactors.add("${_selectedActor.name} <subactor ${i + 1}>");
-                    }
-                    setState(() {
-                      
-                    });
-                    widget.onChanged(_selectedActorIdx);
-                  }
-                ),
-              ],
-            ),
-          ),
-        )
       ],
     );
-    /*
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, i) {
-        var actorModel = widget.actors[i];
-
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8.0),
-          child: RadioListTile(
-            value: i,
-            groupValue: _selectedActor,
-            onChanged: (newVal) {
-              if(newVal == null) { return; }
-
-              setState(() {
-                _selectedActor = newVal;
-              });
-
-              widget.onChanged(widget.actors[i]);
-            } ,
-            title: Text(actorModel.name),
-          ),
-        );
-      },
-      itemCount: widget.actors.length,
-    );*/
   }
 }
