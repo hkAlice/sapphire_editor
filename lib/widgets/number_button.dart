@@ -59,9 +59,12 @@ class _NumberButtonState extends State<NumberButton> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 9.0),
-            child: widget.label == null ? Container() : Text(widget.label!, style: Theme.of(context).textTheme.bodySmall),
+          SizedBox(
+            height: 22.0,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 9.0),
+              child: widget.label == null ? Container() : Text(widget.label!, style: Theme.of(context).textTheme.bodySmall),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,13 +95,13 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: const Padding(
-                    padding: EdgeInsets.all(5.0),
+                    padding: EdgeInsets.all(7.0),
                     child: Icon(Icons.remove_rounded, size: 18.0,),
                   )
                 ),
               ),
               Transform.translate(
-                offset: const Offset(0.0, -3.0),
+                offset: const Offset(0.0, -1.0),
                 child: widget.builder != null ? widget.builder!(widget.value) : SizedBox(
                   width: 24,
                   child: Center(
@@ -132,7 +135,7 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: const Padding(
-                    padding: EdgeInsets.all(5.0),
+                    padding: EdgeInsets.all(7.0),
                     child: Icon(Icons.add_rounded, size: 18.0,),
                   )
                 ),
