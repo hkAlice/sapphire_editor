@@ -70,38 +70,40 @@ class _TimelineListState extends State<TimelineList> {
           ),
         );
       },
+      selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
+      unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white70),
       color: const Color.fromARGB(255, 26, 26, 26),
-      tabs: <Widget>[
+      tabs: const <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.cruelty_free_outlined, size: 22.0,),
-            const SizedBox(width: 8.0,),
-            Text("Actors", style: Theme.of(context).textTheme.bodyLarge,)
+            Icon(Icons.cruelty_free_outlined, size: 22.0,),
+            SizedBox(width: 8.0,),
+            Text("Actors")
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.g_mobiledata, size: 28.0,),
-            const SizedBox(width: 8.0,),
-            Text("Conditions", style: Theme.of(context).textTheme.bodyLarge,)
+            Icon(Icons.g_mobiledata, size: 28.0,),
+            SizedBox(width: 8.0,),
+            Text("Conditions")
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.linear_scale_rounded, size: 22.0,),
-            const SizedBox(width: 8.0,),
-            Text("Phases", style: Theme.of(context).textTheme.bodyLarge,)
+            Icon(Icons.linear_scale_rounded, size: 22.0,),
+            SizedBox(width: 8.0,),
+            Text("Phases")
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.scatter_plot_outlined, size: 22.0,),
-            const SizedBox(width: 8.0,),
-            Text("Selectors", style: Theme.of(context).textTheme.bodyLarge,)
+            Icon(Icons.scatter_plot_outlined, size: 22.0,),
+            SizedBox(width: 8.0,),
+            Text("Selectors")
           ],
         )
       ],
