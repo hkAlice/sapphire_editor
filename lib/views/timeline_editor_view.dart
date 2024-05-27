@@ -109,12 +109,11 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                   children: [
                     Expanded(
                       flex: 6,
-                      child: SingleChildScrollView(
-                        child: TimelineList(
-                          timeline: _timeline,
-                          onUpdate: (timeline) {
-                            _onTimelineDataUpdate();
-                        },),
+                      child: TimelineList(
+                        timeline: _timeline,
+                        onUpdate: (timeline) {
+                          _onTimelineDataUpdate();
+                        },
                       ),
                     ),
                     const VerticalDivider(),

@@ -53,6 +53,7 @@ dependencies:
   image_sequence_animator: ^2.0.0
   collection: ^1.18.0
   http: ^1.2.1
+  tab_container: ^3.5.3
 
 dev_dependencies:
   flutter_test:
