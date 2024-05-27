@@ -18,6 +18,7 @@ class StorageHelper {
     // no objBox for web however (isar maybe)
     _dbInstance = await BoxCollection.open(
       "editorDb",
+      path: "./storage/",
       StorageTable.values.map((e) => e.name).toSet(),
     );
 
