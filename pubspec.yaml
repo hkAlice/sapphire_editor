@@ -55,6 +55,7 @@ dependencies:
   http: ^1.2.1
   tab_container: ^3.5.3
   hive: ^2.2.3
+  animate_do: ^3.3.4
 
 dev_dependencies:
   flutter_test:

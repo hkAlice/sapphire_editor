@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -25,6 +27,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
   List<SanityItem> _sanityCheck = [];
   DateTime _lastAutosave = DateTime(0);
+  Timer _autosaveTimer = Timer(const Duration(seconds: 3), () {});
 
   @override
   bool get wantKeepAlive => true;
@@ -44,7 +47,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
     var timestamp = DateTime.now();
 
     // todo: only autosave every 5 minutes (need UI and stuff)
-    if(timestamp.difference(_lastAutosave).inSeconds >= 3) {
+    _autosaveTimer.cancel();
+    _autosaveTimer = Timer(const Duration(seconds: 1), () async {
       await autosaveBox.put(timestamp.millisecondsSinceEpoch.toString(), json);
 
       _lastAutosave = timestamp;
@@ -57,7 +61,11 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
         var clearHistory = autosaveKeys.take(autosaveKeys.length - historySize);
         await autosaveBox.deleteAll(clearHistory.toList());
       }
-    }
+
+      setState(() {
+        
+      });
+    });
   }
 
   bool _parseJSONToTimeline(String jsonStr) {
@@ -271,10 +279,13 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                 right: 8,
                                 child: Opacity(
                                   opacity: 0.5,
-                                  child: FilledButton(
-                                    onPressed: null,
-                                    child: Text("Auto-saved ${DateFormat("yyyy-MM-dd hh:mm").format(_lastAutosave)}",
-                                      style: Theme.of(context).textTheme.bodySmall,
+                                  child: FadeIn(
+                                    animate: !_autosaveTimer.isActive,
+                                    child: FilledButton(
+                                      onPressed: null,
+                                      child: Text("Auto-saved ${DateFormat("yyyy-MM-dd hh:mm").format(_lastAutosave)}",
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
                                     ),
                                   ),
                                 ),
