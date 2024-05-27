@@ -55,10 +55,11 @@ class _TimelineListState extends State<TimelineList> {
     return TabContainer(
       borderRadius: BorderRadius.circular(20),
       tabEdge: TabEdge.top,
-      curve: Curves.easeIn,
+      curve: Curves.easeInOutCubic,
       transitionBuilder: (child, animation) {
         animation = CurvedAnimation(
-            curve: Curves.easeIn, parent: animation);
+          curve: Curves.easeInOutCubic, parent: animation
+        );
         return SlideTransition(
           position: Tween(
             begin: const Offset(0.2, 0.0),
@@ -150,7 +151,7 @@ class _TimelineListState extends State<TimelineList> {
                 shrinkWrap: true,
                 itemBuilder: (context, i) {
                   return PhaseConditionItem(
-                    key: Key("condition_${widget.timeline.conditions[i].hashCode}"),
+                    key: Key("condition_${widget.timeline.conditions[i].id}"),
                     index: i,
                     timelineModel: widget.timeline,
                     phaseConditionModel: widget.timeline.conditions[i],
@@ -165,12 +166,17 @@ class _TimelineListState extends State<TimelineList> {
             ),
           ),
         ),
-          
         Padding(
           padding: const EdgeInsets.all(14.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
+                ListTile(
+                  leading: Image.asset("assets/images/icon_trials_rounded.png", width: 36.0,),
+                  title: Text(_getCurrentActor().name),
+                  subtitle: Text("LID: ${_getCurrentActor().layoutId.toString()}, HP: ${_getCurrentActor().hp.toString()}", style: Theme.of(context).textTheme.bodySmall,),
+                ),
+                const SizedBox(height: 8.0,),
                 ReorderableListView.builder(
                   buildDefaultDragHandles: false,
                   onReorder: (int oldindex, int newindex) {

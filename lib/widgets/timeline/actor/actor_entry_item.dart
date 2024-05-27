@@ -67,7 +67,7 @@ class _ActorEntryListState extends State<ActorEntryList> {
                   Text("LID: ${actorModel.layoutId.toString()}, HP: ${actorModel.hp.toString()}", style: Theme.of(context).textTheme.bodySmall,)
                 ],
               )
-            ); 
+            );
           }
         ),
         Card(
@@ -79,7 +79,7 @@ class _ActorEntryListState extends State<ActorEntryList> {
                 NumberButton(
                   min: 0,
                   max: 32,
-                  initialValue: _selectedActor.subactors.length,
+                  value: _selectedActor.subactors.length,
                   label: "Subactors",
                   onChanged: (value) {
                     _selectedActor.subactors.clear();

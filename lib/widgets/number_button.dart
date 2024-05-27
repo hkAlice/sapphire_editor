@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class NumberButton extends StatefulWidget {
   final int min;
   final int max;
-  int? initialValue;
+  final int value;
   final Function(int) onChanged;
   final String? label;
+  final int stepCount;
+  final Widget Function(int)? builder;
 
-  NumberButton({super.key, required this.min, required this.max, this.initialValue, required this.onChanged, this.label}) {
-    initialValue ??= min;
-  }
+  NumberButton({super.key, required this.min, required this.max, required this.value, this.stepCount = 1, this.builder, required this.onChanged, this.label});
 
   @override
   State<NumberButton> createState() => _NumberButtonState();
@@ -17,10 +17,35 @@ class NumberButton extends StatefulWidget {
 
 class _NumberButtonState extends State<NumberButton> {
   late int _numValue;
+  bool _holdingStepper = false;
+
+  void _subtractValue() {
+    if(_numValue <= widget.min) {
+      return;
+    }
+    setState(() {
+      _numValue -= widget.stepCount;
+      if(_numValue <= widget.min) {
+        _numValue = widget.min;
+      }
+    });
+  }
+
+  void _incrementValue() {
+    if(_numValue >= widget.max) {
+      return;
+    }
+    setState(() {
+      _numValue += widget.stepCount;
+      if(_numValue >= widget.max) {
+        _numValue = widget.max;
+      }
+    });
+  }
 
   @override
   void initState() {
-    _numValue = widget.initialValue!;
+    _numValue = widget.value;
 
     super.initState();
   }
@@ -41,41 +66,57 @@ class _NumberButtonState extends State<NumberButton> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                child: IconButton(
-                  padding: const EdgeInsets.all(4.0),
-                  splashRadius: 16.0,
-                  onPressed: () {
-                    if(_numValue <= widget.min) {
-                      return;
-                    }
-                    setState(() {
-                      _numValue--;
-                    });
+              InkWell(
+                onTap: () {},
+                child: GestureDetector(
+                  onTapDown: (_) {
+                    _subtractValue();
                     widget.onChanged(_numValue);
                   },
-                  icon: const Icon(Icons.remove, size: 18.0,)
+                  onLongPressStart: (_) async {
+                    _holdingStepper = true;
+                
+                    do {
+                      _subtractValue();
+                      widget.onChanged(_numValue);
+                
+                      await Future.delayed(const Duration(milliseconds: 50));
+                    } while(_holdingStepper);
+                  },
+                  onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                  child: const Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Icon(Icons.remove, size: 18.0,),
+                  )
                 ),
               ),
-              SizedBox(
+              widget.builder != null ? widget.builder!(_numValue) : SizedBox(
                 width: 24,
                 child: Center(
                   child: Text(_numValue.toString(), style: Theme.of(context).textTheme.bodyLarge,))
               ),
-              SizedBox(
-                child: IconButton(
-                  padding: const EdgeInsets.all(4.0),
-                  splashRadius: 16.0,
-                  onPressed: () {
-                    if(_numValue >= widget.max) {
-                      return;
-                    }
-                    setState(() {
-                      _numValue++;
-                    });
+              InkWell(
+                onTap: () {},
+                child: GestureDetector(
+                  onTapDown: (_) {
+                    _incrementValue();
                     widget.onChanged(_numValue);
                   },
-                  icon: const Icon(Icons.add, size: 18.0,)
+                  onLongPressStart: (_) async {
+                    _holdingStepper = true;
+                
+                    do {
+                      _incrementValue();
+                      widget.onChanged(_numValue);
+                
+                      await Future.delayed(const Duration(milliseconds: 50));
+                    } while(_holdingStepper);
+                  },
+                  onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                  child: const Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Icon(Icons.add, size: 18.0,),
+                  )
                 ),
               ),
             ],

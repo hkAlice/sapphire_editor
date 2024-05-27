@@ -4,6 +4,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
@@ -136,28 +137,31 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   ),
                 ),
                 const SizedBox(width: 18.0,),
-                SizedBox(
-                  width: 100,
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    maxLines: 1,
-                    controller: _durationTextEditingController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      hintText: "Duration (ms)",
-                    ),
-                    onChanged: (value) {
-                      if(value.isEmpty) {
-                        value = "0";
-                      }
+                NumberButton(
+                  min: 0,
+                  max: 50000,
+                  value: widget.timepointModel.duration,
+                  label: "Duration",
+                  builder: (value) {
+                    var seconds = value / 1000;
+                    return SizedBox(
+                      width: 42,
+                      child: Column(
+                        children: [
+                          Text("${seconds.toStringAsFixed(2)}s"),
+                          //Text("${value}ms", style: Theme.of(context).textTheme.bodySmall,)
+                        ],
+                      ),
+                    );
+                  },
+                  stepCount: 100,
+                  onChanged: (value) {
+                    widget.timepointModel.duration = value;
+                    setState(() {
                       
-                      widget.timepointModel.duration = int.parse(value);
-                      widget.onUpdate(widget.timepointModel);
-                    },
-                  ),
+                    });
+                    widget.onUpdate(widget.timepointModel);
+                  }
                 ),
                 const SizedBox(width: 18.0,),
                 Expanded(
@@ -192,7 +196,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
           const Divider(height: 1.0,),
           Container(
             color: Theme.of(context).canvasColor,
-            padding: const EdgeInsets.all(8.0),
+            padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),
             child: _generateTypedTimepoint(),
           )
         ],
