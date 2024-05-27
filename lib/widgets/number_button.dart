@@ -24,7 +24,7 @@ class _NumberButtonState extends State<NumberButton> {
       return;
     }
     setState(() {
-      _numValue -= widget.stepCount;
+      _numValue = widget.value - widget.stepCount;
       if(_numValue <= widget.min) {
         _numValue = widget.min;
       }
@@ -36,7 +36,7 @@ class _NumberButtonState extends State<NumberButton> {
       return;
     }
     setState(() {
-      _numValue += widget.stepCount;
+      _numValue = widget.value + widget.stepCount;
       if(_numValue >= widget.max) {
         _numValue = widget.max;
       }
@@ -97,10 +97,10 @@ class _NumberButtonState extends State<NumberButton> {
                   )
                 ),
               ),
-              widget.builder != null ? widget.builder!(_numValue) : SizedBox(
+              widget.builder != null ? widget.builder!(widget.value) : SizedBox(
                 width: 24,
                 child: Center(
-                  child: Text(_numValue.toString(), style: Theme.of(context).textTheme.bodyLarge,))
+                  child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge,))
               ),
               InkWell(
                 onTap: () {},
