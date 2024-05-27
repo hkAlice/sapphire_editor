@@ -36,6 +36,16 @@ class ActorGeneralWidget extends StatelessWidget {
             Row(
               children: [
                 SizedBox(
+                  width: 80,
+                  child: SimpleNumberField(
+                    initialValue: actor.id,
+                    label: "Local ID",
+                    enabled: false,
+                    onChanged: (value) {},
+                  ),
+                ),
+                const SizedBox(width: 18.0,),
+                SizedBox(
                   width: 150,
                   child: SimpleNumberField(
                     initialValue: actor.layoutId,
@@ -48,7 +58,7 @@ class ActorGeneralWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 18.0,),
                 SizedBox(
-                  width: 150,
+                  width: 110,
                   child: SimpleNumberField(
                     initialValue: actor.hp,
                     label: "HP",
