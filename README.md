@@ -10,7 +10,7 @@
 
 [![Discord Server](https://img.shields.io/badge/discord-Sapphire-7289DA.svg)](https://discord.gg/xxcdCER)
 [![Sapphire Wiki](https://img.shields.io/badge/wiki-xiv.dev-blue)](https://sapphire.xiv.dev/)
-[![Build Status](https://github.com/SapphireServer/Sapphire/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/SapphireServer/Sapphire/actions/workflows/build.yml)
+[![Deploy](https://github.com/hkAlice/sapphire_editor/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/hkAlice/sapphire_editor/actions/workflows/gh-pages.yml)
 
 Sapphire Editor is an UI editor for Sapphire related features. Supports Web, Windows, Linux, Mac, Android and iOS.
 Currently, it only functions as a prototype for encounter timeline editing.
