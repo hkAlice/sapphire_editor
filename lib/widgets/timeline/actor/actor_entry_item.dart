@@ -5,7 +5,7 @@ import 'package:sapphire_editor/widgets/number_button.dart';
 
 class ActorEntryList extends StatefulWidget {
   final List<ActorModel> actors;
-  final Function(ActorModel) onChanged;
+  final Function(int) onChanged;
 
   const ActorEntryList({super.key, required this.actors, required this.onChanged});
 
@@ -14,19 +14,17 @@ class ActorEntryList extends StatefulWidget {
 }
 
 class _ActorEntryListState extends State<ActorEntryList> {
-  late ActorModel _selectedActor;
+  int _selectedActorIdx = 0;
   final TextEditingController iconController = TextEditingController();
 
   @override
   void initState() {
-    if(widget.actors.isNotEmpty) {
-      _selectedActor = widget.actors.first;
-    }
-
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    ActorModel _selectedActor = widget.actors.elementAt(_selectedActorIdx);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.max,
@@ -50,10 +48,10 @@ class _ActorEntryListState extends State<ActorEntryList> {
             }
         
             setState(() {
-              _selectedActor = value;
+              _selectedActorIdx = widget.actors.indexOf(value);
             });
             
-            widget.onChanged(_selectedActor);
+            widget.onChanged(_selectedActorIdx);
           },
           itemBuilder: (actorModel) {
             return DropdownMenuEntry(
@@ -89,7 +87,7 @@ class _ActorEntryListState extends State<ActorEntryList> {
                     setState(() {
                       
                     });
-                    widget.onChanged(_selectedActor);
+                    widget.onChanged(_selectedActorIdx);
                   }
                 ),
               ],

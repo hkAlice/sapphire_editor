@@ -9,7 +9,7 @@ class NumberButton extends StatefulWidget {
   final int stepCount;
   final Widget Function(int)? builder;
 
-  NumberButton({super.key, required this.min, required this.max, required this.value, this.stepCount = 1, this.builder, required this.onChanged, this.label});
+  const NumberButton({super.key, required this.min, required this.max, required this.value, this.stepCount = 1, this.builder, required this.onChanged, this.label});
 
   @override
   State<NumberButton> createState() => _NumberButtonState();
@@ -69,9 +69,13 @@ class _NumberButtonState extends State<NumberButton> {
               InkWell(
                 onTap: () {},
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTapDown: (_) {
                     _subtractValue();
                     widget.onChanged(_numValue);
+                    setState(() {
+                      
+                    });
                   },
                   onLongPressStart: (_) async {
                     _holdingStepper = true;
@@ -79,6 +83,9 @@ class _NumberButtonState extends State<NumberButton> {
                     do {
                       _subtractValue();
                       widget.onChanged(_numValue);
+                      setState(() {
+                        
+                      });
                 
                       await Future.delayed(const Duration(milliseconds: 50));
                     } while(_holdingStepper);
@@ -98,9 +105,14 @@ class _NumberButtonState extends State<NumberButton> {
               InkWell(
                 onTap: () {},
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTapDown: (_) {
                     _incrementValue();
                     widget.onChanged(_numValue);
+
+                    setState(() {
+                      
+                    });
                   },
                   onLongPressStart: (_) async {
                     _holdingStepper = true;
@@ -108,6 +120,9 @@ class _NumberButtonState extends State<NumberButton> {
                     do {
                       _incrementValue();
                       widget.onChanged(_numValue);
+                      setState(() {
+                        
+                      });
                 
                       await Future.delayed(const Duration(milliseconds: 50));
                     } while(_holdingStepper);

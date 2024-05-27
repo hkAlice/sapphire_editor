@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
-import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/actor/actor_entry_item.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
@@ -117,7 +116,7 @@ class _TimelineListState extends State<TimelineList> {
                 ActorEntryList(
                 actors: widget.timeline.actors,
                 onChanged: (currActor) {
-                  _selectedActor = widget.timeline.actors.indexOf(currActor);
+                  _selectedActor = currActor;
                   setState(() {
                     
                   });

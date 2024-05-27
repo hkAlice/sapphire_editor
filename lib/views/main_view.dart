@@ -11,7 +11,6 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int _tabIndex = 0;
-  final _pageViewController = PageController();
 
   final List<Widget> _navChildren = [
     const TimelineEditorView(),
