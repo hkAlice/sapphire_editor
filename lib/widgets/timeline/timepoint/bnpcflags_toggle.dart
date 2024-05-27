@@ -107,14 +107,14 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
                 leading: const Text("NoAutoAttack"),
               ),
               SwitchTextWidget(
-                enabled: flags & BNpcFlags.intermission != 0,
+                enabled: flags & BNpcFlags.invisible != 0,
                 onPressed: () {
-                  flags = flags ^= BNpcFlags.intermission;
+                  flags = flags ^= BNpcFlags.invisible;
 
                   widget.onUpdate(flags);
                 },
-                toggleText: ("0x77", "0x77"),
-                leading: const Text("Intermission"),
+                toggleText: ("0x80", "0x80"),
+                leading: const Text("Invisible"),
               ),
             ],
           ),
