@@ -127,9 +127,12 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                             maxLines: null,
                             expands: true,
                             showErrorMessage: true,
-                            decoration: const InputDecoration(
-                              fillColor: Color(0xFF141414),
-                              border: InputBorder.none,
+                            decoration: InputDecoration(
+                              fillColor: const Color(0xFF141414),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(16.0)
+                              ),
                               hintText: "To load a timeline, paste the JSON here."
                             ),
                             onChanged: (value) {
@@ -166,7 +169,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                       // this plugin seems to fire errors at random
                                     }
                                   },
-                                  icon: const Icon(Icons.copy),
+                                  icon: const Icon(Icons.copy_rounded),
                                   label: const Text("Copy")
                                 ),
                                 const SizedBox(width: 8.0,),
@@ -186,7 +189,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                       );
                                     }
                                   },
-                                  icon: const Icon(Icons.download),
+                                  icon: const Icon(Icons.download_rounded),
                                   label: const Text("Save")
                                 ),
                               ],

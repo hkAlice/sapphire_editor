@@ -52,7 +52,7 @@ class _TimelineListState extends State<TimelineList> {
   @override
   Widget build(BuildContext context) {
     return TabContainer(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16.0),
       tabEdge: TabEdge.top,
       curve: Curves.easeInOutCubic,
       transitionBuilder: (child, animation) {

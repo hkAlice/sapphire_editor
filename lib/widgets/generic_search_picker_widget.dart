@@ -58,7 +58,7 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
         
         widget.onChanged(_setValue);
       },
-      leadingIcon: widget.leading ?? const Icon(Icons.search),
+      leadingIcon: widget.leading ?? const Icon(Icons.search_rounded),
       enableFilter: true,
       enableSearch: true,
       expandedInsets: const EdgeInsets.all(0.0),

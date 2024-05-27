@@ -13,7 +13,7 @@ class AddGenericWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.add),
+          const Icon(Icons.add_rounded),
           const SizedBox(height: 36.0,),
           Text(text)
         ],

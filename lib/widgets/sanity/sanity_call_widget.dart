@@ -35,7 +35,7 @@ class _SanityCallDoneWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        Icon(Icons.done),
+        Icon(Icons.done_rounded),
         SizedBox(width: 8.0,),
         Text("No warnings, for now."),
       ]
@@ -75,7 +75,7 @@ class _SanityCallDialog extends StatelessWidget {
       
       widgets.add(ListTile(
         tileColor: isError ? Colors.red.shade900 : Colors.orange.shade900,
-        trailing: isError ? const Icon(Icons.error) : const Icon(Icons.warning),
+        trailing: isError ? const Icon(Icons.error_rounded) : const Icon(Icons.warning_rounded),
         title: Text(sanityItem.type),
         subtitle: Text(sanityItem.desc),
       ));

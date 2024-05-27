@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SmallHeadingWidget extends StatelessWidget {
   final String title;
+  final Widget? leading;
 
-  const SmallHeadingWidget({super.key, required this.title});
+  const SmallHeadingWidget({super.key, required this.title, this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,13 @@ class SmallHeadingWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(title, style: Theme.of(context).textTheme.headlineSmall!,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.headlineSmall!,),
+              leading ?? Container()
+            ],
+          ),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
+import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 
 class ActorGeneralWidget extends StatelessWidget {
@@ -17,9 +18,47 @@ class ActorGeneralWidget extends StatelessWidget {
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
-            const SmallHeadingWidget(title: "General"),
+            SmallHeadingWidget(
+              title: "General",
+              leading: OutlinedButton(
+                onPressed: () {
+
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.terminal_rounded),
+                    SizedBox(width: 8.0,),
+                    Text("Load BNPC data"),
+                  ],
+                )
+              ),
+            ),
             Row(
               children: [
+                SizedBox(
+                  width: 150,
+                  child: SimpleNumberField(
+                    initialValue: actor.layoutId,
+                    label: "Layout ID",
+                    onChanged: (value) {
+                      actor.layoutId = value;
+                      onChanged();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 18.0,),
+                SizedBox(
+                  width: 150,
+                  child: SimpleNumberField(
+                    initialValue: actor.hp,
+                    label: "HP",
+                    onChanged: (value) {
+                      actor.hp = value;
+                      onChanged();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 18.0,),
                 NumberButton(
                   min: 0,
                   max: 32,

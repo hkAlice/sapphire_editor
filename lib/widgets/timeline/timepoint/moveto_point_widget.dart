@@ -43,7 +43,7 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
 
   Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
     return SizedBox(
-      width: 150,
+      width: 120,
       child: TextFormField(
         maxLines: 1,
         controller: textEditingController,

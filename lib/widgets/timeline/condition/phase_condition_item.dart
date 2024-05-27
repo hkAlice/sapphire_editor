@@ -91,7 +91,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SwitchIconWidget(
-              icon: Icons.loop,
+              icon: Icons.loop_rounded,
               enabled: widget.phaseConditionModel.loop,
               onPressed: () {
                 setState(() {
@@ -101,7 +101,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
               }
             ),
             IconButton(
-              icon: const Icon(Icons.clear),
+              icon: const Icon(Icons.clear_rounded),
               onPressed: () {
                 widget.timelineModel.conditions.removeAt(widget.index);
                 widget.onUpdate(widget.phaseConditionModel);

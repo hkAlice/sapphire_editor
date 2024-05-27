@@ -43,7 +43,7 @@ class _MainViewState extends State<MainView> {
             label: "Timeline"
           ), 
           const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_rounded),
             label: "Settings"
           )
         ],

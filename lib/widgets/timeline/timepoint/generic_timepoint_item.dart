@@ -186,7 +186,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       widget.phaseModel.timepoints.remove(widget.timepointModel);
                       widget.onUpdate(widget.timepointModel);
                     },
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear_rounded),
                   ),
                 )
               ],
