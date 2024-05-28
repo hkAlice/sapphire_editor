@@ -4,14 +4,22 @@ import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 
-class ActorGeneralWidget extends StatelessWidget {
-  final ActorModel actor;
+class ActorGeneralWidget extends StatefulWidget {
+  final int index;
+  final List<ActorModel> actors;
   final Function() onUpdate;
 
-  const ActorGeneralWidget({super.key, required this.actor, required this.onUpdate});
+  const ActorGeneralWidget({super.key, required this.actors, required this.index, required this.onUpdate});
 
   @override
+  State<ActorGeneralWidget> createState() => _ActorGeneralWidgetState();
+}
+
+class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
+  @override
   Widget build(BuildContext context) {
+    var actor = widget.actors[widget.index];
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12.0),
       child: Padding(
@@ -52,7 +60,10 @@ class ActorGeneralWidget extends StatelessWidget {
                     label: "Layout ID",
                     onChanged: (value) {
                       actor.layoutId = value;
-                      onUpdate();
+                      setState(() {
+                        
+                      });
+                      widget.onUpdate();
                     },
                   ),
                 ),
@@ -64,7 +75,10 @@ class ActorGeneralWidget extends StatelessWidget {
                     label: "HP",
                     onChanged: (value) {
                       actor.hp = value;
-                      onUpdate();
+                      setState(() {
+                        
+                      });
+                      widget.onUpdate();
                     },
                   ),
                 ),
@@ -80,7 +94,7 @@ class ActorGeneralWidget extends StatelessWidget {
                       actor.subactors.add("${actor.name} <subactor ${i + 1}>");
                     }
             
-                    onUpdate();
+                    widget.onUpdate();
                   }
                 ),
               ],

@@ -27,11 +27,13 @@ class GenericSearchPickerWidget<T> extends StatefulWidget {
 
 class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget> {
   late T _setValue;
+  int _selectedActorIdx = 0;
   final TextEditingController _dropController = TextEditingController();
 
   @override
   void initState() {
-    _setValue = widget.items.first;
+    _setValue = widget.items.firstOrNull;
+    _selectedActorIdx = 0;
     super.initState();
   }
 
@@ -45,7 +47,7 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
   Widget build(BuildContext context) {
     return DropdownMenu(
       controller: _dropController,
-      initialSelection: widget.items.firstOrNull,
+      initialSelection: widget.items[_selectedActorIdx],
       
       onSelected: (value) {
         if(value == null) {
@@ -53,6 +55,7 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
         }
     
         setState(() {
+          _selectedActorIdx = widget.items.indexOf(value);
           _setValue = value;
         });
         

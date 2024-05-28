@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';

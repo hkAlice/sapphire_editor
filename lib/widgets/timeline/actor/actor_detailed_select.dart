@@ -4,22 +4,24 @@ import 'package:sapphire_editor/widgets/generic_search_picker_widget.dart';
 
 class ActorDetailedSelect extends StatefulWidget {
   final List<ActorModel> actors;
+  final int index;
   final Function(int) onChanged;
 
-  const ActorDetailedSelect({super.key, required this.actors, required this.onChanged});
+  const ActorDetailedSelect({super.key, required this.actors, required this.index, required this.onChanged});
 
   @override
   State<ActorDetailedSelect> createState() => _ActorDetailedSelectState();
 }
 
 class _ActorDetailedSelectState extends State<ActorDetailedSelect> {
-  int _selectedActorIdx = 0;
+  late int _selectedActorIdx = widget.index;
   final TextEditingController iconController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
   }
+  
   @override
   Widget build(BuildContext context) {
     return Column(
