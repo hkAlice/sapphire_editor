@@ -43,6 +43,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
       value: _setValue,
       elevation: 16,
       isDense: true,
+      isExpanded: true,
       decoration: InputDecoration(
         filled: true,
         labelText: widget.label,
@@ -67,7 +68,6 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
           itemName = widget.propertyBuilder!(value);
         }
         else {
-          var data;
           if(value is String) {
             var data = value;
             itemName = data;
@@ -81,7 +81,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
 
         return DropdownMenuItem<T>(
           value: value,
-          child: Text(itemName),
+          child: Text(itemName, overflow: TextOverflow.fade,),
         );
       }).toList(),
     );

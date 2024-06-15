@@ -38,7 +38,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
             label: "Source Actor",
             items: List.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name),
             onChanged: (newValue) {
-              pointData.sourceActor = newValue.name;
+              pointData.sourceActor = newValue;
               widget.onUpdate();
               setState(() {
                 

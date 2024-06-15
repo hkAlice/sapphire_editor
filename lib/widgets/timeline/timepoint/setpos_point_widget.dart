@@ -3,7 +3,6 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 
 class SetPosPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
@@ -71,7 +70,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             initialValue: pointData.actorName,
             items: List.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name),
             onChanged: (newValue) {
-              pointData.actorName = newValue.name;
+              pointData.actorName = newValue;
               setState(() {
                 
               });
