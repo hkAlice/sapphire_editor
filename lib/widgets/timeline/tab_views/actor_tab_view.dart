@@ -17,10 +17,16 @@ class ActorTabView extends StatefulWidget {
 }
 
 class _ActorTabViewState extends State<ActorTabView> {
+  late ActorModel _selectedActor;
+
+  @override
+  void initState() {
+    _selectedActor = widget.timelineModel.actors[widget.currentActorIndex];
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    ActorModel selectedActor = widget.timelineModel.actors.elementAt(widget.currentActorIndex);
-    
     return Padding(
       padding: const EdgeInsets.all(14.0),
       child: SingleChildScrollView(
@@ -30,15 +36,17 @@ class _ActorTabViewState extends State<ActorTabView> {
               actors: widget.timelineModel.actors,
               index: widget.currentActorIndex,
               onChanged: (currActor) {
-                setState(() {
-                  
-                });
                 widget.onChanged(currActor);
+                setState(() {
+                  _selectedActor = widget.timelineModel.actors.elementAt(currActor);
+                });
+                
               }
             ),
             ActorGeneralWidget(
               actors: widget.timelineModel.actors,
-              index: widget.currentActorIndex,
+              actorModel: _selectedActor,
+              index: widget.timelineModel.actors.indexOf(_selectedActor),
               onUpdate: () {
                 setState(() {
                   

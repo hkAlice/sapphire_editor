@@ -20,10 +20,8 @@ class _SimpleNumberFieldState extends State<SimpleNumberField> {
   @override
   void initState() {
     super.initState();
-
-    if(widget.controller == null) {
-      _controller = TextEditingController(text: (widget.initialValue ?? 0).toString());
-    }
+    
+    _controller = widget.controller ?? TextEditingController(text: (widget.initialValue ?? 0).toString());
   }
 
   @override
@@ -34,7 +32,7 @@ class _SimpleNumberFieldState extends State<SimpleNumberField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
       enabled: widget.enabled,
       maxLines: 1,
       keyboardType: widget.isHex ? TextInputType.text : TextInputType.number,
