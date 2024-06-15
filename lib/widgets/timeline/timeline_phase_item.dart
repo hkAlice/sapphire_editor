@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
@@ -8,10 +9,18 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_ite
 class TimelinePhaseItem extends StatefulWidget {
   final TimelineModel timelineModel;
   final TimelinePhaseModel phaseModel;
+  final ActorModel selectedActor;
   final int index;
   final Function(TimelinePhaseModel) onUpdate;
 
-  const TimelinePhaseItem({super.key, required this.timelineModel, required this.phaseModel, required this.index, required this.onUpdate});
+  const TimelinePhaseItem({
+    super.key,
+    required this.timelineModel,
+    required this.phaseModel,
+    required this.index,
+    required this.selectedActor,
+    required this.onUpdate
+  });
 
   @override
   State<TimelinePhaseItem> createState() => _TimelinePhaseItemState();
@@ -68,6 +77,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
               timelineModel: widget.timelineModel,
               timepointModel: point,
               phaseModel: widget.phaseModel,
+              selectedActor: widget.selectedActor,
               onUpdate: (timepoint) {
                 setState(() {
         

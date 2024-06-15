@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
@@ -12,7 +13,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/directorseq_point_wid
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorvar_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/moveto_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/setpos_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setcondition_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
@@ -21,9 +22,17 @@ class GenericTimepointItem extends StatefulWidget {
   final TimelineModel timelineModel;
   final TimelinePhaseModel phaseModel;
   final TimepointModel timepointModel;
+  final ActorModel selectedActor;
   final Function(TimepointModel) onUpdate;
 
-  const GenericTimepointItem({super.key, required this.timelineModel, required this.phaseModel, required this.timepointModel, required this.onUpdate});
+  const GenericTimepointItem({
+    super.key,
+    required this.timelineModel,
+    required this.phaseModel,
+    required this.timepointModel,
+    required this.selectedActor,
+    required this.onUpdate
+  });
 
   @override
   State<GenericTimepointItem> createState() => _GenericTimepointItemState();
@@ -37,6 +46,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
     // todo: can also use cast type "is".. though slower
     var timepointModel = widget.timepointModel;
     var timelineModel = widget.timelineModel;
+    var selectedActor = widget.selectedActor;
 
     onUpdate() {
       widget.onUpdate(widget.timepointModel);
@@ -45,10 +55,10 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
     switch(widget.timepointModel.type) {
       case TimepointType.idle:
         return const IdlePointWidget();
-      case TimepointType.moveTo:
-        return MoveToPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.setPos:
+        return SetPosPointWidget(timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.castAction:
-        return CastActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+        return CastActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.setBGM:
         return SetBgmPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.logMessage:
@@ -113,8 +123,9 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   child: DropdownButtonFormField<TimepointType>(
                     decoration: const InputDecoration(
                       filled: true,
-                      //labelText: "Point type",
-                      border: null
+                      labelText: "Point type",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(10.5)
                     ),
                     value: widget.timepointModel.type,
                     isDense: true,

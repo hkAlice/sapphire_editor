@@ -4,17 +4,18 @@ typedef PropertyBuilderCallback<T> = String Function(T value);
 
 class GenericItemPickerWidget<T> extends StatefulWidget {
   
-
   final List<T> items;
   final PropertyBuilderCallback? propertyBuilder;
   final String? label;
   final Function(dynamic) onChanged;
+  final T? initialValue;
   
   const GenericItemPickerWidget({
     super.key,
     required this.items,
     required this.onChanged,
     this.propertyBuilder,
+    this.initialValue,
     this.label
   });
 
@@ -27,7 +28,12 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
 
   @override
   void initState() {
-    _setValue = widget.items.first;
+    if(widget.initialValue != null && widget.items.contains(widget.initialValue)) {
+      _setValue = widget.initialValue;
+    }
+    else {
+      _setValue = widget.items.first;
+    }
     super.initState();
   }
 
@@ -36,9 +42,12 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
     return DropdownButtonFormField<T>(
       value: _setValue,
       elevation: 16,
+      isDense: true,
       decoration: InputDecoration(
         filled: true,
         labelText: widget.label,
+        border: InputBorder.none,
+        contentPadding: const EdgeInsets.all(10.5)
       ),
       onChanged: (T? value) {
         if(value == null) {
@@ -58,9 +67,16 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
           itemName = widget.propertyBuilder!(value);
         }
         else {
-          var data = value.toJson();
-          assert(data.containsKey("name"));
-          itemName = data["name"];
+          var data;
+          if(value is String) {
+            var data = value;
+            itemName = data;
+          }
+          else {
+            var data = value.toJson();
+            assert(data.containsKey("name"));
+            itemName = data["name"];
+          }
         }
 
         return DropdownMenuItem<T>(

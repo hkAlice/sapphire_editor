@@ -150,6 +150,7 @@ class _TimelineListState extends State<TimelineList> {
                     return TimelinePhaseItem(
                       key: Key("phase_${_getCurrentActor().phases[i].hashCode}"),
                       index: i,
+                      selectedActor: _getCurrentActor(),
                       timelineModel: widget.timeline,
                       phaseModel: _getCurrentActor().phases[i],
                       onUpdate: (phaseModel) {

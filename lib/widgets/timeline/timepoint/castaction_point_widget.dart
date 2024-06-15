@@ -9,9 +9,16 @@ import 'package:sapphire_editor/widgets/simple_number_field.dart';
 class CastActionPointWidget extends StatefulWidget {
   final TimelineModel timelineModel;
   final TimepointModel timepointModel;
+  final ActorModel selectedActor;
   final Function() onUpdate;
 
-  const CastActionPointWidget({super.key, required this.timelineModel, required this.timepointModel, required this.onUpdate});
+  const CastActionPointWidget({
+    super.key,
+    required this.timelineModel,
+    required this.timepointModel,
+    required this.onUpdate,
+    required this.selectedActor
+  });
 
   @override
   State<CastActionPointWidget> createState() => _CastActionPointWidgetState();
@@ -26,10 +33,10 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 150,
-          child: GenericItemPickerWidget<ActorModel>(
+          width: 200,
+          child: GenericItemPickerWidget<String>(
             label: "Source Actor",
-            items: widget.timelineModel.actors,
+            items: List.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name),
             onChanged: (newValue) {
               pointData.sourceActor = newValue.name;
               widget.onUpdate();

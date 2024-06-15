@@ -29,6 +29,7 @@ class _ActorDetailedSelectState extends State<ActorDetailedSelect> {
       mainAxisSize: MainAxisSize.max,
       children: [
         GenericSearchPickerWidget(
+          initialValue: widget.actors[widget.index],
           items: widget.actors,
           leading: Row(
             mainAxisSize: MainAxisSize.min,

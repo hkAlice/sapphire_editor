@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/moveto_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
+import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 
-class MoveToPointWidget extends StatefulWidget {
+class SetPosPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final ActorModel selectedActor;
   final Function() onUpdate;
 
-  const MoveToPointWidget({super.key, required this.timepointModel, required this.onUpdate});
+  const SetPosPointWidget({super.key, required this.selectedActor, required this.timepointModel, required this.onUpdate});
 
   @override
-  State<MoveToPointWidget> createState() => _MoveToPointWidgetState();
+  State<SetPosPointWidget> createState() => _SetPosPointWidgetState();
 }
 
-class _MoveToPointWidgetState extends State<MoveToPointWidget> {
+class _SetPosPointWidgetState extends State<SetPosPointWidget> {
   late TextEditingController _xPosTextEditingController;
   late TextEditingController _yPosTextEditingController;
   late TextEditingController _zPosTextEditingController;
   late TextEditingController _rotPosTextEditingController;
 
-  late MoveToPointModel pointData = widget.timepointModel.data as MoveToPointModel;
+  late SetPosPointModel pointData = widget.timepointModel.data as SetPosPointModel;
 
   @override
   void initState() {
@@ -61,6 +64,21 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        SizedBox(
+          width: 200,
+          child: GenericItemPickerWidget<String>(
+            label: "Actor",
+            initialValue: pointData.actorName,
+            items: List.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name),
+            onChanged: (newValue) {
+              pointData.actorName = newValue.name;
+              setState(() {
+                
+              });
+              widget.onUpdate();
+            },
+          ),
+        ),
         _generateFloatInput(
           textEditingController: _xPosTextEditingController,
           label: "Pos X",
@@ -129,16 +147,6 @@ class _MoveToPointWidgetState extends State<MoveToPointWidget> {
             });
           }
         ),
-        SwitchTextWidget(
-          leading: const Text("Request Path"),
-          enabled: pointData.pathRequest,
-          onPressed: () {
-            setState(() {
-              pointData.pathRequest = !pointData.pathRequest;
-            });
-            widget.onUpdate();
-          }
-        )
       ],
     );
   }

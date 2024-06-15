@@ -8,7 +8,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/directorseq_poin
 import 'package:sapphire_editor/models/timeline/timepoint/types/directorvar_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/moveto_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/spawnbnpc_point_model.dart';
@@ -44,8 +44,8 @@ class TimepointModel {
     data ??= <String, dynamic>{};
 
     if(data is Map<String, dynamic>) {
-      if(type == TimepointType.moveTo) {
-        data = MoveToPointModel.fromJson(data);
+      if(type == TimepointType.setPos) {
+        data = SetPosPointModel.fromJson(data);
       } else if(type == TimepointType.idle) {
         data = IdlePointModel.fromJson(data);
       } else if(type == TimepointType.setBGM) {
@@ -85,7 +85,7 @@ class TimepointModel {
         return Colors.redAccent;
       case TimepointType.castAction:
         return Colors.orangeAccent;
-      case TimepointType.moveTo:
+      case TimepointType.setPos:
         return Colors.blueGrey;
       case TimepointType.setBGM:
       case TimepointType.logMessage:
@@ -108,7 +108,7 @@ enum TimepointType {
   @JsonValue("castAction")
   castAction,
   @JsonValue("moveTo")
-  moveTo,
+  setPos,
   @JsonValue("directorFlags")
   directorFlags,
   @JsonValue("directorSeq")

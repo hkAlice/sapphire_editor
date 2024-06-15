@@ -10,6 +10,7 @@ class GenericSearchPickerWidget<T> extends StatefulWidget {
   final Function(dynamic) onChanged;
   final DropdownEntryBuilder itemBuilder;
   final Widget? leading;
+  final T? initialValue;
   
   const GenericSearchPickerWidget({
     super.key,
@@ -18,6 +19,7 @@ class GenericSearchPickerWidget<T> extends StatefulWidget {
     this.propertyBuilder,
     this.label,
     required this.itemBuilder,
+    this.initialValue,
     this.leading
   });
 
@@ -32,8 +34,13 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
 
   @override
   void initState() {
-    _setValue = widget.items.firstOrNull;
-    _selectedActorIdx = 0;
+    if(widget.initialValue != null && widget.items.contains(widget.initialValue)) {
+      _setValue = widget.initialValue;
+    }
+    else {
+      _setValue = widget.items.firstOrNull;
+    }
+    _selectedActorIdx = widget.items.indexOf(_setValue);
     super.initState();
   }
 
@@ -62,7 +69,7 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
         widget.onChanged(_setValue);
       },
       leadingIcon: widget.leading ?? const Icon(Icons.search_rounded),
-      enableFilter: true,
+      enableFilter: false,
       enableSearch: true,
       expandedInsets: const EdgeInsets.all(0.0),
       dropdownMenuEntries: widget.items.map<DropdownMenuEntry>((value) {
