@@ -5,6 +5,7 @@ import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
+import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
@@ -174,30 +175,30 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   }
                 ),
                 const SizedBox(width: 18.0,),
-                Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    controller: _descriptionTextEditingController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      hintText: "Description (optional)",
+                Flexible(
+                  child: SizedBox(
+                    height: 54.0,
+                    child: TextModalEditorWidget(
+                      text: widget.timepointModel.description,
+                      onChanged: (description) {
+                        widget.timepointModel.description = description;
+                        widget.onUpdate(widget.timepointModel);
+                      }
                     ),
-                    onChanged: (value) {
-                      widget.timepointModel.description = value;
-                      widget.onUpdate(widget.timepointModel);
-                    },
                   ),
                 ),
+                const SizedBox(width: 8.0,),
                 SizedBox(
-                  width: 36,
-                  height: 50,
+                  width: 38.0,
+                  height: 54.0,
                   child: IconButton(
+                    
+                    icon: const Icon(Icons.clear_rounded),
+                    splashRadius: 24.0,
                     onPressed: () {
                       widget.phaseModel.timepoints.remove(widget.timepointModel);
                       widget.onUpdate(widget.timepointModel);
                     },
-                    icon: const Icon(Icons.clear_rounded),
                   ),
                 )
               ],
