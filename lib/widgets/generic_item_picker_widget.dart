@@ -28,7 +28,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
 
   @override
   void initState() {
-    if(widget.initialValue != null && widget.items.contains(widget.initialValue)) {
+    if(widget.initialValue != null) {
       _setValue = widget.initialValue;
     }
     else {
@@ -40,7 +40,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
-      value: _setValue,
+      value: widget.items.contains(_setValue) ? _setValue : null,
       elevation: 16,
       isDense: true,
       isExpanded: true,
@@ -48,7 +48,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
         filled: true,
         labelText: widget.label,
         border: InputBorder.none,
-        contentPadding: const EdgeInsets.all(10.5)
+        contentPadding: const EdgeInsets.all(10.5),
       ),
       onChanged: (T? value) {
         if(value == null) {

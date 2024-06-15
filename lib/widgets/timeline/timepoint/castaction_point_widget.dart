@@ -29,6 +29,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name);
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -36,7 +38,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
           width: 200,
           child: GenericItemPickerWidget<String>(
             label: "Source Actor",
-            items: List.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name),
+            items: validActors,
+            initialValue: pointData.sourceActor,
             onChanged: (newValue) {
               pointData.sourceActor = newValue;
               widget.onUpdate();

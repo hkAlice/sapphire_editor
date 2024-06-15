@@ -7,18 +7,16 @@ class ActorPartsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 12.0),
+    return const Card(
+      margin: EdgeInsets.symmetric(vertical: 12.0),
       child: Padding(
-        padding: const EdgeInsets.all(14.0),
+        padding: EdgeInsets.all(14.0),
         child: Column(
           children: [
-            const SmallHeadingWidget(title: "BNpc Parts"),
+            SmallHeadingWidget(title: "BNpc Parts"),
             AddGenericWidget(
               text: "Add new BNpcParts",
-              onTap: () {
-
-              }
+              onTap: null
             )
           ],
         ),

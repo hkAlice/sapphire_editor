@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddGenericWidget extends StatelessWidget {
-  final Function() onTap;
+  final Function()? onTap;
   final String text;
 
   const AddGenericWidget({super.key, this.text = "Add", required this.onTap});
