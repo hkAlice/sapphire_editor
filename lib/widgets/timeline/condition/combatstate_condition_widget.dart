@@ -30,7 +30,7 @@ class _CombatStateConditionWidgetState extends State<CombatStateConditionWidget>
         SizedBox(
           width: 150,
           child: GenericItemPickerWidget<ActorModel>(
-            label: "Actor",
+            label: "Source Actor",
             items: widget.timelineModel.actors,
             onChanged: (newValue) {
               widget.paramData.sourceActor = newValue.name;
@@ -41,10 +41,11 @@ class _CombatStateConditionWidgetState extends State<CombatStateConditionWidget>
             },
           )
         ),
+        const SizedBox(width: 18.0,),
         SizedBox(
           width: 150,
           child: GenericItemPickerWidget<ActorCombatState>(
-            label: "Actor",
+            label: "Combat State",
             items: ActorCombatState.values,
             onChanged: (newValue) {
               widget.paramData.combatState = newValue;

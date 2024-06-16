@@ -111,111 +111,89 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
           ],
         ),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Container(
+            color: Colors.black26,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: GenericItemPickerWidget<ActorModel>(
-                        label: "Target Actor",
-                        items: widget.timelineModel.actors,
-                        onChanged: (newValue) {
-                          _selectedActor = newValue as ActorModel;
-                          
-                          widget.phaseConditionModel.targetActor = _selectedActor.name;
-                          
-                          if(_selectedActor.phases.isEmpty) {
-                            widget.phaseConditionModel.targetPhase = null;
-                          }
-                          else {
-                            widget.phaseConditionModel.targetPhase = _selectedActor.phases.first.name;
-                          }
-
-                          setState(() {
-                            
-                          });
-
-                          widget.onUpdate(widget.phaseConditionModel);
-                        },
-                      )
-                    ),
-                    SizedBox(
-                      width: 250,
-                      child: DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          filled: true,
-                          labelText: "Phase",
-                          border: null
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      
+                      SizedBox(
+                        width: 220,
+                        child: GenericItemPickerWidget<PhaseConditionType>(
+                          label: "Condition",
+                          items: PhaseConditionType.values,
+                          propertyBuilder: (value) {
+                            return treatEnumName(value);
+                          },
+                          onChanged: (newValue) {
+                            setState(() {
+                              widget.phaseConditionModel.changeType(newValue);
+                            });
+                            widget.onUpdate(widget.phaseConditionModel);
+                          },
                         ),
-                        value: widget.phaseConditionModel.targetPhase,
-                        isDense: true,
-                        onChanged: (String? value) {
-                          if(value == null) { return; }
-
-                          widget.phaseConditionModel.targetPhase = value;
-                          setState(() {
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
+                        child: Opacity(opacity: 0.5, child: Center(child: Icon(Icons.keyboard_double_arrow_right_outlined))),
+                      ),
+                      SizedBox(
+                        width: 240,
+                        child: GenericItemPickerWidget<ActorModel>(
+                          label: "Target Actor",
+                          items: widget.timelineModel.actors,
+                          onChanged: (newValue) {
+                            _selectedActor = newValue as ActorModel;
                             
-                          });
-                          widget.onUpdate(widget.phaseConditionModel);
-                        },
-                        items: _generateDropPhaseItems()
-                      ),
-                    ),
-                    const SizedBox(width: 18.0,),
-                    SizedBox(
-                      width: 250,
-                      child: DropdownButtonFormField<PhaseConditionType>(
-                        decoration: const InputDecoration(
-                          filled: true,
-                          labelText: "Condition",
-                          border: null
-                        ),
-                        value: widget.phaseConditionModel.condition,
-                        isDense: true,
-                        onChanged: (PhaseConditionType? value) {
-                          if(value == null) { return; }
-
-                          widget.phaseConditionModel.changeType(value);
-                          setState(() {
+                            widget.phaseConditionModel.targetActor = _selectedActor.name;
                             
-                          });
-
-                          widget.onUpdate(widget.phaseConditionModel);
-                        },
-                        items: PhaseConditionType.values.map((PhaseConditionType type) {
-                          return DropdownMenuItem<PhaseConditionType>(
-                            value: type,
-                            child: Text(treatEnumName(type)));
-                        }).toList()
+                            if(_selectedActor.phases.isEmpty) {
+                              widget.phaseConditionModel.targetPhase = null;
+                            }
+                            else {
+                              widget.phaseConditionModel.targetPhase = _selectedActor.phases.first.name;
+                            }
+                            
+                            setState(() {
+                              
+                            });
+                            
+                            widget.onUpdate(widget.phaseConditionModel);
+                          },
+                        )
                       ),
-                    ),
-                    const SizedBox(width: 18.0,),
-                    Expanded(
-                      child: TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        controller: _descriptionTextEditingController,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: "Description (optional)",
+                      const SizedBox(width: 18.0,),
+                      SizedBox(
+                        width: 240,
+                        child: GenericItemPickerWidget<String>(
+                          label: "Phase",
+                          items: _selectedActor.phases.map((e) => e.name).toList(),
+                          initialValue: widget.phaseConditionModel.targetPhase,
+                          onChanged: (value) {
+                            setState(() {
+                              widget.phaseConditionModel.targetPhase = value;
+                            });
+                            widget.onUpdate(widget.phaseConditionModel);
+                          },
                         ),
-                        
-                        onChanged: (value) {
-                          widget.phaseConditionModel.description = value;
-                          widget.onUpdate(widget.phaseConditionModel);
-                        },
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                _getCondDataWidget()
+                Container(
+                  color: Colors.black12,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _getCondDataWidget(),
+                  )
+                )
               ],
             ),
           ),
