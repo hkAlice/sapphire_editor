@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
+import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
 import 'timeline_phase_model.dart';
 
 part 'timeline_model.g.dart';
@@ -13,15 +15,17 @@ class TimelineModel {
 
   List<ActorModel> actors;
   List<PhaseConditionModel> conditions;
+  List<SelectorModel> selectors;
 
   TimelineModel({
     required this.name,
     phaseList,
     conditionList,
     actorList,
-  }) : conditions = conditionList ?? [], actors = actorList ?? [];
+    selectorList
+  }) : conditions = conditionList ?? [], actors = actorList ?? [], selectors = selectorList ?? [];
 
-  static const VERSION_MODEL = 5;
+  static const VERSION_MODEL = 6;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 
@@ -67,6 +71,24 @@ class TimelineModel {
     conditions.add(condition);
 
     return condition;
+  }
+
+  SelectorModel addNewSelector([SelectorModel? selector]) {
+    selector ??= SelectorModel(
+      id: selectors.length + 1,
+      name: "Selector ${selectors.length + 1}",
+      count: 1,
+      description: "",
+      fillRandomEntries: false,
+      filterList: [
+        SelectorFilterModel(type: SelectorFilterType.player),
+        SelectorFilterModel(type: SelectorFilterType.furthest)
+      ]
+    );
+    
+    selectors.add(selector);
+    
+    return selector;
   }
 
   void checkSanity() {

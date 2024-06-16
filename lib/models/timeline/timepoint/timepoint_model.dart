@@ -107,7 +107,7 @@ enum TimepointType {
   idle,
   @JsonValue("castAction")
   castAction,
-  @JsonValue("moveTo")
+  @JsonValue("setPos")
   setPos,
   @JsonValue("directorFlags")
   directorFlags,

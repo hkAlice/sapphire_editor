@@ -25,7 +25,7 @@ Map<String, dynamic> _$TimepointModelToJson(TimepointModel instance) =>
 const _$TimepointTypeEnumMap = {
   TimepointType.idle: 'idle',
   TimepointType.castAction: 'castAction',
-  TimepointType.setPos: 'moveTo',
+  TimepointType.setPos: 'setPos',
   TimepointType.directorFlags: 'directorFlags',
   TimepointType.directorSeq: 'directorSeq',
   TimepointType.directorVar: 'directorVar',

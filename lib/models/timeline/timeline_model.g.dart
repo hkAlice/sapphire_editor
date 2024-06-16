@@ -15,6 +15,9 @@ TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
           .toList()
       ..conditions = (json['conditions'] as List<dynamic>)
           .map((e) => PhaseConditionModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..selectors = (json['selectors'] as List<dynamic>)
+          .map((e) => SelectorModel.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$TimelineModelToJson(TimelineModel instance) =>
@@ -22,4 +25,5 @@ Map<String, dynamic> _$TimelineModelToJson(TimelineModel instance) =>
       'name': instance.name,
       'actors': instance.actors,
       'conditions': instance.conditions,
+      'selectors': instance.selectors,
     };

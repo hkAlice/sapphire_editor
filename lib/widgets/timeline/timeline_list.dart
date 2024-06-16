@@ -4,6 +4,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
+import 'package:sapphire_editor/widgets/timeline/tab_views/selector_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -164,15 +165,12 @@ class _TimelineListState extends State<TimelineList> {
             ),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.all(14.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Placeholder(child: Center(child: Text("Not yet. The voices...")),),
-            ],
-          ),
-        ),
+        SelectorTabView(
+          timelineModel: widget.timeline,
+          onUpdate: () {
+            widget.onUpdate(widget.timeline);
+          }
+        )
       ]
     );
   }
