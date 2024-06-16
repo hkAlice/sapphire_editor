@@ -10,6 +10,7 @@
 .svn/
 migrate_working_dir/
 storage/
+*.hive
 
 # IntelliJ related
 *.iml
