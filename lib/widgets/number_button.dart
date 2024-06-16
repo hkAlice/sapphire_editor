@@ -60,9 +60,9 @@ class _NumberButtonState extends State<NumberButton> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 22.0,
+            height: 23.0,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 9.0),
+              padding: const EdgeInsets.only(left: 10.0, top: 8.0),
               child: widget.label == null ? Container() : Text(widget.label!, style: Theme.of(context).textTheme.bodySmall),
             ),
           ),
@@ -95,7 +95,7 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: const Padding(
-                    padding: EdgeInsets.all(7.0),
+                    padding: EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
                     child: Icon(Icons.remove_rounded, size: 18.0,),
                   )
                 ),
@@ -135,7 +135,7 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 9.0, vertical: 7.0),
+                    padding: EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
                     child: Icon(Icons.add_rounded, size: 18.0,),
                   )
                 ),
