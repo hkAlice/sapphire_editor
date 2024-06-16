@@ -120,18 +120,21 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           }
         ),
-        Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ListTile(
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 14.0, left: 14.0, right: 14.0),
+                child: ListTile(
                   leading: Image.asset("assets/images/icon_trials_rounded.png", width: 36.0,),
                   title: Text(_getCurrentActor().name),
                   subtitle: Text("LID: ${_getCurrentActor().layoutId.toString()}, HP: ${_getCurrentActor().hp.toString()}", style: Theme.of(context).textTheme.bodySmall,),
                 ),
-                const SizedBox(height: 8.0,),
-                ReorderableListView.builder(
+              ),
+              const SizedBox(height: 8.0,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: ReorderableListView.builder(
                   buildDefaultDragHandles: false,
                   onReorder: (int oldindex, int newindex) {
                     setState(() {
@@ -160,9 +163,12 @@ class _TimelineListState extends State<TimelineList> {
                     );
                   }
                 ),
-                AddGenericWidget(text: "New phase", onTap: () { _addNewPhase(); })
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 14.0),
+                child: AddGenericWidget(text: "New phase", onTap: () { _addNewPhase(); }),
+              )
+            ],
           ),
         ),
         SelectorTabView(
