@@ -29,6 +29,9 @@ class _SelectorItemState extends State<SelectorItem> {
       child: ReorderableDragStartListener(
         index: widget.index,
         child: ExpansionTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
           leading: const Icon(Icons.scatter_plot_outlined),
           title: Text(widget.selectorModel.name),
           subtitle: Text("${filterCount.toString()} filter${filterCount == 1 ? '' : 's'}"),

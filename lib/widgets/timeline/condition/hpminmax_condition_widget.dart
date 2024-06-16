@@ -28,6 +28,21 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
       children: [
         SizedBox(
           width: 150,
+          child: GenericItemPickerWidget<ActorModel>(
+            label: "Source Actor",
+            items: widget.timelineModel.actors,
+            onChanged: (newValue) {
+              widget.paramData.sourceActor = newValue.name;
+              widget.onUpdate(widget.paramData);
+              setState(() {
+                
+              });
+            },
+          )
+        ),
+        const SizedBox(width: 18.0,),
+        SizedBox(
+          width: 150,
           child: SimpleNumberField(
             label: "HP Min",
             initialValue: widget.paramData.hpMin,
@@ -40,6 +55,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
             },
           )
         ),
+        const SizedBox(width: 18.0,),
         SizedBox(
           width: 150,
           child: SimpleNumberField(
@@ -54,20 +70,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
             },
           )
         ),
-        SizedBox(
-          width: 150,
-          child: GenericItemPickerWidget<ActorModel>(
-            label: "Actor",
-            items: widget.timelineModel.actors,
-            onChanged: (newValue) {
-              widget.paramData.sourceActor = newValue.name;
-              widget.onUpdate(widget.paramData);
-              setState(() {
-                
-              });
-            },
-          )
-        ),
+        
       ],
     );
   }

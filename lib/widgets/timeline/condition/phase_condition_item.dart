@@ -62,10 +62,12 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
   Widget build(BuildContext context) {
     return Card(
       borderOnForeground: false,
-      shadowColor: Colors.transparent,
       elevation: 1.0,
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ExpansionTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
         leading: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -129,6 +131,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         child: GenericItemPickerWidget<PhaseConditionType>(
                           label: "Condition",
                           items: PhaseConditionType.values,
+                          initialValue: widget.phaseConditionModel.condition,
                           propertyBuilder: (value) {
                             return treatEnumName(value);
                           },

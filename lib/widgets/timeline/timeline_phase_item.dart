@@ -62,11 +62,12 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
-      shadowColor: Colors.transparent,
       borderOnForeground: false,
       elevation: 1.0,
       child: ExpansionTile(
-        shape: const Border(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
         subtitle: Text("${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}"),

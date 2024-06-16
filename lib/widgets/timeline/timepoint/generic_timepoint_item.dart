@@ -106,6 +106,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.black26,
         border: Border(
           left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 5.0),
           top: BorderSide(color: Colors.grey.shade800, width: 1.0)
@@ -179,21 +180,23 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                 ),
                 const SizedBox(width: 18.0,),
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.timepointModel.description, overflow: TextOverflow.fade,),
-                      SizedBox(
-                        height: 54.0,
-                        child: TextModalEditorWidget(
-                          text: widget.timepointModel.description,
-                          onChanged: (description) {
-                            widget.timepointModel.description = description;
-                            widget.onUpdate(widget.timepointModel);
-                          }
-                        ),
-                      ),
-                    ],
+                  child: SizedBox(
+                    height: 54.0,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(widget.timepointModel.description, textAlign: TextAlign.start, overflow: TextOverflow.fade,)
+                    )
+                  ),
+                ),
+                SizedBox(
+                  height: 54.0,
+                  child: TextModalEditorWidget(
+                    text: widget.timepointModel.description,
+                    headerText: "Edit timepoint description",
+                    onChanged: (description) {
+                      widget.timepointModel.description = description;
+                      widget.onUpdate(widget.timepointModel);
+                    }
                   ),
                 ),
                 const SizedBox(width: 8.0,),
@@ -215,7 +218,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
           ),
           const Divider(height: 1.0,),
           Container(
-            color: Theme.of(context).canvasColor,
+            color: Colors.black12,
             padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),
             child: _generateTypedTimepoint(),
           )
