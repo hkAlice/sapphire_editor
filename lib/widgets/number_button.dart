@@ -94,14 +94,17 @@ class _NumberButtonState extends State<NumberButton> {
                     } while(_holdingStepper);
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
-                    child: Icon(Icons.remove_rounded, size: 18.0,),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
+                    child: Transform.translate(
+                      offset: const Offset(0.0, -3.0),
+                      child: const Icon(Icons.remove_rounded, size: 18.0,)
+                    ),
                   )
                 ),
               ),
               Transform.translate(
-                offset: const Offset(0.0, -1.0),
+                offset: const Offset(0.0, -4.0),
                 child: widget.builder != null ? widget.builder!(widget.value) : SizedBox(
                   width: 24,
                   child: Center(
@@ -134,9 +137,12 @@ class _NumberButtonState extends State<NumberButton> {
                     } while(_holdingStepper);
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
-                    child: Icon(Icons.add_rounded, size: 18.0,),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
+                    child: Transform.translate(
+                      offset: const Offset(0.0, -3.0),
+                      child: const Icon(Icons.add_rounded, size: 18.0,)
+                    ),
                   )
                 ),
               ),
