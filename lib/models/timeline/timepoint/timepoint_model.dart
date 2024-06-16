@@ -11,6 +11,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/spawnbnpc_point_model.dart';
 
 part 'timepoint_model.g.dart';
@@ -68,6 +69,8 @@ class TimepointModel {
         data = DirectorVarPointModel.fromJson(data);
       } else if(type == TimepointType.setCondition) {
         data = SetConditionPointModel.fromJson(data);
+      } else if(type == TimepointType.snapshot) {
+        data = SnapshotPointModel.fromJson(data);
       }
       else {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
@@ -94,6 +97,7 @@ class TimepointModel {
       case TimepointType.bNpcFlags:
       case TimepointType.spawnBNpc:
         return Colors.deepPurpleAccent;
+      case TimepointType.snapshot:
       case TimepointType.setCondition:
         return Colors.brown;
       default:
@@ -126,5 +130,7 @@ enum TimepointType {
   @JsonValue("setBGM")
   setBGM,
   @JsonValue("setCondition")
-  setCondition
+  setCondition,
+  @JsonValue("snapshot")
+  snapshot
 }

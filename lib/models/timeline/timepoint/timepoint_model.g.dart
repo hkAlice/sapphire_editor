@@ -35,4 +35,5 @@ const _$TimepointTypeEnumMap = {
   TimepointType.battleTalk: 'battleTalk',
   TimepointType.setBGM: 'setBGM',
   TimepointType.setCondition: 'setCondition',
+  TimepointType.snapshot: 'snapshot',
 };

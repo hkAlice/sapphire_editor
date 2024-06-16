@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class TextModalEditorWidget extends StatefulWidget {
+  final String headerText;
   final String text;
   final int minLines;
   final int? maxLines;
+  final Widget? icon;
   final Function(String) onChanged;
 
-  const TextModalEditorWidget({super.key, required this.text, required this.onChanged, this.minLines = 5, this.maxLines});
+  const TextModalEditorWidget({super.key, this.icon, this.headerText = "Edit", required this.text, required this.onChanged, this.minLines = 5, this.maxLines});
 
   @override
   State<TextModalEditorWidget> createState() => _TextModalEditorWidgetState();
@@ -27,7 +29,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
       child: IconButton(
         splashRadius: 24.0,
         padding: const EdgeInsets.all(2.0),
-        icon: const Icon(Icons.comment_rounded),
+        icon: widget.icon ?? const Icon(Icons.comment_rounded),
         onPressed: () {
           _descriptionTextEditingController.value = TextEditingValue(text: widget.text);
     
@@ -38,7 +40,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Edit description"),
+                    Text(widget.headerText),
                     SizedBox(
                       width: 32.0,
                       height: 32.0,
@@ -57,14 +59,14 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
                 content: Container(
                   constraints: const BoxConstraints(minWidth: 600),
                   child: TextField(
-                    maxLines: null,
-                    minLines: 5,
+                    maxLines: widget.maxLines,
+                    minLines: widget.minLines,
                     autofocus: true,
                     controller: _descriptionTextEditingController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
                       border: InputBorder.none,
-                      hintText: "Describe your timepoint (or don't)"
+                      hintText: widget.headerText
                     ),
                     onChanged: (value) {
                       widget.onChanged(value);

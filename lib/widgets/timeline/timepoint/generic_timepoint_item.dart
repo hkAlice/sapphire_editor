@@ -17,6 +17,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widg
 import 'package:sapphire_editor/widgets/timeline/timepoint/setpos_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setcondition_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/snapshot_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
 
 class GenericTimepointItem extends StatefulWidget {
@@ -78,6 +79,8 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
         return DirectorVarPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.setCondition:
         return SetConditionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.snapshot:
+        return SnapshotPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }
@@ -175,16 +178,22 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   }
                 ),
                 const SizedBox(width: 18.0,),
-                Flexible(
-                  child: SizedBox(
-                    height: 54.0,
-                    child: TextModalEditorWidget(
-                      text: widget.timepointModel.description,
-                      onChanged: (description) {
-                        widget.timepointModel.description = description;
-                        widget.onUpdate(widget.timepointModel);
-                      }
-                    ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.timepointModel.description, overflow: TextOverflow.fade,),
+                      SizedBox(
+                        height: 54.0,
+                        child: TextModalEditorWidget(
+                          text: widget.timepointModel.description,
+                          onChanged: (description) {
+                            widget.timepointModel.description = description;
+                            widget.onUpdate(widget.timepointModel);
+                          }
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 8.0,),
