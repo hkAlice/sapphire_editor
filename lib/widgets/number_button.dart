@@ -95,7 +95,7 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                     child: Transform.translate(
                       offset: const Offset(0.0, -3.0),
                       child: const Icon(Icons.remove_rounded, size: 18.0,)
@@ -138,7 +138,7 @@ class _NumberButtonState extends State<NumberButton> {
                   },
                   onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                     child: Transform.translate(
                       offset: const Offset(0.0, -3.0),
                       child: const Icon(Icons.add_rounded, size: 18.0,)
