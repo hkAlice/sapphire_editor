@@ -56,7 +56,7 @@ class _SelectorTabViewState extends State<SelectorTabView> {
               }
             ),
             AddGenericWidget(
-              text: "Add new selector",
+              text: "New selector",
               onTap: () {
                 setState(() {
                   widget.timelineModel.addNewSelector();

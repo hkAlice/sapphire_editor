@@ -7,7 +7,7 @@ class BNpcFlagsToggle extends StatefulWidget {
   final Function(int) onUpdate;
   final bool isDense;
 
-  BNpcFlagsToggle({super.key, required this.flags, required this.onUpdate, this.isDense = false});
+  const BNpcFlagsToggle({super.key, required this.flags, required this.onUpdate, this.isDense = false});
 
   @override
   State<BNpcFlagsToggle> createState() => _BNpcFlagsToggleState();

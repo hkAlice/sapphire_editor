@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
@@ -23,16 +22,7 @@ class PhaseConditionItem extends StatefulWidget {
 }
 
 class _PhaseConditionItemState extends State<PhaseConditionItem> {
-  late TextEditingController _descriptionTextEditingController;
   late ActorModel _selectedActor;
-
-  List<DropdownMenuItem<String>> _generateDropPhaseItems() {
-    return _selectedActor.phases.map((TimelinePhaseModel phase) {
-      return DropdownMenuItem<String>(
-        value: phase.name,
-        child: Text(phase.name));
-    }).toList();
-  }
 
   Widget _getCondDataWidget() {
     void genericCallback() {
@@ -52,7 +42,6 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
 
   @override
   void initState() {
-    _descriptionTextEditingController = TextEditingController(text: widget.phaseConditionModel.description);
     _selectedActor = widget.timelineModel.actors.first;
       
     super.initState();

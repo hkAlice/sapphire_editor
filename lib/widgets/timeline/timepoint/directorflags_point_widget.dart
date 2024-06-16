@@ -26,7 +26,7 @@ class _DirectorFlagsPointWidgetState extends State<DirectorFlagsPointWidget> {
     return Row(
       children: [
         SizedBox(
-          width: 150,
+          width: 180,
           child: GenericItemPickerWidget<DirectorOpcode>(
             label: "Operation",
             items: DirectorOpcode.values,
@@ -44,7 +44,7 @@ class _DirectorFlagsPointWidgetState extends State<DirectorFlagsPointWidget> {
         ),
         const SizedBox(width: 18.0),
         SizedBox(
-          width: 150,
+          width: 110,
           child: SimpleNumberField(
             label: "Value",
             initialValue: pointData.val,

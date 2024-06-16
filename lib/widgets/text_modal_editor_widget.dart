@@ -21,6 +21,13 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
     _descriptionTextEditingController = TextEditingController(text: widget.text);
     super.initState();
   }
+
+  @override
+  void dispose() {
+    _descriptionTextEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

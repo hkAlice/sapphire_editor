@@ -37,7 +37,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
 
   Widget _generateStrSplitInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
     return SizedBox(
-      width: 150,
+      width: 180,
       child: TextFormField(
         maxLines: 1,
         controller: textEditingController,
@@ -56,7 +56,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 150,
+          width: 110,
           child: SimpleNumberField(
             label: "Message ID",
             initialValue: pointData.messageId,

@@ -87,7 +87,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
                 widget.onUpdate(widget.phaseModel);
                 },
             ),
-          AddGenericWidget(text: "Add new timepoint", onTap: _addNewTimepoint)
+          AddGenericWidget(text: "New timepoint", onTap: _addNewTimepoint)
         ],
       ),
     );

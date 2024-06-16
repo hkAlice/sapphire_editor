@@ -35,7 +35,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 200,
+          width: 180,
           child: GenericItemPickerWidget<String>(
             label: "Source Actor",
             items: validActors,
@@ -51,7 +51,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
         ),
         const SizedBox(width: 18.0,),
         SizedBox(
-          width: 150,
+          width: 110,
           child: SimpleNumberField(
             label: "Action ID",
             initialValue: pointData.actionId,

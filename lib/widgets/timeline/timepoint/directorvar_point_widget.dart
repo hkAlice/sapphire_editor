@@ -25,7 +25,7 @@ class _DirectorVarPointWidgetState extends State<DirectorVarPointWidget> {
     return Row(
       children: [
         SizedBox(
-          width: 150,
+          width: 180,
           child: GenericItemPickerWidget<DirectorOpcode>(
             label: "Operation",
             items: DirectorOpcode.values,
@@ -43,7 +43,7 @@ class _DirectorVarPointWidgetState extends State<DirectorVarPointWidget> {
         ),
         const SizedBox(width: 18.0),
         SizedBox(
-          width: 150,
+          width: 110,
           child: SimpleNumberField(
             label: "Index (hex)",
             initialValue: pointData.idx,
@@ -56,7 +56,7 @@ class _DirectorVarPointWidgetState extends State<DirectorVarPointWidget> {
         ),
         const SizedBox(width: 18.0),
         SizedBox(
-          width: 150,
+          width: 110,
           child: SimpleNumberField(
             label: "Value",
             initialValue: pointData.val,

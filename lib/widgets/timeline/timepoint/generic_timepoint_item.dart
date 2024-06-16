@@ -124,7 +124,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(
-                  width: 170,
+                  width: 180,
                   child: DropdownButtonFormField<TimepointType>(
                     decoration: const InputDecoration(
                       filled: true,
@@ -216,7 +216,6 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
               ],
             ),
           ),
-          const Divider(height: 1.0,),
           Container(
             color: Colors.black12,
             padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),

@@ -15,7 +15,7 @@ class ActorPartsWidget extends StatelessWidget {
           children: [
             SmallHeadingWidget(title: "BNpc Parts"),
             AddGenericWidget(
-              text: "Add new BNpcParts",
+              text: "New BNpcPart",
               onTap: null
             )
           ],

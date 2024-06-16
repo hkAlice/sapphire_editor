@@ -37,7 +37,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 150,
+          width: 180,
           child: SimpleNumberField(
             label: "BGM ID",
             initialValue: pointData.bgmId,

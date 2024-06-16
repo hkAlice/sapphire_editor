@@ -14,7 +14,7 @@ class AddGenericWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.add_rounded),
-          const SizedBox(height: 36.0,),
+          const SizedBox(height: 36.0, width: 4.0,),
           Text(text)
         ],
       ),

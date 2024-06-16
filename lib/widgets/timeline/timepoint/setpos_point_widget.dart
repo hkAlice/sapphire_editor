@@ -45,7 +45,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
 
   Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged}) {
     return SizedBox(
-      width: 120,
+      width: 110,
       child: TextFormField(
         maxLines: 1,
         controller: textEditingController,
@@ -61,10 +61,9 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 200,
+          width: 180,
           child: GenericItemPickerWidget<String>(
             label: "Actor",
             initialValue: pointData.actorName,
@@ -78,6 +77,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             },
           ),
         ),
+        const SizedBox(width: 18.0,),
         _generateFloatInput(
           textEditingController: _xPosTextEditingController,
           label: "Pos X",
@@ -95,6 +95,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             });
           }
         ),
+        const SizedBox(width: 18.0,),
         _generateFloatInput(
           textEditingController: _yPosTextEditingController,
           label: "Pos Y",
@@ -112,6 +113,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             });
           }
         ),
+        const SizedBox(width: 18.0,),
         _generateFloatInput(
           textEditingController: _zPosTextEditingController,
           label: "Pos Z",
@@ -129,6 +131,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             });
           }
         ),
+        const SizedBox(width: 18.0,),
         _generateFloatInput(
           textEditingController: _rotPosTextEditingController,
           label: "Rot",

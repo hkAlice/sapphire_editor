@@ -29,11 +29,13 @@ class _SpawnBNpcPointWidgetState extends State<SpawnBNpcPointWidget> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 150,
+                    width: 180,
                     child: GenericItemPickerWidget<ActorModel>(
                       label: "Actor",
                       items: widget.timelineModel.actors,

@@ -26,7 +26,7 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 650,
+          width: 680,
           child: GenericItemPickerWidget<PhaseConditionModel>(
             label: "Condition",
             items: widget.timelineModel.conditions,

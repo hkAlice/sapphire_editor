@@ -97,7 +97,7 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                 );
               }
             ),
-            AddGenericWidget(text: "Add new condition", onTap: () { _addNewPhaseCondition(); }),
+            AddGenericWidget(text: "New condition", onTap: () { _addNewPhaseCondition(); }),
           ],
         ),
       ),

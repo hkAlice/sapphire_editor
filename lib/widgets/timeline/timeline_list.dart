@@ -160,7 +160,7 @@ class _TimelineListState extends State<TimelineList> {
                     );
                   }
                 ),
-                AddGenericWidget(text: "Add new phase", onTap: () { _addNewPhase(); })
+                AddGenericWidget(text: "New phase", onTap: () { _addNewPhase(); })
               ],
             ),
           ),

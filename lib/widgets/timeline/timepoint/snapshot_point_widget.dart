@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
-import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 
 class SnapshotPointWidget extends StatefulWidget {
@@ -29,7 +27,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
     return Row(
       children: [
         SizedBox(
-          width: 200,
+          width: 180,
           child: GenericItemPickerWidget<String>(
             label: "Selector",
             items: widget.timelineModel.selectors.map((e) => e.name).toList(),
