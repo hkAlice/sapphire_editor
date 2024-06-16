@@ -19,15 +19,18 @@ class _SelectorTabViewState extends State<SelectorTabView> {
   Widget build(BuildContext context) {
     int selectorCount = widget.timelineModel.selectors.length;
     
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SmallHeadingWidget(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: SmallHeadingWidget(
               title: "$selectorCount selector${selectorCount == 1 ? '' : 's'}",
             ),
-            ReorderableListView.builder(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child: ReorderableListView.builder(
               buildDefaultDragHandles: false,
               onReorder: (int oldindex, int newindex) {
                 setState(() {
@@ -55,18 +58,21 @@ class _SelectorTabViewState extends State<SelectorTabView> {
                 );
               }
             ),
-            AddGenericWidget(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: AddGenericWidget(
               text: "New selector",
               onTap: () {
                 setState(() {
                   widget.timelineModel.addNewSelector();
                 });
-
+                
                 widget.onUpdate();
               }
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

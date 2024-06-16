@@ -27,9 +27,9 @@ class _ActorTabViewState extends State<ActorTabView> {
   }
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             ActorDetailedSelect(

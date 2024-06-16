@@ -30,12 +30,12 @@ class _ConditionTabViewState extends State<ConditionTabView> {
     int conditionCount = widget.timelineModel.conditions.length;
     int enabledConditionsCount = widget.timelineModel.conditions.where((e) => e.enabled).toList().length;
 
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SmallHeadingWidget(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: SmallHeadingWidget(
               title: "$conditionCount condition${conditionCount == 1 ? '' : 's'} ($enabledConditionsCount enabled)",
               trailing: Row(
                 children: [
@@ -67,7 +67,10 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                 ],
               ),
             ),
-            ReorderableListView.builder(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child: ReorderableListView.builder(
               buildDefaultDragHandles: false,
               onReorder: (int oldindex, int newindex) {
                 setState(() {
@@ -97,9 +100,12 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                 );
               }
             ),
-            AddGenericWidget(text: "New condition", onTap: () { _addNewPhaseCondition(); }),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: AddGenericWidget(text: "New condition", onTap: () { _addNewPhaseCondition(); }),
+          ),
+        ],
       ),
     );
   }
