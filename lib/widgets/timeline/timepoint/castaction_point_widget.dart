@@ -3,6 +3,7 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 
@@ -30,6 +31,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
   @override
   Widget build(BuildContext context) {
     var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name);
+    var selectedSelector = widget.timelineModel.selectors.where((e) => e.name == pointData.selectorName).firstOrNull;
+    var selectorCount = selectedSelector != null ? selectedSelector.count : 0;
     
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -59,6 +62,56 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
               pointData.actionId = newValue;
               widget.onUpdate();
             }
+          ),
+        ),
+        const SizedBox(width: 18.0,),
+        SizedBox(
+          width: 110,
+          child: GenericItemPickerWidget<ActorTargetType>(
+            label: "Target Type",
+            items: ActorTargetType.values,
+            initialValue: pointData.targetType,
+            propertyBuilder: (value) => treatEnumName(value),
+            onChanged: (newValue) {
+              pointData.targetType = newValue;
+              widget.onUpdate();
+              setState(() {
+                
+              });
+            },
+          ),
+        ),
+        const SizedBox(width: 18.0,),
+        SizedBox(
+          width: 110,
+          child: GenericItemPickerWidget<String>(
+            label: "Target Selector",
+            items: widget.timelineModel.selectors.map((e) => e.name).toList(),
+            initialValue: pointData.selectorName,
+            enabled: pointData.targetType == ActorTargetType.selector,
+            onChanged: (newValue) {
+              pointData.selectorName = newValue;
+              widget.onUpdate();
+              setState(() {
+                
+              });
+            },
+          ),
+        ),
+        SizedBox(
+          width: 50,
+          child: GenericItemPickerWidget<String>(
+            label: "#",
+            items: List.generate(selectorCount, (e) => (e + 1).toString()),
+            initialValue: (pointData.selectorIndex + 1).toString(),
+            enabled: pointData.targetType == ActorTargetType.selector,
+            onChanged: (newValue) {
+              pointData.selectorIndex = newValue;
+              widget.onUpdate();
+              setState(() {
+                
+              });
+            },
           ),
         ),
       ],

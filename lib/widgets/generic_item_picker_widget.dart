@@ -9,6 +9,7 @@ class GenericItemPickerWidget<T> extends StatefulWidget {
   final String? label;
   final Function(dynamic) onChanged;
   final T? initialValue;
+  final bool enabled;
   
   const GenericItemPickerWidget({
     super.key,
@@ -16,7 +17,8 @@ class GenericItemPickerWidget<T> extends StatefulWidget {
     required this.onChanged,
     this.propertyBuilder,
     this.initialValue,
-    this.label
+    this.label,
+    this.enabled = true
   });
 
   @override
@@ -50,7 +52,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
         border: InputBorder.none,
         contentPadding: const EdgeInsets.all(10.5),
       ),
-      onChanged: (T? value) {
+      onChanged: !widget.enabled ? null : (T? value) {
         if(value == null) {
           return;
         }
