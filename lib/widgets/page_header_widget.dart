@@ -29,7 +29,7 @@ class PageHeaderWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.displaySmall!.apply(color: Colors.white),),
+                  Text(title, style: Theme.of(context).textTheme.displaySmall!,),
                   subtitle != null ? Text(subtitle!, style: Theme.of(context).textTheme.bodySmall,) : Container()
                 ],
               ),

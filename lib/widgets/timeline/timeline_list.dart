@@ -62,8 +62,8 @@ class _TimelineListState extends State<TimelineList> {
         );
       },
       selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
-      unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white70),
-      color: const Color.fromARGB(255, 26, 26, 26),
+      unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
+      color: Theme.of(context).hoverColor,
       tabs: const <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
