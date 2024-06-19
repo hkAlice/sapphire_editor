@@ -38,7 +38,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
         padding: const EdgeInsets.all(2.0),
         icon: widget.icon ?? const Icon(Icons.comment_rounded),
         onPressed: () {
-          _descriptionTextEditingController.value = TextEditingValue(text: widget.text);
+          _descriptionTextEditingController.text = widget.text;
     
           showDialog<void>(
             context: context,
@@ -76,6 +76,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
                       hintText: widget.headerText
                     ),
                     onChanged: (value) {
+                      _descriptionTextEditingController.text = value;
                       widget.onChanged(value);
                     },
                   ),
