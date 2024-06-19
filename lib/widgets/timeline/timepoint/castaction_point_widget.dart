@@ -83,7 +83,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
         ),
         const SizedBox(width: 18.0,),
         SizedBox(
-          width: 110,
+          width: 170,
           child: GenericItemPickerWidget<String>(
             label: "Target Selector",
             items: widget.timelineModel.selectors.map((e) => e.name).toList(),
@@ -106,11 +106,12 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
             initialValue: (pointData.selectorIndex + 1).toString(),
             enabled: pointData.targetType == ActorTargetType.selector,
             onChanged: (newValue) {
-              pointData.selectorIndex = newValue;
-              widget.onUpdate();
               setState(() {
-                
+                pointData.selectorIndex = int.parse(newValue) - 1;
               });
+              
+              widget.onUpdate();
+              
             },
           ),
         ),
