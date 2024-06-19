@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
@@ -105,19 +106,144 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                   value: widget.actorModel.subactors.length,
                   label: "Subactors",
                   onChanged: (value) {
-                    widget.actorModel.subactors.clear();
-                    for(int i = 0; i < value; i++) {
-                      widget.actorModel.subactors.add("${widget.actorModel.name} <subactor ${i + 1}>");
+                    var subactorCount = widget.actorModel.subactors.length;
+                    if(value < subactorCount) {
+                      widget.actorModel.subactors.removeLast();
+                    }
+                    else if(value > subactorCount) {
+                      widget.actorModel.subactors.add("${widget.actorModel.name} <subactor ${subactorCount + 1}>");
                     }
             
                     widget.onUpdate();
-                  }
+                  },
+                  action: Opacity(
+                    opacity: 0.75,
+                    child: Container(
+                      width: 16.0,
+                      height: 16.0,
+                      margin: const EdgeInsets.only(top: 4, right: 4),
+                      child: IconButton(
+                        splashRadius: 8.0,
+                        icon: const Icon(Icons.edit,),
+                        iconSize: 16,
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return _SubActorNameEditDialog(
+                                selectedActor: widget.actorModel,
+                                onChanged: () {
+                                  widget.onUpdate();
+                                },
+                              );
+                            }
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SubActorNameEditDialog extends StatefulWidget {
+  ActorModel selectedActor;
+  Function() onChanged;
+
+  _SubActorNameEditDialog({super.key, required this.selectedActor, required this.onChanged});
+
+  @override
+  State<_SubActorNameEditDialog> createState() => __SubActorNameEditDialogState();
+}
+
+class __SubActorNameEditDialogState extends State<_SubActorNameEditDialog> {
+  List<TextEditingController> _controllers = [];
+
+  List<Widget> _generateFields() {
+    List<Widget> fields = [];
+    for(var subactor in widget.selectedActor.subactors) {
+      var controller = TextEditingController(text: subactor);
+      _controllers.add(controller);
+
+      fields.add(TextField(
+        maxLines: 1,
+        minLines: 1,
+        autofocus: false,
+        controller: controller,
+        decoration: InputDecoration(
+          filled: true,
+          border: InputBorder.none,
+          helperText: subactor
+        ),
+        
+        onChanged: (value) {
+          var idx = widget.selectedActor.subactors.indexOf(subactor);
+          widget.selectedActor.subactors[idx] = value;
+          subactor = value;
+          widget.onChanged();
+        },
+      ));
+      fields.add(SizedBox(height: 8.0,));
+    }
+
+    if(fields.length == 0) {
+      fields.add(Center(child: Text("No subactors? Gyatt?"),));
+    }
+
+    return fields;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    for(var controller in _controllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Edit subactor names"),
+          SizedBox(
+            width: 32.0,
+            height: 32.0,
+            child: IconButton.outlined(
+              padding: const EdgeInsets.all(0.0),
+              icon: const Icon(Icons.close),
+              splashRadius: 28.0,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ],
+      ),
+      //contentPadding: const EdgeInsets.all(12.0),
+      content: Container(
+        constraints: const BoxConstraints(minWidth: 600),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _generateFields()
+          ),
+        ),
+      )
     );
   }
 }

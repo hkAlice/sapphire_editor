@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sapphire_editor/models/storage/editor_settings_model.dart';
 import 'package:sapphire_editor/services/settings_helper.dart';
-import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/services/theme_service.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';

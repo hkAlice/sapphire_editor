@@ -9,7 +9,15 @@ class SimpleNumberField extends StatefulWidget {
   final Function(int) onChanged;
   final bool enabled;
 
-  const SimpleNumberField({super.key, required this.onChanged, this.label, this.enabled = true, this.initialValue, this.controller, this.isHex = false});
+  const SimpleNumberField({
+    super.key,
+    required this.onChanged,
+    this.label,
+    this.enabled = true,
+    this.initialValue,
+    this.controller,
+    this.isHex = false
+  });
 
   @override
   State<SimpleNumberField> createState() => _SimpleNumberFieldState();
