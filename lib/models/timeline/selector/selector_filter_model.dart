@@ -5,11 +5,11 @@ part 'selector_filter_model.g.dart';
 @JsonSerializable()
 class SelectorFilterModel {
   SelectorFilterType type;
-  dynamic data = {};
+  dynamic param;
 
   SelectorFilterModel({
     this.type = SelectorFilterType.player,
-    this.data,
+    this.param,
   });
 
   factory SelectorFilterModel.fromJson(Map<String, dynamic> json) => _$SelectorFilterModelFromJson(json);
@@ -18,12 +18,39 @@ class SelectorFilterModel {
 }
 
 enum SelectorFilterType {
-  @JsonValue("Player")
-  player, // idx  = val
-  @JsonValue("Furthest")
-  furthest, // idx += val
-  @JsonValue("Role")
-  role,
-  @JsonValue("NotAggro")
-  notAggro
+  @JsonValue("insideRadius")
+  insideRadius,
+  @JsonValue("outsideRadius")
+  outsideRadius,
+
+  @JsonValue("player")
+  player,
+  @JsonValue("ally")
+  ally,
+  @JsonValue("ownBattalion")
+  ownBattalion,
+
+  @JsonValue("tank")
+  tank,
+  @JsonValue("healer")
+  healer,
+  @JsonValue("dps")
+  dps,
+  @JsonValue("rangedDps")
+  rangedDps,
+
+  @JsonValue("hasStatusEffect")
+  hasStatusEffect,
+
+  @JsonValue("topAggro")
+  topAggro,
+  @JsonValue("secondAggro")
+  secondAggro,
+
+  @JsonValue("allianceA")
+  allianceA,
+  @JsonValue("allianceB")
+  allianceB,
+  @JsonValue("allianceC")
+  allianceC
 }

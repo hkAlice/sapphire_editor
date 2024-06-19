@@ -10,19 +10,30 @@ SelectorFilterModel _$SelectorFilterModelFromJson(Map<String, dynamic> json) =>
     SelectorFilterModel(
       type: $enumDecodeNullable(_$SelectorFilterTypeEnumMap, json['type']) ??
           SelectorFilterType.player,
-      data: json['data'],
+      param: json['param'],
     );
 
 Map<String, dynamic> _$SelectorFilterModelToJson(
         SelectorFilterModel instance) =>
     <String, dynamic>{
       'type': _$SelectorFilterTypeEnumMap[instance.type]!,
-      'data': instance.data,
+      'param': instance.param,
     };
 
 const _$SelectorFilterTypeEnumMap = {
-  SelectorFilterType.player: 'Player',
-  SelectorFilterType.furthest: 'Furthest',
-  SelectorFilterType.role: 'Role',
-  SelectorFilterType.notAggro: 'NotAggro',
+  SelectorFilterType.insideRadius: 'insideRadius',
+  SelectorFilterType.outsideRadius: 'outsideRadius',
+  SelectorFilterType.player: 'player',
+  SelectorFilterType.ally: 'ally',
+  SelectorFilterType.ownBattalion: 'ownBattalion',
+  SelectorFilterType.tank: 'tank',
+  SelectorFilterType.healer: 'healer',
+  SelectorFilterType.dps: 'dps',
+  SelectorFilterType.rangedDps: 'rangedDps',
+  SelectorFilterType.hasStatusEffect: 'hasStatusEffect',
+  SelectorFilterType.topAggro: 'topAggro',
+  SelectorFilterType.secondAggro: 'secondAggro',
+  SelectorFilterType.allianceA: 'allianceA',
+  SelectorFilterType.allianceB: 'allianceB',
+  SelectorFilterType.allianceC: 'allianceC',
 };

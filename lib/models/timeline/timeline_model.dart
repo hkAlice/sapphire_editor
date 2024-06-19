@@ -82,7 +82,6 @@ class TimelineModel {
       fillRandomEntries: false,
       filterList: [
         SelectorFilterModel(type: SelectorFilterType.player),
-        SelectorFilterModel(type: SelectorFilterType.furthest)
       ]
     );
     
