@@ -13,7 +13,7 @@ import 'package:sapphire_editor/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const TimelineEditorApp());
+    await tester.pumpWidget(const SapphireEditorApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

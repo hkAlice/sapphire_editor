@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:sapphire_editor/models/storage/editor_settings_model.dart';
 
 class StorageHelper {
   static final StorageHelper _singleton = StorageHelper._internal();
@@ -16,6 +17,10 @@ class StorageHelper {
   Future<bool> init() async {
     // todo: objectbox works so much better than hive
     // no objBox for web however (isar maybe)
+    Hive
+      ..init("./storage/")
+      ..registerAdapter(EditorSettingsModelAdapter());
+    
     _dbInstance = await BoxCollection.open(
       "editorDb",
       path: "./storage/",
@@ -38,5 +43,6 @@ class StorageHelper {
 
 // add your precious tables here
 enum StorageTable {
-  autosaveTimeline
+  autosaveTimeline,
+  settings
 }

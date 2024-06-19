@@ -1,25 +1,46 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/services/settings_helper.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
+import 'package:sapphire_editor/services/theme_service.dart';
 import 'package:sapphire_editor/views/main_view.dart';
 
 void main() async {
   await StorageHelper().init();
 
-  runApp(const TimelineEditorApp());
+  var uiSettings = await SettingsHelper().getUISettings();
+
+  var themeService = ThemeService();
+  var theme = FlexScheme.values.firstWhere((e) => e.name == uiSettings.theme, orElse: () => FlexScheme.indigoM3);
+
+  themeService.updateThemeData(FlexThemeData.dark(scheme: theme));
+
+  runApp(SapphireEditorApp(themeService: themeService,));
 }
 
-class TimelineEditorApp extends StatelessWidget {
-  const TimelineEditorApp({super.key});
+class SapphireEditorApp extends StatefulWidget {
+  final ThemeService themeService;
+
+  const SapphireEditorApp({super.key, required this.themeService});
 
   @override
+  State<SapphireEditorApp> createState() => _SapphireEditorAppState();
+}
+
+class _SapphireEditorAppState extends State<SapphireEditorApp> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Sapphire Editor",
-      theme: FlexThemeData.light(scheme: FlexScheme.indigoM3).copyWith(),
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.indigoM3),
-      themeMode: ThemeMode.dark, // todo: toggle instead of system
-      home: const MainView(),
+    return ValueListenableBuilder(
+      valueListenable: widget.themeService.themeScheme,
+      builder: (context, value, child) {
+        return MaterialApp(
+          title: "Sapphire Editor",
+          theme: value,
+          darkTheme: value,
+          themeMode: ThemeMode.dark,
+          home: const MainView(),
+        );
+      }
     );
   }
 }
