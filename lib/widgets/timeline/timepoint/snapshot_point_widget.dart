@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
@@ -23,6 +24,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
   @override
   Widget build(BuildContext context) {
     var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name);
+    var setSelectorValue = widget.timelineModel.selectors.firstWhereOrNull((e) => e.name == pointData.selector);
 
     return Row(
       children: [
@@ -31,6 +33,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
           child: GenericItemPickerWidget<String>(
             label: "Selector",
             items: widget.timelineModel.selectors.map((e) => e.name).toList(),
+            initialValue: setSelectorValue?.name,
             onChanged: (newValue) {
               pointData.selector = newValue;
               widget.onUpdate();
