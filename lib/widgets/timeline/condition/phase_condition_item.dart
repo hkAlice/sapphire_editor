@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
@@ -141,6 +142,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         child: GenericItemPickerWidget<ActorModel>(
                           label: "Target Actor",
                           items: widget.timelineModel.actors,
+                          initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.phaseConditionModel.targetActor),
                           onChanged: (newValue) {
                             _selectedActor = newValue as ActorModel;
                             

@@ -30,6 +30,7 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
           child: GenericItemPickerWidget<PhaseConditionModel>(
             label: "Condition",
             items: widget.timelineModel.conditions,
+            initialValue: widget.timelineModel.conditions.firstWhere((e) => e.id == pointData.conditionId),
             propertyBuilder: (value) {
               return "(ID: ${value.id}) ${value.getReadableConditionStr()}";
             },

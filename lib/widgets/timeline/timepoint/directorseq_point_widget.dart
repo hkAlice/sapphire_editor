@@ -30,6 +30,7 @@ class _DirectorSeqPointWidgetState extends State<DirectorSeqPointWidget> {
           child: GenericItemPickerWidget<DirectorOpcode>(
             label: "Operation",
             items: DirectorOpcode.values,
+            initialValue: pointData.opc,
             propertyBuilder: (value) {
               return treatEnumName(value);
             },

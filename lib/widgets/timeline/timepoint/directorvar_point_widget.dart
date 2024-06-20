@@ -29,6 +29,7 @@ class _DirectorVarPointWidgetState extends State<DirectorVarPointWidget> {
           child: GenericItemPickerWidget<DirectorOpcode>(
             label: "Operation",
             items: DirectorOpcode.values,
+            initialValue: pointData.opc,
             propertyBuilder: (value) {
               return treatEnumName(value);
             },

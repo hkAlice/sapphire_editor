@@ -30,6 +30,7 @@ class _DirectorFlagsPointWidgetState extends State<DirectorFlagsPointWidget> {
           child: GenericItemPickerWidget<DirectorOpcode>(
             label: "Operation",
             items: DirectorOpcode.values,
+            initialValue: pointData.opc,
             propertyBuilder: (value) {
               return treatEnumName(value);
             },

@@ -156,14 +156,14 @@ class _SubActorNameEditDialog extends StatefulWidget {
   ActorModel selectedActor;
   Function() onChanged;
 
-  _SubActorNameEditDialog({super.key, required this.selectedActor, required this.onChanged});
+  _SubActorNameEditDialog({required this.selectedActor, required this.onChanged});
 
   @override
   State<_SubActorNameEditDialog> createState() => __SubActorNameEditDialogState();
 }
 
 class __SubActorNameEditDialogState extends State<_SubActorNameEditDialog> {
-  List<TextEditingController> _controllers = [];
+  final List<TextEditingController> _controllers = [];
 
   List<Widget> _generateFields() {
     List<Widget> fields = [];
@@ -189,11 +189,11 @@ class __SubActorNameEditDialogState extends State<_SubActorNameEditDialog> {
           widget.onChanged();
         },
       ));
-      fields.add(SizedBox(height: 8.0,));
+      fields.add(const SizedBox(height: 8.0,));
     }
 
-    if(fields.length == 0) {
-      fields.add(Center(child: Text("No subactors? Gyatt?"),));
+    if(fields.isEmpty) {
+      fields.add(const Center(child: Text("No subactors? Gyatt?"),));
     }
 
     return fields;

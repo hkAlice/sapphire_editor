@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
@@ -39,6 +40,7 @@ class _SpawnBNpcPointWidgetState extends State<SpawnBNpcPointWidget> {
                     child: GenericItemPickerWidget<ActorModel>(
                       label: "Actor",
                       items: widget.timelineModel.actors,
+                      initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == pointData.spawnActor),
                       onChanged: (newValue) {
                         pointData.spawnActor = newValue.name;
                         widget.onUpdate();

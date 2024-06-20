@@ -54,7 +54,7 @@ class _ActorTabViewState extends State<ActorTabView> {
                 widget.onChanged(widget.currentActorIndex);
               }
             ),
-            ActorPartsWidget()
+            const ActorPartsWidget()
           ],
         ),
       ),

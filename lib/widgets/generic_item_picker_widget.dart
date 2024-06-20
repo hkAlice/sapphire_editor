@@ -16,7 +16,7 @@ class GenericItemPickerWidget<T> extends StatefulWidget {
     required this.items,
     required this.onChanged,
     this.propertyBuilder,
-    this.initialValue,
+    required this.initialValue,
     this.label,
     this.enabled = true
   });
@@ -36,7 +36,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
     else {
       _setValue = null;
     }
-    
+
     super.initState();
   }
 
