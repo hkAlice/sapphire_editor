@@ -153,10 +153,10 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
 }
 
 class _SubActorNameEditDialog extends StatefulWidget {
-  ActorModel selectedActor;
-  Function() onChanged;
+  final ActorModel selectedActor;
+  final Function() onChanged;
 
-  _SubActorNameEditDialog({required this.selectedActor, required this.onChanged});
+  const _SubActorNameEditDialog({required this.selectedActor, required this.onChanged});
 
   @override
   State<_SubActorNameEditDialog> createState() => __SubActorNameEditDialogState();
