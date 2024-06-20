@@ -26,7 +26,7 @@ class GenericItemPickerWidget<T> extends StatefulWidget {
 }
 
 class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
-  late T _setValue;
+  late T? _setValue;
 
   @override
   void initState() {
@@ -34,8 +34,9 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
       _setValue = widget.initialValue;
     }
     else {
-      _setValue = widget.items.first;
+      _setValue = null;
     }
+    
     super.initState();
   }
 

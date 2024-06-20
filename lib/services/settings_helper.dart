@@ -20,7 +20,6 @@ class SettingsHelper {
       var objData = await settingsBox.get("ui");
 
       if(objData == null) {
-        await settingsBox.clear();
         await settingsBox.put("ui", settingsModel);
       }
 
