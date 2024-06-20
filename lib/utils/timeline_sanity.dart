@@ -88,7 +88,7 @@ class TimelineSanitySvc {
             _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid actor ${pointData.sourceActor}.", items);
           }
         }
       }
@@ -109,8 +109,13 @@ class TimelineSanitySvc {
       if(actorNameList.contains(actor.name)) {
         _err("UnresolvedDuplicateActorRef", "Duplicate actor name ${actor.name}. Ensure that actors have distinct names.", items);
       }
+
       if(layoutIdList.contains(actor.layoutId)) {
         _err("UnresolvedDuplicateActorRef", "Duplicate actor layoutId ${actor.layoutId}. Ensure that actors have distinct layoutId.", items);
+      }
+
+      if(actor.hp == 0) {
+        _err("InvalidActorHP", "Actor ${actor.name} has HP == 0.", items);
       }
 
       actorNameList.add(actor.name);
