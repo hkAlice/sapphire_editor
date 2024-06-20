@@ -43,11 +43,11 @@ class TimelineSanitySvc {
         continue;
       }
 
-      if(phaseNameList.contains(actor.name)) {
+      if(phaseNameList.contains(phase.name)) {
         _err("UnresolvedDuplicatePhaseRef", "Duplicate phase name ${actor.name}->${phase.name}. Ensure that phases have distinct names within an actor.", items);
       }
 
-      phaseNameList.add(actor.name);
+      phaseNameList.add(phase.name);
 
       for(var timepoint in phase.timepoints) {
         // validate castAction timepoint
