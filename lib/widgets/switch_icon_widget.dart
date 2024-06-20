@@ -14,6 +14,7 @@ class _SwitchIconWidgetState extends State<SwitchIconWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      splashRadius: 22.0,
       onPressed: () { widget.onPressed(); } ,
       icon: widget.enabled ? Icon(widget.icon, 
               color: const Color(0xFFE1EBD3),

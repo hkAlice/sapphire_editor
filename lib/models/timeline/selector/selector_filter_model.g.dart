@@ -10,6 +10,7 @@ SelectorFilterModel _$SelectorFilterModelFromJson(Map<String, dynamic> json) =>
     SelectorFilterModel(
       type: $enumDecodeNullable(_$SelectorFilterTypeEnumMap, json['type']) ??
           SelectorFilterType.player,
+      negate: json['negate'] as bool? ?? false,
       param: json['param'],
     );
 
@@ -17,6 +18,7 @@ Map<String, dynamic> _$SelectorFilterModelToJson(
         SelectorFilterModel instance) =>
     <String, dynamic>{
       'type': _$SelectorFilterTypeEnumMap[instance.type]!,
+      'negate': instance.negate,
       'param': instance.param,
     };
 

@@ -99,7 +99,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
           ),
         ),
         SizedBox(
-          width: 50,
+          width: 70,
           child: GenericItemPickerWidget<String>(
             label: "#",
             items: List.generate(selectorCount, (e) => (e + 1).toString()),

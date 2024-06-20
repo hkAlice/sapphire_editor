@@ -5,10 +5,12 @@ part 'selector_filter_model.g.dart';
 @JsonSerializable()
 class SelectorFilterModel {
   SelectorFilterType type;
+  bool negate;
   dynamic param;
 
   SelectorFilterModel({
     this.type = SelectorFilterType.player,
+    this.negate = false,
     this.param,
   });
 
