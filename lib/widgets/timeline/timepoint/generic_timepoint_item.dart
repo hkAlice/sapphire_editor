@@ -68,7 +68,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
       case TimepointType.bNpcFlags:
         return BNpcFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.battleTalk:
-        return BattleTalkPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+        return BattleTalkPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.spawnBNpc:
         return SpawnBNpcPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.directorFlags:

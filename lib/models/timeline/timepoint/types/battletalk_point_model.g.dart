@@ -9,8 +9,8 @@ part of 'battletalk_point_model.dart';
 BattleTalkPointModel _$BattleTalkPointModelFromJson(
         Map<String, dynamic> json) =>
     BattleTalkPointModel(
-      handlerId: (json['handlerId'] as num?)?.toInt() ?? 0,
-      talkerId: (json['talkerId'] as num?)?.toInt() ?? 0,
+      handlerActorName: json['handlerActorName'] as String? ?? "<unknown>",
+      talkerActorName: json['talkerActorName'] as String? ?? "<unknown>",
       kind: (json['kind'] as num?)?.toInt() ?? 0,
       nameId: (json['nameId'] as num?)?.toInt() ?? 2961,
       battleTalkId: (json['battleTalkId'] as num?)?.toInt() ?? 2939,
@@ -23,8 +23,8 @@ BattleTalkPointModel _$BattleTalkPointModelFromJson(
 Map<String, dynamic> _$BattleTalkPointModelToJson(
         BattleTalkPointModel instance) =>
     <String, dynamic>{
-      'handlerId': instance.handlerId,
-      'talkerId': instance.talkerId,
+      'handlerActorName': instance.handlerActorName,
+      'talkerActorName': instance.talkerActorName,
       'kind': instance.kind,
       'nameId': instance.nameId,
       'battleTalkId': instance.battleTalkId,
