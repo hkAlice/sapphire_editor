@@ -19,7 +19,8 @@ class SettingsHelper {
 
 
       if(settingsModel == null) {
-        await settingsBox.put("ui", EditorSettingsModel());
+        settingsModel = EditorSettingsModel();
+        await settingsBox.put("ui", settingsModel);
       }
     }
     catch(e) {
