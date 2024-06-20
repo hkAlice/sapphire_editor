@@ -33,22 +33,35 @@ class TimelineSanitySvc {
   static void _checkTimepoints(TimelineModel timeline, ActorModel actor, List<SanityItem> items) {
     List<String> refSelectors = [];
     List<String> snapshotSelectors = [];
+    List<String> phaseNameList = [];
 
     for(var phase in actor.phases) {
       if(phase.timepoints.isEmpty) {
         _warn("EmptyPhase", "Phase ${actor.name}->${phase.name} has no timepoints.", items);
         continue;
       }
+
+      if(phaseNameList.contains(actor.name)) {
+        _err("UnresolvedDuplicatePhaseRef", "Duplicate phase name ${actor.name}->${phase.name}. Ensure that phases have distinct names within an actor.", items);
+      }
+
+      phaseNameList.add(actor.name);
+
       for(var timepoint in phase.timepoints) {
         // validate castAction timepoint
         if(timepoint.type == TimepointType.castAction) {
           var pointData = timepoint.data as CastActionPointModel;
           if(pointData.actionId == 0) {
-            _err("InvalidActionID", "Phase ${phase.name} has CastAction ActionID 0.", items);
+            _err("InvalidActionID", "Phase ${actor.name}->${phase.name} has CastAction ActionID 0.", items);
           }
+
+          if(pointData.actionId == 69) {
+            _info("Nice", "Phase ${actor.name}->${phase.name} has CastAction ActionID 69. Nice", items);
+          }
+
           if(pointData.targetType == ActorTargetType.selector) {
             if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
-              _err("InvalidSelectorRef", "Phase ${phase.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
+              _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
             }
             else {
               if(!snapshotSelectors.contains(pointData.selectorName) && !pointData.snapshot) {
@@ -56,14 +69,25 @@ class TimelineSanitySvc {
               }
               refSelectors.add(pointData.selectorName);
             }
+            if(!timeline.actors.any((e) => e.name == pointData.sourceActor)) {
+              _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
+            }
           }
+
           if(pointData.targetType == ActorTargetType.none) {
-            _warn("UnsupportedTargetType", "Phase ${phase.name} has CastAction TargetType 'none', and is undefined behavior.", items);
+            _warn("UnsupportedTargetType", "Phase ${actor.name}->${phase.name} has CastAction TargetType 'none', and is undefined behavior.", items);
           }
         }
+
         if(timepoint.type == TimepointType.snapshot) {
           var pointData = timepoint.data as SnapshotPointModel;
-          snapshotSelectors.add(pointData.selector);
+          snapshotSelectors.add(pointData.selectorName);
+          if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
+            _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
+          }
+          if(!timeline.actors.any((e) => e.name == pointData.sourceActor)) {
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
+          }
         }
       }
     }

@@ -24,7 +24,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
   @override
   Widget build(BuildContext context) {
     var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name);
-    var setSelectorValue = widget.timelineModel.selectors.firstWhereOrNull((e) => e.name == pointData.selector);
+    var setSelectorValue = widget.timelineModel.selectors.firstWhereOrNull((e) => e.name == pointData.selectorName);
 
     return Row(
       children: [
@@ -35,7 +35,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
             items: widget.timelineModel.selectors.map((e) => e.name).toList(),
             initialValue: setSelectorValue?.name,
             onChanged: (newValue) {
-              pointData.selector = newValue;
+              pointData.selectorName = newValue;
               widget.onUpdate();
               setState(() {
                 

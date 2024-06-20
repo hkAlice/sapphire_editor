@@ -9,11 +9,11 @@ part of 'snapshot_point_model.dart';
 SnapshotPointModel _$SnapshotPointModelFromJson(Map<String, dynamic> json) =>
     SnapshotPointModel(
       sourceActor: json['sourceActor'] as String? ?? "<unknown>",
-      selector: json['selector'] as String? ?? "<unknown>",
+      selectorName: json['selectorName'] as String? ?? "<unknown>",
     );
 
 Map<String, dynamic> _$SnapshotPointModelToJson(SnapshotPointModel instance) =>
     <String, dynamic>{
-      'selector': instance.selector,
+      'selectorName': instance.selectorName,
       'sourceActor': instance.sourceActor,
     };

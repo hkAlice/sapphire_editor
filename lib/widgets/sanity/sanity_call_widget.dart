@@ -72,10 +72,13 @@ class _SanityCallDialog extends StatelessWidget {
 
     for(var sanityItem in items) {
       bool isError = sanityItem.severity == SanitySeverity.error;
-      
+      bool isWarn = sanityItem.severity == SanitySeverity.warning;
+      Color callColour = isError ? Colors.red.shade900 : (isWarn ? Colors.orange.shade500 : Colors.purple.shade700);
+      IconData callIcon = isError ? Icons.error_rounded : (isWarn ? Icons.warning_rounded : Icons.info_rounded);
+
       widgets.add(Card(
         child: ListTile(
-          leading: isError ? Icon(Icons.error_rounded, size: 36.0, color: Colors.red.shade900) : Icon(Icons.warning_rounded, size: 36.0, color: Colors.orange.shade500,),
+          leading: Icon(callIcon, size: 36.0, color: callColour),
           subtitle: Text(sanityItem.type),
           title: Text(sanityItem.desc),
         ),
