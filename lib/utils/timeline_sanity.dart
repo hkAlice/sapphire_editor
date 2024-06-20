@@ -1,7 +1,11 @@
 // todo: ideally this would be a service and handle everything timeline based (adding, etc)
 import 'package:collection/collection.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 
 class TimelineSanitySvc {
   static List<SanityItem> run(TimelineModel timeline) {
@@ -14,6 +18,57 @@ class TimelineSanitySvc {
     return items..sortBy<num>((e) => e.severity.index);
   }
 
+  static void _info(String type, String desc, List<SanityItem> items) {
+    items.add(SanityItem(SanitySeverity.info, type, desc));
+  }
+
+  static void _warn(String type, String desc, List<SanityItem> items) {
+    items.add(SanityItem(SanitySeverity.warning, type, desc));
+  }
+
+  static void _err(String type, String desc, List<SanityItem> items) {
+    items.add(SanityItem(SanitySeverity.error, type, desc));
+  }
+
+  static void _checkTimepoints(TimelineModel timeline, ActorModel actor, List<SanityItem> items) {
+    List<String> refSelectors = [];
+    List<String> snapshotSelectors = [];
+
+    for(var phase in actor.phases) {
+      if(phase.timepoints.isEmpty) {
+        _warn("EmptyPhase", "Phase ${actor.name}->${phase.name} has no timepoints.", items);
+        continue;
+      }
+      for(var timepoint in phase.timepoints) {
+        // validate castAction timepoint
+        if(timepoint.type == TimepointType.castAction) {
+          var pointData = timepoint.data as CastActionPointModel;
+          if(pointData.actionId == 0) {
+            _err("InvalidActionID", "Phase ${phase.name} has CastAction ActionID 0.", items);
+          }
+          if(pointData.targetType == ActorTargetType.selector) {
+            if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
+              _err("InvalidSelectorRef", "Phase ${phase.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
+            }
+            else {
+              if(!snapshotSelectors.contains(pointData.selectorName) && !pointData.snapshot) {
+                _warn("NullSelectorSnapshotRef", "CastAction ID(${pointData.actionId.toString()}) uses selector ${pointData.selectorName} that has not been snapshot yet or null. Ignore if snapshotting selector via script or global selector.", items);
+              }
+              refSelectors.add(pointData.selectorName);
+            }
+          }
+          if(pointData.targetType == ActorTargetType.none) {
+            _warn("UnsupportedTargetType", "Phase ${phase.name} has CastAction TargetType 'none', and is undefined behavior.", items);
+          }
+        }
+        if(timepoint.type == TimepointType.snapshot) {
+          var pointData = timepoint.data as SnapshotPointModel;
+          snapshotSelectors.add(pointData.selector);
+        }
+      }
+    }
+  }
+
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
     bool hasCombatPhaseCondition = timeline.conditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
 
@@ -22,25 +77,27 @@ class TimelineSanitySvc {
 
     for(var actor in timeline.actors) {
       if(actor.phases.isEmpty) {
-        items.add(SanityItem(SanitySeverity.warning, "StallActor", "Actor ${actor.name} has no phases and may stall."));
+        _warn("StallActor", "Actor ${actor.name} has no phases and may stall.", items);
       }
 
       if(actorNameList.contains(actor.name)) {
-        items.add(SanityItem(SanitySeverity.error, "UnresolvedDuplicateActorRef", "Duplicate actor name ${actor.name}. Ensure that actors have distinct names."));
+        _err("UnresolvedDuplicateActorRef", "Duplicate actor name ${actor.name}. Ensure that actors have distinct names.", items);
       }
       if(layoutIdList.contains(actor.layoutId)) {
-        items.add(SanityItem(SanitySeverity.error, "UnresolvedDuplicateActorRef", "Duplicate actor layoutId ${actor.layoutId}. Ensure that actors have distinct layoutId."));
+        _err("UnresolvedDuplicateActorRef", "Duplicate actor layoutId ${actor.layoutId}. Ensure that actors have distinct layoutId.", items);
       }
 
       actorNameList.add(actor.name);
       layoutIdList.add(actor.layoutId);
+
+      _checkTimepoints(timeline, actor, items);
     }
 
     actorNameList.where((e) => actorNameList.where((element) => element == e).length > 1).toSet().toList();
     layoutIdList.where((e) => layoutIdList.where((element) => element == e).length > 1).toSet().toList();
 
     if(timeline.conditions.isEmpty) {
-      items.add(const SanityItem(SanitySeverity.error, "StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions."));
+      _err("StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions.", items);
     }
 
     {
@@ -59,12 +116,12 @@ class TimelineSanitySvc {
     {
       // check if last phase in actor loops and has end scenario
       if(timeline.conditions.isNotEmpty && !timeline.conditions.last.loop) {
-        items.add(SanityItem(SanitySeverity.warning, "MissingTailPhaseClosure", "Last phase ${timeline.conditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase."));
+        _warn("MissingTailPhaseClosure", "Last phase ${timeline.conditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase.", items);
       }
 
       // check if timeline has on combat check
       if(!hasCombatPhaseCondition) {
-        items.add(const SanityItem(SanitySeverity.warning, "NoCombatPhaseCondition", "Timeline is indifferent to whether mob is in combat or not."));
+        _warn("NoCombatPhaseCondition", "Timeline is indifferent to whether mob is in combat or not.", items);
       }
     }
 

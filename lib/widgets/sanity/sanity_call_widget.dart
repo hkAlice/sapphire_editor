@@ -73,11 +73,12 @@ class _SanityCallDialog extends StatelessWidget {
     for(var sanityItem in items) {
       bool isError = sanityItem.severity == SanitySeverity.error;
       
-      widgets.add(ListTile(
-        tileColor: isError ? Colors.red.shade900 : Colors.orange.shade900,
-        trailing: isError ? const Icon(Icons.error_rounded) : const Icon(Icons.warning_rounded),
-        title: Text(sanityItem.type),
-        subtitle: Text(sanityItem.desc),
+      widgets.add(Card(
+        child: ListTile(
+          leading: isError ? Icon(Icons.error_rounded, size: 36.0, color: Colors.red.shade900) : Icon(Icons.warning_rounded, size: 36.0, color: Colors.orange.shade500,),
+          subtitle: Text(sanityItem.type),
+          title: Text(sanityItem.desc),
+        ),
       ));
     }
     
@@ -89,9 +90,14 @@ class _SanityCallDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.only(top: 18.0, bottom: 0.0),
       title: const Text("Sanity check"),
       insetPadding: const EdgeInsets.all(50.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: _buildWidgetList()
+      content: SingleChildScrollView(
+        child: Container(
+          color: Colors.black12,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _buildWidgetList()
+          ),
+        ),
       )
     );
   }
