@@ -52,11 +52,16 @@ class _SanityCallErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isError = errCount > 0;
+    bool isWarn = warnCount > 0;
+
+    Color callColour = isError ? Colors.red.shade900 : (isWarn ? Colors.orange.shade500 : Colors.purple.shade700);
+    IconData callIcon = isError ? Icons.error_rounded : (isWarn ? Icons.warning_rounded : Icons.info_rounded);
     return Row(
       children: [
-        const Icon(Icons.warning_rounded),
+        Icon(callIcon, color: callColour,),
         const SizedBox(width: 8.0,),
-        Text("$errCount errors, $warnCount warnings"),
+        Text("$errCount error${errCount == 1 ? '' : 's'}, $warnCount warning${warnCount == 1 ? '' : 's'}", style: Theme.of(context).textTheme.labelLarge!.apply(color: callColour),),
       ]
     );
   }
@@ -95,6 +100,7 @@ class _SanityCallDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.all(50.0),
       content: SingleChildScrollView(
         child: Container(
+          constraints: const BoxConstraints(minWidth: 600),
           color: Colors.black12,
           child: Column(
             mainAxisSize: MainAxisSize.min,

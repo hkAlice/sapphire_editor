@@ -34,6 +34,8 @@ class TimelineSanitySvc {
     List<String> refSelectors = [];
     List<String> snapshotSelectors = [];
     List<String> phaseNameList = [];
+    // todo: add bnpcpart here !! squid game
+    List<String> actorRefNameList = [actor.name, ...actor.subactors];
 
     for(var phase in actor.phases) {
       if(phase.timepoints.isEmpty) {
@@ -69,9 +71,9 @@ class TimelineSanitySvc {
               }
               refSelectors.add(pointData.selectorName);
             }
-            if(!timeline.actors.any((e) => e.name == pointData.sourceActor)) {
-              _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
-            }
+          }
+          if(!actorRefNameList.contains(pointData.sourceActor)) {
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
           }
 
           if(pointData.targetType == ActorTargetType.none) {
@@ -85,7 +87,7 @@ class TimelineSanitySvc {
           if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
             _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
           }
-          if(!timeline.actors.any((e) => e.name == pointData.sourceActor)) {
+          if(!actorRefNameList.contains(pointData.sourceActor)) {
             _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
           }
         }
