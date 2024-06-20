@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,6 +24,7 @@ class _CombatStateConditionWidgetState extends State<CombatStateConditionWidget>
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -32,6 +34,7 @@ class _CombatStateConditionWidgetState extends State<CombatStateConditionWidget>
           child: GenericItemPickerWidget<ActorModel>(
             label: "Source Actor",
             items: widget.timelineModel.actors,
+            initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor),
             onChanged: (newValue) {
               widget.paramData.sourceActor = newValue.name;
               widget.onUpdate(widget.paramData);
@@ -47,6 +50,7 @@ class _CombatStateConditionWidgetState extends State<CombatStateConditionWidget>
           child: GenericItemPickerWidget<ActorCombatState>(
             label: "Combat State",
             items: ActorCombatState.values,
+            initialValue: widget.paramData.combatState,
             onChanged: (newValue) {
               widget.paramData.combatState = newValue;
               widget.onUpdate(widget.paramData);

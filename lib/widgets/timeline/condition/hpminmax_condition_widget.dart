@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
@@ -31,6 +32,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
           child: GenericItemPickerWidget<ActorModel>(
             label: "Source Actor",
             items: widget.timelineModel.actors,
+            initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor),
             onChanged: (newValue) {
               widget.paramData.sourceActor = newValue.name;
               widget.onUpdate(widget.paramData);
