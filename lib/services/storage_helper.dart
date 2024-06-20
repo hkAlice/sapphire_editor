@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sapphire_editor/models/storage/editor_settings_model.dart';
 
 class StorageHelper {
@@ -18,7 +20,7 @@ class StorageHelper {
     // todo: objectbox works so much better than hive
     // no objBox for web however (isar maybe)
     Hive
-      ..init("./storage/")
+      ..init(kIsWeb ? "/storage" : (await getApplicationDocumentsDirectory()).path)
       ..registerAdapter(EditorSettingsModelAdapter());
     
     _dbInstance = await BoxCollection.open(

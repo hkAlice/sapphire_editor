@@ -6,6 +6,7 @@ import 'package:sapphire_editor/services/theme_service.dart';
 import 'package:sapphire_editor/views/main_view.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await StorageHelper().init();
 
   var uiSettings = await SettingsHelper().getUISettings();

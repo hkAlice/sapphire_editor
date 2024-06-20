@@ -12,24 +12,27 @@ class SettingsHelper {
 
   Future<EditorSettingsModel> getUISettings() async {
     var settingsBox = StorageHelper().getTable(StorageTable.settings);
-    var settingsModel;
+    EditorSettingsModel settingsModel = EditorSettingsModel();
+
+    // todo: what the fuck happened to flutter local db on web the past few years
 
     try {
-      settingsModel = await settingsBox.get("ui");
+      var objData = await settingsBox.get("ui");
 
-
-      if(settingsModel == null) {
-        settingsModel = EditorSettingsModel();
+      if(objData == null) {
+        await settingsBox.clear();
         await settingsBox.put("ui", settingsModel);
+      }
+
+      else {
+        settingsModel = objData;
       }
     }
     catch(e) {
       // todo something is screwed
-      settingsModel = EditorSettingsModel();
-      await settingsBox.put("ui", settingsModel);
     }
 
-    return settingsModel as EditorSettingsModel;
+    return settingsModel;
   }
 
   Future<bool> saveUISettings(EditorSettingsModel settings) async {
