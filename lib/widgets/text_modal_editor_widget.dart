@@ -76,7 +76,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
                       hintText: widget.headerText
                     ),
                     onChanged: (value) {
-                      _descriptionTextEditingController.text = value;
+                      //_descriptionTextEditingController.text = value;
                       widget.onChanged(value);
                     },
                   ),
