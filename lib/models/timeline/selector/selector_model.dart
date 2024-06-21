@@ -15,12 +15,15 @@ class SelectorModel {
 
   List<SelectorFilterModel> filters;
 
+  String excludeSelectorName;
+
   SelectorModel({
     required this.id,
     this.name = "Selector",
     this.description = "",
     this.fillRandomEntries = false,
     this.count = 1,
+    this.excludeSelectorName = "",
     filterList
   }) : filters = filterList ?? [];
 

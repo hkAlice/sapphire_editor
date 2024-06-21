@@ -61,6 +61,7 @@ class _TimelineListState extends State<TimelineList> {
           ),
         );
       },
+      
       selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       color: Theme.of(context).hoverColor,

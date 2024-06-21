@@ -7,11 +7,9 @@ import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
-import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
-import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
 class SelectorItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -90,8 +88,8 @@ class _SelectorItemState extends State<SelectorItem> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text("Target Count", style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.start,),
-                        SizedBox(height: 8.0,),
+                        Text("Result", style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.start,),
+                        const SizedBox(height: 16.0,),
                         NumberButton(
                           min: 1,
                           max: 32,
@@ -102,16 +100,23 @@ class _SelectorItemState extends State<SelectorItem> {
                             widget.onUpdate(widget.selectorModel);
                           }
                         ),
-                        SizedBox(height: 8.0,),
-                        SwitchTextWidget(
-                          enabled: widget.selectorModel.fillRandomEntries,
-                          leading: Text("Fill random entries"),
-                          onPressed: () {
-                            widget.selectorModel.fillRandomEntries = !widget.selectorModel.fillRandomEntries;
-                            widget.onUpdate(widget.selectorModel);
-                          }
-                        ),
+                        const SizedBox(height: 8.0,),
                         
+                        GenericItemPickerWidget<String>(
+                          label: "Exclude selector result",
+                          items: widget.timelineModel.selectors.map((e) => e.name).toList()
+                            ..remove(widget.selectorModel.name)
+                            ..insert(0, "<none>"),
+                          initialValue: widget.selectorModel.excludeSelectorName == "" ? "<none>" : widget.selectorModel.excludeSelectorName,
+                          onChanged: (value) {
+                            if(value == "<none>") {
+                              value = "";
+                            }
+
+                            widget.selectorModel.excludeSelectorName = value;
+                            widget.onUpdate(widget.selectorModel);
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -125,7 +130,23 @@ class _SelectorItemState extends State<SelectorItem> {
                         borderRadius: BorderRadius.circular(4.0)
                       ),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: SizedBox(
+                            width: 200,
+                            child: SwitchTextWidget(
+                              enabled: widget.selectorModel.fillRandomEntries,
+                              leading: const Text("Fill random entries"),
+                              onPressed: () {
+                                widget.selectorModel.fillRandomEntries = !widget.selectorModel.fillRandomEntries;
+                                widget.onUpdate(widget.selectorModel);
+                              }
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0,),
                           for(var filter in widget.selectorModel.filters)
                             Column(
                               children: [
@@ -235,7 +256,7 @@ class SmallFilterLogicWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           first ? Container() : Icon(Icons.subdirectory_arrow_right_rounded, size: 12.0, color: Theme.of(context).primaryColor,),
-          first ? Container() : SizedBox(width: 4.0,),
+          first ? Container() : const SizedBox(width: 4.0,),
           Text(
             (first ? "Where".toUpperCase() : logic.toUpperCase()) + (negate ? " NOT" : ""),
             style: Theme.of(context).textTheme.labelMedium,

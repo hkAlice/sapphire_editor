@@ -13,6 +13,7 @@ SelectorModel _$SelectorModelFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String? ?? "",
       fillRandomEntries: json['fillRandomEntries'] as bool? ?? false,
       count: (json['count'] as num?)?.toInt() ?? 1,
+      excludeSelectorName: json['excludeSelectorName'] as String? ?? "",
     )..filters = (json['filters'] as List<dynamic>)
         .map((e) => SelectorFilterModel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -25,4 +26,5 @@ Map<String, dynamic> _$SelectorModelToJson(SelectorModel instance) =>
       'fillRandomEntries': instance.fillRandomEntries,
       'count': instance.count,
       'filters': instance.filters,
+      'excludeSelectorName': instance.excludeSelectorName,
     };
