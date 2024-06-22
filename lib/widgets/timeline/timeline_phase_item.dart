@@ -114,7 +114,10 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
               ),
             ),
             const SizedBox(width: 8.0,),
-            Text(_calcDuration(), style: Theme.of(context).textTheme.labelLarge,),
+            SizedBox(
+              width: 48.0,
+              child: Text(_calcDuration(), style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.right,)
+            ),
           ],
         ),
         children: [
