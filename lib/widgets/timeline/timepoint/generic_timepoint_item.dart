@@ -26,6 +26,7 @@ class GenericTimepointItem extends StatefulWidget {
   final TimepointModel timepointModel;
   final ActorModel selectedActor;
   final Function(TimepointModel) onUpdate;
+  final int index;
 
   const GenericTimepointItem({
     super.key,
@@ -33,7 +34,8 @@ class GenericTimepointItem extends StatefulWidget {
     required this.phaseModel,
     required this.timepointModel,
     required this.selectedActor,
-    required this.onUpdate
+    required this.onUpdate,
+    required this.index
   });
 
   @override
@@ -104,125 +106,143 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        border: Border(
-          left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 5.0),
-          top: BorderSide(color: Colors.grey.shade800, width: 1.0)
-        )
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                  width: 180,
-                  child: DropdownButtonFormField<TimepointType>(
-                    decoration: const InputDecoration(
-                      filled: true,
-                      labelText: "Point type",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(10.5)
-                    ),
-                    value: widget.timepointModel.type,
-                    isDense: true,
-                    onChanged: (TimepointType? value) {
-                      if(value == null) { return; }
-            
-                      widget.timepointModel.changeType(value);
-                      
-                      setState(() {
-                        
-                      });
-                      widget.onUpdate(widget.timepointModel);
-                    },
-                    items: TimepointType.values.map((TimepointType type) {
-                      return DropdownMenuItem<TimepointType>(
-                        value: type,
-                        child: Text(treatEnumName(type)));
-                    }).toList()
-                  ),
-                ),
-                const SizedBox(width: 18.0,),
-                NumberButton(
-                  min: 0,
-                  max: 50000,
-                  value: widget.timepointModel.duration,
-                  label: "Duration",
-                  builder: (value) {
-                    var seconds = value / 1000;
-                    return SizedBox(
-                      width: 42,
-                      child: Column(
-                        children: [
-                          Text("${seconds.toStringAsFixed(2)}s"),
-                          //Text("${value}ms", style: Theme.of(context).textTheme.bodySmall,)
-                        ],
+    return Stack(
+      children: [
+        
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black26,
+            border: Border(
+              left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 6.0),
+              top: BorderSide(color: Colors.grey.shade800, width: 1.0)
+            )
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      width: 180,
+                      child: DropdownButtonFormField<TimepointType>(
+                        decoration: const InputDecoration(
+                          filled: true,
+                          labelText: "Point type",
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(10.5)
+                        ),
+                        value: widget.timepointModel.type,
+                        isDense: true,
+                        onChanged: (TimepointType? value) {
+                          if(value == null) { return; }
+                
+                          widget.timepointModel.changeType(value);
+                          
+                          setState(() {
+                            
+                          });
+                          widget.onUpdate(widget.timepointModel);
+                        },
+                        items: TimepointType.values.map((TimepointType type) {
+                          return DropdownMenuItem<TimepointType>(
+                            value: type,
+                            child: Text(treatEnumName(type)));
+                        }).toList()
                       ),
-                    );
-                  },
-                  stepCount: 100,
-                  onChanged: (value) {
-                    widget.timepointModel.duration = value;
-                    setState(() {
-                      
-                    });
-                    widget.onUpdate(widget.timepointModel);
-                  }
-                ),
-                const SizedBox(width: 18.0,),
-                Expanded(
-                  child: SizedBox(
-                    height: 54.0,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(widget.timepointModel.description, textAlign: TextAlign.start, overflow: TextOverflow.fade,)
+                    ),
+                    const SizedBox(width: 18.0,),
+                    NumberButton(
+                      min: 0,
+                      max: 50000,
+                      value: widget.timepointModel.duration,
+                      label: "Duration",
+                      builder: (value) {
+                        var seconds = value / 1000;
+                        return SizedBox(
+                          width: 42,
+                          child: Column(
+                            children: [
+                              Text("${seconds.toStringAsFixed(2)}s"),
+                              //Text("${value}ms", style: Theme.of(context).textTheme.bodySmall,)
+                            ],
+                          ),
+                        );
+                      },
+                      stepCount: 100,
+                      onChanged: (value) {
+                        widget.timepointModel.duration = value;
+                        setState(() {
+                          
+                        });
+                        widget.onUpdate(widget.timepointModel);
+                      }
+                    ),
+                    const SizedBox(width: 18.0,),
+                    Expanded(
+                      child: SizedBox(
+                        height: 54.0,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(widget.timepointModel.description, textAlign: TextAlign.start, overflow: TextOverflow.fade,)
+                        )
+                      ),
+                    ),
+                    SizedBox(
+                      height: 54.0,
+                      child: TextModalEditorWidget(
+                        text: widget.timepointModel.description,
+                        headerText: "Edit timepoint description",
+                        onChanged: (description) {
+                          widget.timepointModel.description = description;
+                          widget.onUpdate(widget.timepointModel);
+                        }
+                      ),
+                    ),
+                    const SizedBox(width: 8.0,),
+                    SizedBox(
+                      width: 38.0,
+                      height: 54.0,
+                      child: IconButton(
+                        
+                        icon: const Icon(Icons.clear_rounded),
+                        splashRadius: 24.0,
+                        onPressed: () {
+                          widget.phaseModel.timepoints.remove(widget.timepointModel);
+                          widget.onUpdate(widget.timepointModel);
+                        },
+                      ),
                     )
-                  ),
+                  ],
                 ),
-                SizedBox(
-                  height: 54.0,
-                  child: TextModalEditorWidget(
-                    text: widget.timepointModel.description,
-                    headerText: "Edit timepoint description",
-                    onChanged: (description) {
-                      widget.timepointModel.description = description;
-                      widget.onUpdate(widget.timepointModel);
-                    }
-                  ),
-                ),
-                const SizedBox(width: 8.0,),
-                SizedBox(
-                  width: 38.0,
-                  height: 54.0,
-                  child: IconButton(
-                    
-                    icon: const Icon(Icons.clear_rounded),
-                    splashRadius: 24.0,
-                    onPressed: () {
-                      widget.phaseModel.timepoints.remove(widget.timepointModel);
-                      widget.onUpdate(widget.timepointModel);
-                    },
-                  ),
-                )
-              ],
+              ),
+              Container(
+                color: Colors.black12,
+                padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),
+                child: _generateTypedTimepoint(),
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: 16.0,
+          child: ReorderableDragStartListener(
+            index: widget.index,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Container(color: Colors.transparent,),
             ),
           ),
-          Container(
-            color: Colors.black12,
-            padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),
-            child: _generateTypedTimepoint(),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

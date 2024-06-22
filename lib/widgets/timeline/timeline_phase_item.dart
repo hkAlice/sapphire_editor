@@ -76,19 +76,18 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-
-                SizedBox(
-                  height: 54.0,
-                  child: TextModalEditorWidget(
-                    text: widget.phaseModel.description,
-                    headerText: "Edit timepoint description",
-                    onChanged: (description) {
-                      widget.phaseModel.description = description;
-                      widget.onUpdate(widget.phaseModel);
-                    }
-                  ),
-                ),
-                const SizedBox(width: 8.0,),
+            SizedBox(
+              height: 54.0,
+              child: TextModalEditorWidget(
+                text: widget.phaseModel.description,
+                headerText: "Edit timepoint description",
+                onChanged: (description) {
+                  widget.phaseModel.description = description;
+                  widget.onUpdate(widget.phaseModel);
+                }
+              ),
+            ),
+            const SizedBox(width: 8.0,),
             SizedBox(
               width: 32.0,
               height: 32.0,
@@ -111,20 +110,42 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
           ],
         ),
         children: [
-          for(var point in widget.phaseModel.timepoints)
-            GenericTimepointItem(
-              timelineModel: widget.timelineModel,
-              timepointModel: point,
-              phaseModel: widget.phaseModel,
-              selectedActor: widget.selectedActor,
-              onUpdate: (timepoint) {
-                setState(() {
-        
-                });
+          ReorderableListView.builder(
+                  buildDefaultDragHandles: false,
+                  onReorder: (int oldindex, int newindex) {
+                    setState(() {
+                      if(newindex > oldindex) {
+                        newindex -= 1;
+                      }
+                      final items = widget.phaseModel.timepoints.removeAt(oldindex);
+                      widget.phaseModel.timepoints.insert(newindex, items);
+                    });
+                
+                    widget.onUpdate(widget.phaseModel);
+                  },
+                  itemCount: widget.phaseModel.timepoints.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, i) {
+                    return GenericTimepointItem(
+                      key: Key("timepoint_${widget.phaseModel.timepoints[i].hashCode}"),
+                      timelineModel: widget.timelineModel,
+                      timepointModel: widget.phaseModel.timepoints[i],
+                      phaseModel: widget.phaseModel,
+                      selectedActor: widget.selectedActor,
+                      index: i,
+                      onUpdate: (timepoint) {
+                        setState(() {
+                
+                        });
 
-                widget.onUpdate(widget.phaseModel);
-                },
-            ),
+                        widget.onUpdate(widget.phaseModel);
+                        },
+                    );
+                  }
+                ),
+              
+            
           AddGenericWidget(text: "New timepoint", onTap: _addNewTimepoint)
         ],
       ),

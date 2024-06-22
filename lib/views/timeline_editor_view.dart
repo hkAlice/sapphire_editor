@@ -181,8 +181,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          flex: 6,
+                        Flexible(
+                          flex: 7,
                           child: TimelineList(
                             timeline: _timeline!,
                             onUpdate: (timeline) {
@@ -191,7 +191,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                           ),
                         ),
                         const VerticalDivider(),
-                        Flexible(
+                        Expanded(
                           flex: 4,
                           child: Stack(
                             children: [
