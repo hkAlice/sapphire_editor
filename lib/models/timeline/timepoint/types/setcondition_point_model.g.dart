@@ -11,11 +11,13 @@ SetConditionPointModel _$SetConditionPointModelFromJson(
     SetConditionPointModel(
       conditionId: (json['conditionId'] as num?)?.toInt() ?? 1,
       enabled: json['enabled'] as bool? ?? true,
+      conditionStr: json['conditionStr'] as String? ?? "<unknown>",
     );
 
 Map<String, dynamic> _$SetConditionPointModelToJson(
         SetConditionPointModel instance) =>
     <String, dynamic>{
       'conditionId': instance.conditionId,
+      'conditionStr': instance.conditionStr,
       'enabled': instance.enabled,
     };

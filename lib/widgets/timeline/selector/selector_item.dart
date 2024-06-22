@@ -69,6 +69,9 @@ class _SelectorItemState extends State<SelectorItem> {
                 padding: const EdgeInsets.all(2.0),
                 onPressed: () {
                   widget.timelineModel.selectors.removeAt(widget.index);
+                  setState(() {
+                    
+                  });
                   widget.onUpdate(widget.selectorModel);
                 },
               ),

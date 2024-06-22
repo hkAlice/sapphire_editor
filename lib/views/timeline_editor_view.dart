@@ -88,10 +88,6 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
     _parseTimelineToJSON();
     _autosave(_jsonTextFieldController.text);
     _sanityCheck = TimelineSanitySvc.run(_timeline!);
-
-    setState(() {
-      
-    });
   }
 
   bool _parseTimelineToJSON() {
@@ -159,7 +155,9 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
             title: "Timeline Editor",
             subtitle: "Outputs encounter timeline data in JSON",
             heading: Image.asset("assets/images/icon_trials.png"),
-            trailing: SanityCallWidget(items: _sanityCheck,)
+            trailing: SanityCallWidget(
+              timelineModel: _timeline
+            )
           ),
           const Divider(),
           FutureBuilder<bool>(

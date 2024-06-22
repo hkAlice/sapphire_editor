@@ -37,6 +37,7 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
             },
             onChanged: (newValue) {
               pointData.conditionId = newValue.id;
+              pointData.conditionStr = newValue.getReadableConditionStr();
               widget.onUpdate();
               setState(() {
                 

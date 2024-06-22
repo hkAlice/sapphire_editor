@@ -1,28 +1,59 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/timeline_sanity.dart';
 
 class SanityCallWidget extends StatefulWidget {
-  final List<SanityItem> items;
-  const SanityCallWidget({super.key, required this.items});
+  final TimelineModel? timelineModel;
+  const SanityCallWidget({super.key, required this.timelineModel});
 
   @override
   State<SanityCallWidget> createState() => _SanityCallWidgetState();
 }
 
 class _SanityCallWidgetState extends State<SanityCallWidget> {
+  Timer _sanityTimer = Timer(const Duration(seconds: 2), () {});
+  int timelineHash = 0;
+  List<SanityItem> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _sanityTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      if(mounted) {
+        if(widget.timelineModel != null) {
+          items = TimelineSanitySvc.run(widget.timelineModel!);
+          setState(() {
+            timelineHash = widget.timelineModel.hashCode;
+          });
+        }
+      }
+
+      
+    });
+  }
+
+  @override
+  void dispose() {
+    _sanityTimer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: widget.items.isEmpty ? null : () {
+      onPressed: items.isEmpty ? null : () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return _SanityCallDialog(items: widget.items,);
+            return _SanityCallDialog(items: items,);
       });
       },
-      child: widget.items.isNotEmpty ? _SanityCallErrorWidget(
-        errCount: widget.items.where((e) => e.severity == SanitySeverity.error).length,
-        warnCount: widget.items.where((e) => e.severity == SanitySeverity.warning).length
+      child: items.isNotEmpty ? _SanityCallErrorWidget(
+        errCount: items.where((e) => e.severity == SanitySeverity.error).length,
+        warnCount: items.where((e) => e.severity == SanitySeverity.warning).length
       ) : const _SanityCallDoneWidget()
     );
   }
