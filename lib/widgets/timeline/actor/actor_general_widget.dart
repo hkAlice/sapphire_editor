@@ -34,6 +34,9 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
     _localIdEditingController.value = TextEditingValue(text: widget.actorModel.id.toString());
     _layoutIdEditingController.value = TextEditingValue(text: widget.actorModel.layoutId.toString());
     _hpEditingController.value = TextEditingValue(text: widget.actorModel.hp.toString());
+    _localIdEditingController.selection = TextSelection.collapsed(offset: _localIdEditingController.text.length);
+    _layoutIdEditingController.selection = TextSelection.collapsed(offset: _layoutIdEditingController.text.length);
+    _hpEditingController.selection = TextSelection.collapsed(offset: _hpEditingController.text.length);
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12.0),
@@ -75,9 +78,6 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                     label: "Layout ID",
                     onChanged: (value) {
                       widget.actorModel.layoutId = value;
-                      setState(() {
-                        
-                      });
                       widget.onUpdate();
                     },
                   ),
@@ -91,9 +91,6 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                     label: "HP",
                     onChanged: (value) {
                       widget.actorModel.hp = value;
-                      setState(() {
-                        
-                      });
                       widget.onUpdate();
                     },
                   ),
