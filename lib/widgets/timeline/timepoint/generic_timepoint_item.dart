@@ -67,8 +67,8 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
     return ReorderableDragStartListener(
       index: widget.index,
       child: InkWell(
-        onTap: () {
-          showDialog(
+        onTap: () async {
+          await showDialog(
             context: context,
             builder: (BuildContext context) {
               return TimepointEditorWidget(
@@ -76,11 +76,13 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                 timelineModel: widget.timelineModel,
                 selectedActor: widget.selectedActor,
                 onUpdate: (_) {
-                  widget.onUpdate(widget.timepointModel);
+                  //widget.onUpdate(widget.timepointModel);
                 }
               );
-            }
+            },
           );
+
+          widget.onUpdate(widget.timepointModel);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -104,8 +106,15 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(treatEnumName(widget.timepointModel.type), style: Theme.of(context).textTheme.bodyMedium,)
                       ),
+                      
                       const VerticalDivider(),
                       Expanded(child:  Text(widget.timepointModel.toString())),
+                      const VerticalDivider(),
+                      SizedBox(
+                        width: 48.0,
+                        child: Center(child: Text("${(widget.timepointModel.duration / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
+                      ),
+                      const VerticalDivider(),
                       SizedBox(
                         width: 24.0,
                         height: 24.0,
@@ -118,7 +127,8 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                             widget.onUpdate(widget.timepointModel);
                           },
                         ),
-                      )
+                      ),
+                      const SizedBox(width: 4.0,)
                     ],
                   ),
                 ),
