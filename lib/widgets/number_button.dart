@@ -103,7 +103,7 @@ class _NumberButtonState extends State<NumberButton> {
                             
                           });
                     
-                          await Future.delayed(const Duration(milliseconds: 50));
+                          await Future.delayed(const Duration(milliseconds: 20));
                         } while(_holdingStepper);
                       },
                       onLongPressEnd: (_) => setState(() => _holdingStepper = false),
@@ -146,7 +146,7 @@ class _NumberButtonState extends State<NumberButton> {
                             
                           });
                     
-                          await Future.delayed(const Duration(milliseconds: 50));
+                          await Future.delayed(const Duration(milliseconds: 20));
                         } while(_holdingStepper);
                       },
                       onLongPressEnd: (_) => setState(() => _holdingStepper = false),

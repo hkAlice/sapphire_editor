@@ -46,6 +46,110 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   late TextEditingController _descriptionTextEditingController;
   late TextEditingController _durationTextEditingController;
 
+  @override
+  void initState() {
+    _descriptionTextEditingController = TextEditingController(text: widget.timepointModel.description);
+    _durationTextEditingController = TextEditingController(text: widget.timepointModel.duration.toString());
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionTextEditingController.dispose();
+    _durationTextEditingController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReorderableDragStartListener(
+      index: widget.index,
+      child: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TimepointEditorWidget(
+                timepointModel: widget.timepointModel,
+                timelineModel: widget.timelineModel,
+                selectedActor: widget.selectedActor,
+                onUpdate: (_) {
+                  widget.onUpdate(widget.timepointModel);
+                }
+              );
+            }
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black12,
+            border: Border(
+              left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 2.0),
+              top: BorderSide(color: Colors.grey.shade800.withAlpha(150), width: 1.0)
+            )
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 100,
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Text(treatEnumName(widget.timepointModel.type), style: Theme.of(context).textTheme.bodyMedium,)
+                      ),
+                      const VerticalDivider(),
+                      Expanded(child:  Text(widget.timepointModel.toString())),
+                      SizedBox(
+                        width: 24.0,
+                        height: 24.0,
+                        child: IconButton(
+                          padding: const EdgeInsets.all(0.0),
+                          icon: const Icon(Icons.clear_rounded, size: 16.0,),
+                          splashRadius: 14.0,
+                          onPressed: () {
+                            widget.phaseModel.timepoints.remove(widget.timepointModel);
+                            widget.onUpdate(widget.timepointModel);
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
+      ),
+    );
+  }
+}
+
+class TimepointEditorWidget extends StatefulWidget {
+  final TimepointModel timepointModel;
+  final TimelineModel timelineModel;
+  final ActorModel selectedActor;
+  final Function(TimepointModel) onUpdate;
+
+  const TimepointEditorWidget({
+    super.key,
+    required this.timepointModel,
+    required this.timelineModel,
+    required this.selectedActor,
+    required this.onUpdate
+  });
+
+  @override
+  State<TimepointEditorWidget> createState() => _TimepointEditorWidgetState();
+}
+
+class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
   Widget _generateTypedTimepoint() {
     // todo: can also use cast type "is".. though slower
     var timepointModel = widget.timepointModel;
@@ -89,35 +193,33 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   }
 
   @override
-  void initState() {
-    _descriptionTextEditingController = TextEditingController(text: widget.timepointModel.description);
-    _durationTextEditingController = TextEditingController(text: widget.timepointModel.duration.toString());
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _descriptionTextEditingController.dispose();
-    _durationTextEditingController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black26,
-            border: Border(
-              left: BorderSide(color: widget.timepointModel.getColorForTimepointType(), width: 6.0),
-              top: BorderSide(color: Colors.grey.shade800, width: 1.0)
-            )
-          ),
+    return AlertDialog.adaptive(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Edit timepoint"),
+          SizedBox(
+            width: 32.0,
+            height: 32.0,
+            child: IconButton.outlined(
+              padding: const EdgeInsets.all(0.0),
+              icon: const Icon(Icons.close),
+              splashRadius: 28.0,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ],
+      ),
+      content: Container(
+        color: Colors.black12,
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 800),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
@@ -143,10 +245,11 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                 
                           widget.timepointModel.changeType(value);
                           
+                          
+                          widget.onUpdate(widget.timepointModel);
                           setState(() {
                             
                           });
-                          widget.onUpdate(widget.timepointModel);
                         },
                         items: TimepointType.values.map((TimepointType type) {
                           return DropdownMenuItem<TimepointType>(
@@ -203,45 +306,18 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         }
                       ),
                     ),
-                    const SizedBox(width: 8.0,),
-                    SizedBox(
-                      width: 38.0,
-                      height: 54.0,
-                      child: IconButton(
-                        
-                        icon: const Icon(Icons.clear_rounded),
-                        splashRadius: 24.0,
-                        onPressed: () {
-                          widget.phaseModel.timepoints.remove(widget.timepointModel);
-                          widget.onUpdate(widget.timepointModel);
-                        },
-                      ),
-                    )
                   ],
                 ),
               ),
               Container(
                 color: Colors.black12,
                 padding: widget.timepointModel.type == TimepointType.idle ? null : const EdgeInsets.all(8.0),
-                child: _generateTypedTimepoint(),
+                child: _generateTypedTimepoint()
               )
             ],
           ),
         ),
-        Positioned(
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: 16.0,
-          child: ReorderableDragStartListener(
-            index: widget.index,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.grab,
-              child: Container(color: Colors.transparent,),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
