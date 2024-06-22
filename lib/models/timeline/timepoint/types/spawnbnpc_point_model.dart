@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
 
 part 'spawnbnpc_point_model.g.dart';
 
@@ -18,7 +19,7 @@ class SpawnBNpcPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "Spawn $spawnActor (flags: ${BNpcFlags.flagsStr(flags)})";
   }
 }
 

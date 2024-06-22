@@ -22,6 +22,6 @@ class BattleTalkPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "BattleTalk#$battleTalkId kind $kind with nameId#$nameId (talker actor $talkerActorName, handler actor $handlerActorName)";
   }
 }

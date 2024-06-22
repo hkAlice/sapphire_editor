@@ -17,6 +17,6 @@ class SetPosPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "Actor $actorName to [X: ${pos[0]}, Y: ${pos[1]}, Z: ${pos[2]}, Rot $rot]";
   }
 }

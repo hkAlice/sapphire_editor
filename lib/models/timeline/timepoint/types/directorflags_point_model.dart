@@ -17,6 +17,8 @@ class DirectorFlagsPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    var op = directorOpcToString(opc);
+    
+    return "DirectorFlag $op $val";
   }
 }

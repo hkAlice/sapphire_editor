@@ -15,6 +15,6 @@ class SnapshotPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "Selector $selectorName on actor $sourceActor";
   }
 }

@@ -14,6 +14,6 @@ class SetBgmPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "BGM#$bgmId";
   }
 }

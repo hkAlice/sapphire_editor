@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'castaction_point_model.g.dart';
 
@@ -28,7 +29,17 @@ class CastActionPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+
+    var sum = "Cast Action $actionId from $sourceActor to ${treatEnumName(targetType)}";
+    if(targetType == ActorTargetType.selector) {
+      sum += " $selectorName#$selectorIndex";
+    }
+
+    if(snapshot) {
+      sum += " (snapshot @ ${snapshotTime}ms)";
+    }
+    
+    return sum;
   }
 }
 

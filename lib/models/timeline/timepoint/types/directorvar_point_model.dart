@@ -17,7 +17,9 @@ class DirectorVarPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    var op = directorOpcToString(opc);
+
+    return "DirectorVar[${idx.toRadixString(16)}] $op $val";
   }
 }
 
@@ -47,4 +49,38 @@ enum DirectorOpcode {
   sll, // idx << val
   @JsonValue("srl")
   srl // idx >> val
+}
+
+String directorOpcToString(DirectorOpcode opc) {
+  var op = "";
+  switch(opc) {
+    case DirectorOpcode.set:
+      op = "=";
+    case DirectorOpcode.add:
+      op = "+=";
+    case DirectorOpcode.sub:
+      op = "-=";
+    case DirectorOpcode.mul:
+      op = "*=";
+    case DirectorOpcode.div:
+      op = "/=";
+    case DirectorOpcode.mod:
+      op = "%=";
+    case DirectorOpcode.or:
+      op = "|=";
+    case DirectorOpcode.xor:
+      op = "^=";
+    case DirectorOpcode.nor:
+      op = "~=";
+    case DirectorOpcode.and:
+      op = "&=";
+    case DirectorOpcode.sll:
+      op = "<<";
+    case DirectorOpcode.srl:
+      op = ">>";
+    default:
+      op = "unk";
+  }
+
+  return op;
 }

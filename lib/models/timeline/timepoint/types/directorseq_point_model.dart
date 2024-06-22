@@ -17,6 +17,8 @@ class DirectorSeqPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    var op = directorOpcToString(opc);
+    
+    return "DirectorSeq $op $val";
   }
 }

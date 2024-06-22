@@ -15,6 +15,6 @@ class SetConditionPointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "${enabled ? 'Enable' : 'Disable'} condition $conditionId";
   }
 }

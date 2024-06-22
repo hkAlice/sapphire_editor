@@ -16,7 +16,28 @@ class BNpcFlagsPointModel {
 
   @override
   String toString() {
-    var bnpcFlags = "Set";
+    var bnpcFlags = "Set ${BNpcFlags.flagsStr(flags)}";
+
+    return bnpcFlags;
+  }
+}
+
+// TODO: xdd
+// enum extensions are "cleaner", but also more than double the verbose + overhead of branching/LUT
+class BNpcFlags {
+  static const none               = 0x00;
+  static const immobile           = 0x01;
+  static const turningDisabled    = 0x02;
+  static const invincible         = 0x04;
+  static const invincibleRefill   = 0x08;
+  static const noDeaggro          = 0x10;
+  static const untargetable       = 0x20;
+  static const autoAttackDisabled = 0x40;
+  static const invisible          = 0x80;
+
+  static String flagsStr(int flags) {
+    String bnpcFlags = "";
+
     if(flags & BNpcFlags.immobile == BNpcFlags.immobile) {
       bnpcFlags += " Immobile |";
     }
@@ -42,21 +63,7 @@ class BNpcFlagsPointModel {
       bnpcFlags += " Invisible |";
     }
 
-    bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1);
+    bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1).trim();
     return bnpcFlags;
   }
-}
-
-// TODO: xdd
-// enum extensions are "cleaner", but also more than double the verbose + overhead of branching/LUT
-class BNpcFlags {
-  static const none               = 0x00;
-  static const immobile           = 0x01;
-  static const turningDisabled    = 0x02;
-  static const invincible         = 0x04;
-  static const invincibleRefill   = 0x08;
-  static const noDeaggro          = 0x10;
-  static const untargetable       = 0x20;
-  static const autoAttackDisabled = 0x40;
-  static const invisible          = 0x80;
 }

@@ -17,6 +17,6 @@ class LogMessagePointModel {
 
   @override
   String toString() {
-    return toJson().toString();
+    return "Message#$messageId with params: ${params.join(', ')}";
   }
 } 
