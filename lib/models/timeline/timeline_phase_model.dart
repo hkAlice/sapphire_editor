@@ -5,12 +5,12 @@ part 'timeline_phase_model.g.dart';
 
 @JsonSerializable()
 class TimelinePhaseModel {
-  final String name;
   final int id;
+  String name;
 
   List<TimepointModel> timepoints;
 
-  TimelinePhaseModel({required this.name, required this.id, timepointList}) : timepoints = timepointList ?? [];
+  TimelinePhaseModel({required this.id, required this.name, timepointList}) : timepoints = timepointList ?? [];
 
   factory TimelinePhaseModel.fromJson(Map<String, dynamic> json) => _$TimelinePhaseModelFromJson(json);
 

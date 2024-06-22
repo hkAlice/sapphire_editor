@@ -8,15 +8,15 @@ part of 'timeline_phase_model.dart';
 
 TimelinePhaseModel _$TimelinePhaseModelFromJson(Map<String, dynamic> json) =>
     TimelinePhaseModel(
-      name: json['name'] as String,
       id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
     )..timepoints = (json['timepoints'] as List<dynamic>)
         .map((e) => TimepointModel.fromJson(e as Map<String, dynamic>))
         .toList();
 
 Map<String, dynamic> _$TimelinePhaseModelToJson(TimelinePhaseModel instance) =>
     <String, dynamic>{
-      'name': instance.name,
       'id': instance.id,
+      'name': instance.name,
       'timepoints': instance.timepoints,
     };
