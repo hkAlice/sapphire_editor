@@ -16,6 +16,6 @@ class IdlePointModel {
 
   @override
   String toString() {
-    return "";
+    return "💤";
   }
 }
