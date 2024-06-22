@@ -111,41 +111,39 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         ),
         children: [
           ReorderableListView.builder(
-                  buildDefaultDragHandles: false,
-                  onReorder: (int oldindex, int newindex) {
-                    setState(() {
-                      if(newindex > oldindex) {
-                        newindex -= 1;
-                      }
-                      final items = widget.phaseModel.timepoints.removeAt(oldindex);
-                      widget.phaseModel.timepoints.insert(newindex, items);
-                    });
-                
-                    widget.onUpdate(widget.phaseModel);
-                  },
-                  itemCount: widget.phaseModel.timepoints.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, i) {
-                    return GenericTimepointItem(
-                      key: Key("timepoint_${widget.phaseModel.timepoints[i].hashCode}"),
-                      timelineModel: widget.timelineModel,
-                      timepointModel: widget.phaseModel.timepoints[i],
-                      phaseModel: widget.phaseModel,
-                      selectedActor: widget.selectedActor,
-                      index: i,
-                      onUpdate: (timepoint) {
-                        setState(() {
-                
-                        });
+            buildDefaultDragHandles: false,
+            onReorder: (int oldindex, int newindex) {
+              setState(() {
+                if(newindex > oldindex) {
+                  newindex -= 1;
+                }
+                final items = widget.phaseModel.timepoints.removeAt(oldindex);
+                widget.phaseModel.timepoints.insert(newindex, items);
+              });
+          
+              widget.onUpdate(widget.phaseModel);
+            },
+            itemCount: widget.phaseModel.timepoints.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, i) {
+              return GenericTimepointItem(
+                key: Key("timepoint_${widget.phaseModel.timepoints[i].hashCode}"),
+                timelineModel: widget.timelineModel,
+                timepointModel: widget.phaseModel.timepoints[i],
+                phaseModel: widget.phaseModel,
+                selectedActor: widget.selectedActor,
+                index: i,
+                onUpdate: (timepoint) {
+                  setState(() {
+          
+                  });
 
-                        widget.onUpdate(widget.phaseModel);
-                        },
-                    );
-                  }
-                ),
-              
-            
+                  widget.onUpdate(widget.phaseModel);
+                  },
+              );
+            }
+          ),
           AddGenericWidget(text: "New timepoint", onTap: _addNewTimepoint)
         ],
       ),

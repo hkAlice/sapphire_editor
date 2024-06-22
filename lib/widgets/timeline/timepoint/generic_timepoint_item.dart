@@ -108,7 +108,6 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        
         Container(
           decoration: BoxDecoration(
             color: Colors.black26,
