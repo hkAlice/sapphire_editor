@@ -19,7 +19,7 @@ class DirectorVarPointModel {
   String toString() {
     var op = directorOpcToString(opc);
 
-    return "DirectorVar[${idx.toRadixString(16)}] $op $val";
+    return "DirectorVar[0x${idx.toRadixString(16)}] $op $val";
   }
 }
 
