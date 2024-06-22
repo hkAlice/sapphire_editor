@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
+import 'package:sapphire_editor/widgets/timeline/tab_views/phase_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/selector_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
 import 'package:tab_container/tab_container.dart';
 
 class TimelineList extends StatefulWidget {
@@ -28,17 +26,6 @@ class _TimelineListState extends State<TimelineList> {
     super.initState();
   }
 
-  ActorModel _getCurrentActor() {
-    return widget.timeline.actors[_selectedActor];
-  }
-
-  void _addNewPhase() {
-    widget.timeline.addNewPhase(_getCurrentActor());
-    setState(() {
-      
-    });
-    widget.onUpdate(widget.timeline);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +47,7 @@ class _TimelineListState extends State<TimelineList> {
             child: child,
           ),
         );
-      },
-      
+      },      
       selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       color: Theme.of(context).hoverColor,
@@ -121,56 +107,12 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           }
         ),
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 14.0, left: 14.0, right: 14.0),
-                child: ListTile(
-                  leading: Image.asset("assets/images/icon_trials_rounded.png", width: 36.0,),
-                  title: Text(_getCurrentActor().name),
-                  subtitle: Text("LID: ${_getCurrentActor().layoutId.toString()}, HP: ${_getCurrentActor().hp.toString()}", style: Theme.of(context).textTheme.bodySmall,),
-                ),
-              ),
-              const SizedBox(height: 8.0,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                child: ReorderableListView.builder(
-                  buildDefaultDragHandles: false,
-                  onReorder: (int oldindex, int newindex) {
-                    setState(() {
-                      if(newindex > oldindex) {
-                        newindex -= 1;
-                      }
-                      final items = _getCurrentActor().phases.removeAt(oldindex);
-                      _getCurrentActor().phases.insert(newindex, items);
-                    });
-                
-                    widget.onUpdate(widget.timeline);
-                  },
-                  itemCount: _getCurrentActor().phases.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, i) {
-                    return TimelinePhaseItem(
-                      key: Key("phase_${_getCurrentActor().phases[i].hashCode}"),
-                      index: i,
-                      selectedActor: _getCurrentActor(),
-                      timelineModel: widget.timeline,
-                      phaseModel: _getCurrentActor().phases[i],
-                      onUpdate: (phaseModel) {
-                        widget.onUpdate(widget.timeline);
-                      },
-                    );
-                  }
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 14.0),
-                child: AddGenericWidget(text: "New phase", onTap: () { _addNewPhase(); }),
-              )
-            ],
-          ),
+        PhaseTabView(
+          timelineModel: widget.timeline,
+          currentActorIndex: _selectedActor,
+          onUpdate: () {
+            widget.onUpdate(widget.timeline);
+          }
         ),
         SelectorTabView(
           timelineModel: widget.timeline,

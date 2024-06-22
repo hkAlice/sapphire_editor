@@ -62,6 +62,14 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
   @override
   Widget build(BuildContext context) {
     var timepointCountStr = "${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}";
+    int timeElapsedMs = 0;
+    Map<int, int> timeElapsedMap = {};
+
+    for(int i = 0; i < widget.phaseModel.timepoints.length; i++) {
+      timeElapsedMap[i] = timeElapsedMs;
+      timeElapsedMs += widget.phaseModel.timepoints[i].duration;
+    }
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       borderOnForeground: false,
@@ -127,12 +135,15 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, i) {
+              var timepointModel = widget.phaseModel.timepoints[i];
+
               return GenericTimepointItem(
-                key: Key("timepoint_${widget.phaseModel.timepoints[i].hashCode}"),
+                key: Key("timepoint_${timepointModel.hashCode}"),
                 timelineModel: widget.timelineModel,
-                timepointModel: widget.phaseModel.timepoints[i],
+                timepointModel: timepointModel,
                 phaseModel: widget.phaseModel,
                 selectedActor: widget.selectedActor,
+                timeElapsedMs: timeElapsedMap[i]!,
                 index: i,
                 onUpdate: (timepoint) {
                   setState(() {
@@ -140,7 +151,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
                   });
 
                   widget.onUpdate(widget.phaseModel);
-                  },
+                },
               );
             }
           ),

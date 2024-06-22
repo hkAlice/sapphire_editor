@@ -26,6 +26,7 @@ class GenericTimepointItem extends StatefulWidget {
   final TimepointModel timepointModel;
   final ActorModel selectedActor;
   final Function(TimepointModel) onUpdate;
+  final int timeElapsedMs;
   final int index;
 
   const GenericTimepointItem({
@@ -35,6 +36,7 @@ class GenericTimepointItem extends StatefulWidget {
     required this.timepointModel,
     required this.selectedActor,
     required this.onUpdate,
+    required this.timeElapsedMs,
     required this.index
   });
 
@@ -43,23 +45,21 @@ class GenericTimepointItem extends StatefulWidget {
 }
 
 class _GenericTimepointItemState extends State<GenericTimepointItem> {
-  late TextEditingController _descriptionTextEditingController;
-  late TextEditingController _durationTextEditingController;
+  String _calcDuration() {
+    Duration duration = Duration(milliseconds: widget.timeElapsedMs);
 
-  @override
-  void initState() {
-    _descriptionTextEditingController = TextEditingController(text: widget.timepointModel.description);
-    _durationTextEditingController = TextEditingController(text: widget.timepointModel.duration.toString());
+    String twoDigits(int n) {
+      if(n >= 10) return "$n";
+      return "0$n";
+    }
 
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _descriptionTextEditingController.dispose();
-    _durationTextEditingController.dispose();
-
-    super.dispose();
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    if(duration.inHours > 0) {
+      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    } else {
+      return "$twoDigitMinutes:$twoDigitSeconds";
+    }
   }
 
   @override
@@ -111,6 +111,14 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       Expanded(child: Text(widget.timepointModel.data.toString(), style: Theme.of(context).textTheme.bodySmall,)),
                       const VerticalDivider(),
                       SizedBox(
+                        width: 32.0,
+                        child: Opacity(
+                          opacity: 0.7,
+                          child: Center(child: Text(_calcDuration(), style: Theme.of(context).textTheme.labelSmall,))
+                        )
+                      ),
+                      const VerticalDivider(),
+                      SizedBox(
                         width: 48.0,
                         child: Center(child: Text("${(widget.timepointModel.duration / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
                       ),
@@ -147,7 +155,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         ),
                       ),
                       
-                      const SizedBox(width: 4.0,)
+                      const SizedBox(width: 4.0,),
                     ],
                   ),
                 ),
