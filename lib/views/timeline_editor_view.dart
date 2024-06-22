@@ -60,10 +60,6 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
         var clearHistory = autosaveKeys.take(autosaveKeys.length - historySize);
         await autosaveBox.deleteAll(clearHistory.toList());
       }
-
-      setState(() {
-        
-      });
     });
   }
 
@@ -93,9 +89,9 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
     _autosave(_jsonTextFieldController.text);
     _sanityCheck = TimelineSanitySvc.run(_timeline!);
 
-    setState(() {
+    /*setState(() {
       
-    });
+    });*/
   }
 
   bool _parseTimelineToJSON() {

@@ -111,7 +111,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       Expanded(child: Text(widget.timepointModel.data.toString(), style: Theme.of(context).textTheme.bodySmall,)),
                       const VerticalDivider(),
                       SizedBox(
-                        width: 32.0,
+                        width: 36.0,
                         child: Opacity(
                           opacity: 0.7,
                           child: Center(child: Text(_calcDuration(), style: Theme.of(context).textTheme.labelSmall,))
@@ -123,7 +123,6 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                         child: Center(child: Text("${(widget.timepointModel.duration / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
                       ),
                       const VerticalDivider(),
-                      
                       SizedBox(
                         width: 24.0,
                         height: 24.0,

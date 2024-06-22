@@ -29,16 +29,16 @@ class CastActionPointModel {
 
   @override
   String toString() {
-
     var sum = "Cast Action $actionId from $sourceActor to ${treatEnumName(targetType)}";
+    
     if(targetType == ActorTargetType.selector) {
-      sum += " $selectorName#$selectorIndex";
+      sum += " $selectorName#${selectorIndex + 1}";
     }
 
     if(snapshot) {
       sum += " (snapshot @ ${snapshotTime}ms)";
     }
-    
+
     return sum;
   }
 }

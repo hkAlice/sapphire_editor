@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
@@ -30,7 +31,7 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
           child: GenericItemPickerWidget<PhaseConditionModel>(
             label: "Condition",
             items: widget.timelineModel.conditions,
-            initialValue: widget.timelineModel.conditions.firstWhere((e) => e.id == pointData.conditionId),
+            initialValue: widget.timelineModel.conditions.firstWhereOrNull((e) => e.id == pointData.conditionId) ?? widget.timelineModel.conditions.first,
             propertyBuilder: (value) {
               return "(ID: ${value.id}) ${value.getReadableConditionStr()}";
             },

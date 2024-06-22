@@ -47,7 +47,7 @@ class _TimelineListState extends State<TimelineList> {
             child: child,
           ),
         );
-      },      
+      }, 
       selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
       color: Theme.of(context).hoverColor,

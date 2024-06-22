@@ -74,7 +74,15 @@ class _PhaseTabViewState extends State<PhaseTabView> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 14.0),
-            child: AddGenericWidget(text: "New phase", onTap: () { _addNewPhase(); }),
+            child: AddGenericWidget(
+              text: "New phase",
+              onTap: () {
+                _addNewPhase();
+                setState(() {
+                  
+                });
+              }
+            ),
           )
         ],
       ),
