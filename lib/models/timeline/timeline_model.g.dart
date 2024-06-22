@@ -9,6 +9,8 @@ part of 'timeline_model.dart';
 TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
     TimelineModel(
       name: json['name'] as String,
+      version:
+          (json['version'] as num?)?.toInt() ?? TimelineModel.VERSION_MODEL,
     )
       ..actors = (json['actors'] as List<dynamic>)
           .map((e) => ActorModel.fromJson(e as Map<String, dynamic>))
@@ -23,6 +25,7 @@ TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$TimelineModelToJson(TimelineModel instance) =>
     <String, dynamic>{
       'name': instance.name,
+      'version': instance.version,
       'actors': instance.actors,
       'conditions': instance.conditions,
       'selectors': instance.selectors,

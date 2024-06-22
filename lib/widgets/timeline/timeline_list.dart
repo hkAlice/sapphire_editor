@@ -86,24 +86,18 @@ class _TimelineListState extends State<TimelineList> {
         )
       ],
       children: <Widget>[ 
-        // todo: all this should be split into its own stl widgets
         ActorTabView(
           timelineModel: widget.timeline,
           currentActorIndex: _selectedActor,
           onChanged: (actorIdx) {
             _selectedActor = actorIdx;
-            setState(() {
-              
-            });
+
             widget.onUpdate(widget.timeline);
           }
         ),
         ConditionTabView(
           timelineModel: widget.timeline,
           onUpdate: () {
-            setState(() {
-              
-            });
             widget.onUpdate(widget.timeline);
           }
         ),

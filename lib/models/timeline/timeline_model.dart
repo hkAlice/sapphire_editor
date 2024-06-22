@@ -11,7 +11,7 @@ part 'timeline_model.g.dart';
 @JsonSerializable()
 class TimelineModel {
   String name;
-  final int version = TimelineModel.VERSION_MODEL;
+  int version;
 
   List<ActorModel> actors;
   List<PhaseConditionModel> conditions;
@@ -19,6 +19,7 @@ class TimelineModel {
 
   TimelineModel({
     required this.name,
+    this.version = TimelineModel.VERSION_MODEL,
     phaseList,
     conditionList,
     actorList,

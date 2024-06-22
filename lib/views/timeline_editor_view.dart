@@ -89,9 +89,9 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
     _autosave(_jsonTextFieldController.text);
     _sanityCheck = TimelineSanitySvc.run(_timeline!);
 
-    /*setState(() {
+    setState(() {
       
-    });*/
+    });
   }
 
   bool _parseTimelineToJSON() {
