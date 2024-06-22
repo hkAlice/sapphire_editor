@@ -13,6 +13,38 @@ class BNpcFlagsPointModel {
   factory BNpcFlagsPointModel.fromJson(Map<String, dynamic> json) => _$BNpcFlagsPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BNpcFlagsPointModelToJson(this);
+
+  @override
+  String toString() {
+    var bnpcFlags = "Set";
+    if(flags & BNpcFlags.immobile == BNpcFlags.immobile) {
+      bnpcFlags += " Immobile |";
+    }
+    if(flags & BNpcFlags.turningDisabled == BNpcFlags.turningDisabled) {
+      bnpcFlags += " TurningDisabled |";
+    }
+    if(flags & BNpcFlags.invincible == BNpcFlags.invincible) {
+      bnpcFlags += " Invincible |";
+    }
+    if(flags & BNpcFlags.invincibleRefill == BNpcFlags.invincibleRefill) {
+      bnpcFlags += " InvincibleRefill |";
+    }
+    if(flags & BNpcFlags.noDeaggro == BNpcFlags.noDeaggro) {
+      bnpcFlags += " NoDeaggro |";
+    }
+    if(flags & BNpcFlags.untargetable == BNpcFlags.untargetable) {
+      bnpcFlags += " Untargetable |";
+    }
+    if(flags & BNpcFlags.autoAttackDisabled == BNpcFlags.autoAttackDisabled) {
+      bnpcFlags += " AutoAtkDisabled |";
+    }
+    if(flags & BNpcFlags.invisible == BNpcFlags.invisible) {
+      bnpcFlags += " Invisible |";
+    }
+
+    bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1);
+    return bnpcFlags;
+  }
 }
 
 // TODO: xdd

@@ -108,13 +108,31 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       ),
                       
                       const VerticalDivider(),
-                      Expanded(child:  Text(widget.timepointModel.toString())),
+                      Expanded(child: Text(widget.timepointModel.data.toString(), style: Theme.of(context).textTheme.bodySmall,)),
                       const VerticalDivider(),
                       SizedBox(
                         width: 48.0,
                         child: Center(child: Text("${(widget.timepointModel.duration / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
                       ),
                       const VerticalDivider(),
+                      
+                      SizedBox(
+                        width: 24.0,
+                        height: 24.0,
+                        child: IconButton(
+                          padding: const EdgeInsets.all(0.0),
+                          icon: const Icon(Icons.copy, size: 16.0,),
+                          splashRadius: 14.0,
+                          onPressed: () {
+                            var newTimepoint = TimepointModel.fromJson(widget.timepointModel.toJson());
+                            var index = widget.phaseModel.timepoints.indexOf(widget.timepointModel);
+
+                            widget.phaseModel.timepoints.insert(index + 1, newTimepoint);
+                            widget.onUpdate(widget.timepointModel);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 4.0,),
                       SizedBox(
                         width: 24.0,
                         height: 24.0,
@@ -128,6 +146,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                           },
                         ),
                       ),
+                      
                       const SizedBox(width: 4.0,)
                     ],
                   ),
