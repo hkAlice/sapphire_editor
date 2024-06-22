@@ -11,4 +11,9 @@ class SetBgmPointModel {
   factory SetBgmPointModel.fromJson(Map<String, dynamic> json) => _$SetBgmPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SetBgmPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

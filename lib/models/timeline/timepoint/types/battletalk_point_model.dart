@@ -19,4 +19,9 @@ class BattleTalkPointModel {
   factory BattleTalkPointModel.fromJson(Map<String, dynamic> json) => _$BattleTalkPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleTalkPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

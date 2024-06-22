@@ -15,6 +15,11 @@ class SpawnBNpcPointModel {
   factory SpawnBNpcPointModel.fromJson(Map<String, dynamic> json) => _$SpawnBNpcPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SpawnBNpcPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }
 
 @JsonSerializable()

@@ -12,4 +12,9 @@ class SetConditionPointModel {
   factory SetConditionPointModel.fromJson(Map<String, dynamic> json) => _$SetConditionPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SetConditionPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

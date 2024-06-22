@@ -14,4 +14,9 @@ class DirectorFlagsPointModel {
   factory DirectorFlagsPointModel.fromJson(Map<String, dynamic> json) => _$DirectorFlagsPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DirectorFlagsPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

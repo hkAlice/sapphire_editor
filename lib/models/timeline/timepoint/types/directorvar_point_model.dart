@@ -14,6 +14,11 @@ class DirectorVarPointModel {
   factory DirectorVarPointModel.fromJson(Map<String, dynamic> json) => _$DirectorVarPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DirectorVarPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }
 
 // assume immediate for all opcodes

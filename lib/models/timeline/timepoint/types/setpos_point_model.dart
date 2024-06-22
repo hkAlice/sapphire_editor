@@ -14,4 +14,9 @@ class SetPosPointModel {
   factory SetPosPointModel.fromJson(Map<String, dynamic> json) => _$SetPosPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SetPosPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

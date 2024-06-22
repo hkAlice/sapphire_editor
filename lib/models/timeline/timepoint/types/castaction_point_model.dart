@@ -25,6 +25,11 @@ class CastActionPointModel {
   factory CastActionPointModel.fromJson(Map<String, dynamic> json) => _$CastActionPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$CastActionPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }
 
 enum ActorTargetType {

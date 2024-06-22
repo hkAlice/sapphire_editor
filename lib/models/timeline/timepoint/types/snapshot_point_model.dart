@@ -12,4 +12,9 @@ class SnapshotPointModel {
   factory SnapshotPointModel.fromJson(Map<String, dynamic> json) => _$SnapshotPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SnapshotPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

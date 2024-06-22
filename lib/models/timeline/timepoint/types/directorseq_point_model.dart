@@ -14,4 +14,9 @@ class DirectorSeqPointModel {
   factory DirectorSeqPointModel.fromJson(Map<String, dynamic> json) => _$DirectorSeqPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DirectorSeqPointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

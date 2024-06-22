@@ -14,4 +14,9 @@ class LogMessagePointModel {
   factory LogMessagePointModel.fromJson(Map<String, dynamic> json) => _$LogMessagePointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogMessagePointModelToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 } 
