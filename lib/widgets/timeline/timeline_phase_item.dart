@@ -61,6 +61,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
 
   @override
   Widget build(BuildContext context) {
+    var timepointCountStr = "${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}";
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       borderOnForeground: false,
@@ -71,10 +72,23 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
         ),
         initiallyExpanded: true,
         title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
-        subtitle: Text("${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}"),
+        subtitle: Text(widget.phaseModel.description.isNotEmpty ? widget.phaseModel.description : timepointCountStr),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+
+                SizedBox(
+                  height: 54.0,
+                  child: TextModalEditorWidget(
+                    text: widget.phaseModel.description,
+                    headerText: "Edit timepoint description",
+                    onChanged: (description) {
+                      widget.phaseModel.description = description;
+                      widget.onUpdate(widget.phaseModel);
+                    }
+                  ),
+                ),
+                const SizedBox(width: 8.0,),
             SizedBox(
               width: 32.0,
               height: 32.0,

@@ -115,7 +115,6 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       SizedBox(
                         width: 220,
                         child: GenericItemPickerWidget<PhaseConditionType>(

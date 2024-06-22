@@ -7,10 +7,11 @@ part 'timeline_phase_model.g.dart';
 class TimelinePhaseModel {
   final int id;
   String name;
+  String description;
 
   List<TimepointModel> timepoints;
 
-  TimelinePhaseModel({required this.id, required this.name, timepointList}) : timepoints = timepointList ?? [];
+  TimelinePhaseModel({required this.id, required this.name, this.description = "", timepointList}) : timepoints = timepointList ?? [];
 
   factory TimelinePhaseModel.fromJson(Map<String, dynamic> json) => _$TimelinePhaseModelFromJson(json);
 
