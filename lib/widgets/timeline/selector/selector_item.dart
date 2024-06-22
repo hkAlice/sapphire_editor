@@ -230,6 +230,9 @@ class _SelectorItemState extends State<SelectorItem> {
                           text: "Add new filter",
                           onTap: () {
                             widget.selectorModel.filters.add(SelectorFilterModel());
+                            setState(() {
+                              
+                            });
                             widget.onUpdate(widget.selectorModel);
                           }
                         )
