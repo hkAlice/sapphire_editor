@@ -38,6 +38,7 @@ class TimelineSanitySvc {
     List<String> phaseNameList = [];
     // todo: add bnpcpart here !! squid game
     List<String> actorRefNameList = [actor.name, ...actor.subactors];
+    List<String> allMainActorRefNameList = timeline.actors.map((e) => e.name).toList();
 
     for(var phase in actor.phases) {
       if(phase.timepoints.isEmpty) {
@@ -54,13 +55,13 @@ class TimelineSanitySvc {
       for(var timepoint in phase.timepoints) {
         if(timepoint.type == TimepointType.bNpcDespawn) {
           var pointData = timepoint.data as BNpcDespawnPointModel;
-          if(!actorRefNameList.contains(pointData.despawnActor)) {
+          if(!allMainActorRefNameList.contains(pointData.despawnActor)) {
             _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcDespawn with invalid actor ${pointData.despawnActor}.", items);
           }
         }
         if(timepoint.type == TimepointType.bNpcSpawn) {
           var pointData = timepoint.data as BNpcSpawnPointModel;
-          if(!actorRefNameList.contains(pointData.spawnActor)) {
+          if(!allMainActorRefNameList.contains(pointData.spawnActor)) {
             _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcSpawn with invalid actor ${pointData.spawnActor}.", items);
           }
         }
@@ -87,7 +88,7 @@ class TimelineSanitySvc {
             }
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid actor ${pointData.sourceActor}.", items);
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid local actor ${pointData.sourceActor}.", items);
           }
 
           if(pointData.targetType == ActorTargetType.none) {
@@ -102,7 +103,7 @@ class TimelineSanitySvc {
             _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid actor ${pointData.sourceActor}.", items);
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid local actor ${pointData.sourceActor}.", items);
           }
         }
       }
