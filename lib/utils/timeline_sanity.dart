@@ -4,6 +4,8 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 
@@ -50,6 +52,18 @@ class TimelineSanitySvc {
       phaseNameList.add(phase.name);
 
       for(var timepoint in phase.timepoints) {
+        if(timepoint.type == TimepointType.bNpcDespawn) {
+          var pointData = timepoint.data as BNpcDespawnPointModel;
+          if(!actorRefNameList.contains(pointData.despawnActor)) {
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcDespawn with invalid actor ${pointData.despawnActor}.", items);
+          }
+        }
+        if(timepoint.type == TimepointType.bNpcSpawn) {
+          var pointData = timepoint.data as BNpcSpawnPointModel;
+          if(!actorRefNameList.contains(pointData.spawnActor)) {
+            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcSpawn with invalid actor ${pointData.spawnActor}.", items);
+          }
+        }
         // validate castAction timepoint
         if(timepoint.type == TimepointType.castAction) {
           var pointData = timepoint.data as CastActionPointModel;

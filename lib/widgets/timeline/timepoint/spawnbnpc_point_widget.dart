@@ -4,23 +4,23 @@ import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/spawnbnpc_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_toggle.dart';
 
-class SpawnBNpcPointWidget extends StatefulWidget {
+class BNpcSpawnPointWidget extends StatefulWidget {
   final TimelineModel timelineModel;
   final TimepointModel timepointModel;
   final Function() onUpdate;
 
-  const SpawnBNpcPointWidget({super.key, required this.timelineModel, required this.timepointModel, required this.onUpdate});
+  const BNpcSpawnPointWidget({super.key, required this.timelineModel, required this.timepointModel, required this.onUpdate});
 
   @override
-  State<SpawnBNpcPointWidget> createState() => _SpawnBNpcPointWidgetState();
+  State<BNpcSpawnPointWidget> createState() => _BNpcSpawnPointWidgetState();
 }
 
-class _SpawnBNpcPointWidgetState extends State<SpawnBNpcPointWidget> {
-  late SpawnBNpcPointModel pointData = widget.timepointModel.data as SpawnBNpcPointModel;
+class _BNpcSpawnPointWidgetState extends State<BNpcSpawnPointWidget> {
+  late BNpcSpawnPointModel pointData = widget.timepointModel.data as BNpcSpawnPointModel;
   
   @override
   Widget build(BuildContext context) {

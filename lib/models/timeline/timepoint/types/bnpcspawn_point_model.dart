@@ -1,21 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
 
-part 'spawnbnpc_point_model.g.dart';
+part 'bnpcspawn_point_model.g.dart';
 
 @JsonSerializable()
-class SpawnBNpcPointModel {
+class BNpcSpawnPointModel {
   String spawnActor;
   int flags;
   HateSourceModel? hateSource;
 
-  SpawnBNpcPointModel({this.spawnActor = "<unknown>", this.flags = 0, this.hateSource}) {
+  BNpcSpawnPointModel({this.spawnActor = "<unknown>", this.flags = 0, this.hateSource}) {
     hateSource ??= HateSourceModel();
   }
 
-  factory SpawnBNpcPointModel.fromJson(Map<String, dynamic> json) => _$SpawnBNpcPointModelFromJson(json);
+  factory BNpcSpawnPointModel.fromJson(Map<String, dynamic> json) => _$BNpcSpawnPointModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SpawnBNpcPointModelToJson(this);
+  Map<String, dynamic> toJson() => _$BNpcSpawnPointModelToJson(this);
 
   @override
   String toString() {

@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'spawnbnpc_point_model.dart';
+part of 'bnpcspawn_point_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SpawnBNpcPointModel _$SpawnBNpcPointModelFromJson(Map<String, dynamic> json) =>
-    SpawnBNpcPointModel(
+BNpcSpawnPointModel _$BNpcSpawnPointModelFromJson(Map<String, dynamic> json) =>
+    BNpcSpawnPointModel(
       spawnActor: json['spawnActor'] as String? ?? "<unknown>",
       flags: (json['flags'] as num?)?.toInt() ?? 0,
       hateSource: json['hateSource'] == null
@@ -16,8 +16,8 @@ SpawnBNpcPointModel _$SpawnBNpcPointModelFromJson(Map<String, dynamic> json) =>
               json['hateSource'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$SpawnBNpcPointModelToJson(
-        SpawnBNpcPointModel instance) =>
+Map<String, dynamic> _$BNpcSpawnPointModelToJson(
+        BNpcSpawnPointModel instance) =>
     <String, dynamic>{
       'spawnActor': instance.spawnActor,
       'flags': instance.flags,

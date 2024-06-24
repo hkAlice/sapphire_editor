@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
@@ -7,6 +9,7 @@ import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcdespawn_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorflags_point_widget.dart';
@@ -131,7 +134,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                           icon: const Icon(Icons.copy, size: 16.0,),
                           splashRadius: 14.0,
                           onPressed: () {
-                            var newTimepoint = TimepointModel.fromJson(widget.timepointModel.toJson());
+                            var newTimepoint = TimepointModel.fromJson(jsonDecode(jsonEncode(widget.timepointModel)));
                             var index = widget.phaseModel.timepoints.indexOf(widget.timepointModel);
 
                             widget.phaseModel.timepoints.insert(index + 1, newTimepoint);
@@ -197,30 +200,32 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
     }
 
     switch(widget.timepointModel.type) {
-      case TimepointType.idle:
-        return const IdlePointWidget();
-      case TimepointType.setPos:
-        return SetPosPointWidget(timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.castAction:
         return CastActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
-      case TimepointType.setBGM:
-        return SetBgmPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
-      case TimepointType.logMessage:
-        return LogMessagePointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
-      case TimepointType.bNpcFlags:
-        return BNpcFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.battleTalk:
         return BattleTalkPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
-      case TimepointType.spawnBNpc:
-        return SpawnBNpcPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.bNpcDespawn:
+        return BNpcDespawnPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.bNpcFlags:
+        return BNpcFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.bNpcSpawn:
+        return BNpcSpawnPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.directorFlags:
         return DirectorFlagsPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.directorSeq:
         return DirectorSeqPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.directorVar:
         return DirectorVarPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.idle:
+        return const IdlePointWidget();
+      case TimepointType.logMessage:
+        return LogMessagePointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.setBGM:
+        return SetBgmPointWidget(timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.setCondition:
         return SetConditionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
+      case TimepointType.setPos:
+        return SetPosPointWidget(timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.snapshot:
         return SnapshotPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       default:

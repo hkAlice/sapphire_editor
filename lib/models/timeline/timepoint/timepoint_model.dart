@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/battletalk_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/directorflags_point_model.dart';
@@ -12,7 +13,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_mod
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/spawnbnpc_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 
 part 'timepoint_model.g.dart';
 
@@ -55,10 +56,12 @@ class TimepointModel {
         data = LogMessagePointModel.fromJson(data);
       } else if(type == TimepointType.battleTalk) {
         data = BattleTalkPointModel.fromJson(data);
-      } else if(type == TimepointType.spawnBNpc) {
-        data = SpawnBNpcPointModel.fromJson(data);
+      } else if(type == TimepointType.bNpcDespawn) {
+        data = BNpcDespawnPointModel.fromJson(data);
       } else if(type == TimepointType.bNpcFlags) {
         data = BNpcFlagsPointModel.fromJson(data);
+      } else if(type == TimepointType.bNpcSpawn) {
+        data = BNpcSpawnPointModel.fromJson(data);
       } else if(type == TimepointType.castAction) {
         data = CastActionPointModel.fromJson(data);
       } else if(type == TimepointType.directorFlags) {
@@ -94,8 +97,9 @@ class TimepointModel {
       case TimepointType.logMessage:
       case TimepointType.battleTalk:
         return Colors.green;
+      case TimepointType.bNpcDespawn:
       case TimepointType.bNpcFlags:
-      case TimepointType.spawnBNpc:
+      case TimepointType.bNpcSpawn:
         return Colors.deepPurpleAccent;
       case TimepointType.snapshot:
       case TimepointType.setCondition:
@@ -107,30 +111,32 @@ class TimepointModel {
 }
 
 enum TimepointType {
-  @JsonValue("idle")
-  idle,
+  @JsonValue("battleTalk")
+  battleTalk,
+  @JsonValue("bNpcDespawn")
+  bNpcDespawn,
+  @JsonValue("bNpcFlags")
+  bNpcFlags,
+  @JsonValue("bNpcSpawn")
+  bNpcSpawn,
   @JsonValue("castAction")
   castAction,
-  @JsonValue("setPos")
-  setPos,
   @JsonValue("directorFlags")
   directorFlags,
   @JsonValue("directorSeq")
   directorSeq,
   @JsonValue("directorVar")
   directorVar,
-  @JsonValue("bNpcFlags")
-  bNpcFlags,
-  @JsonValue("spawnBNpc")
-  spawnBNpc,
+  @JsonValue("idle")
+  idle,
   @JsonValue("logMessage")
   logMessage,
-  @JsonValue("battleTalk")
-  battleTalk,
   @JsonValue("setBGM")
   setBGM,
   @JsonValue("setCondition")
   setCondition,
+  @JsonValue("setPos")
+  setPos,
   @JsonValue("snapshot")
   snapshot
 }
