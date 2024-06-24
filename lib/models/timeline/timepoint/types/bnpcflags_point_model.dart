@@ -16,9 +16,14 @@ class BNpcFlagsPointModel {
 
   @override
   String toString() {
-    var bnpcFlags = "Set ${BNpcFlags.flagsStr(flags)}";
+    var flagsStr = BNpcFlags.flagsStr(flags);
 
-    return bnpcFlags;
+    if(flagsStr.isEmpty) {
+      return "Set and clear all flags";
+    }
+    else {
+      return "Set $flagsStr";
+    }
   }
 }
 
@@ -63,7 +68,10 @@ class BNpcFlags {
       bnpcFlags += " Invisible |";
     }
 
-    bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1).trim();
+    if(bnpcFlags.isNotEmpty) {
+      bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1).trim();
+    }
+    
     return bnpcFlags;
   }
 }

@@ -121,7 +121,7 @@ class _NumberButtonState extends State<NumberButton> {
                     child: widget.builder != null ? widget.builder!(widget.value) : SizedBox(
                       width: 24,
                       child: Center(
-                        child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge,))
+                        child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge, maxLines: 1,),)
                     ),
                   ),
                   InkWell(

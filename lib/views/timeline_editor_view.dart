@@ -8,7 +8,6 @@ import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
-import 'package:sapphire_editor/utils/timeline_sanity.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/sanity/sanity_call_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
@@ -24,7 +23,7 @@ class TimelineEditorView extends StatefulWidget {
 class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticKeepAliveClientMixin<TimelineEditorView> {
   TimelineModel? _timeline;
   final JsonTextFieldController _jsonTextFieldController = JsonTextFieldController();
-  List<SanityItem> _sanityCheck = [];
+
   DateTime _lastAutosave = DateTime(0);
   Timer _autosaveTimer = Timer(const Duration(seconds: 3), () {});
 
@@ -68,7 +67,6 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
       var jsonDec = jsonDecode(jsonStr);
       if(jsonDec != null) {
         _timeline = TimelineModel.fromJson(jsonDec);
-        _sanityCheck = TimelineSanitySvc.run(_timeline!);
 
         setState(() {
           
@@ -87,7 +85,6 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
   void _onTimelineDataUpdate() {
     _parseTimelineToJSON();
     _autosave(_jsonTextFieldController.text);
-    _sanityCheck = TimelineSanitySvc.run(_timeline!);
   }
 
   bool _parseTimelineToJSON() {
@@ -113,7 +110,6 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
       }
 
       _parseTimelineToJSON();
-      _sanityCheck = TimelineSanitySvc.run(_timeline!);
     }
     catch(_) {
       hasTimeline = false;
