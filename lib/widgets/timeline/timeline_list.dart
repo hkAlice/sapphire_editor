@@ -93,6 +93,9 @@ class _TimelineListState extends State<TimelineList> {
             _selectedActor = actorIdx;
 
             widget.onUpdate(widget.timeline);
+            setState(() {
+              
+            });
           }
         ),
         ConditionTabView(
