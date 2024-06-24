@@ -30,7 +30,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name)..addAll(widget.timelineModel.actors.map((e) { return e.name; }));
+    var validActors = List<String>.from(widget.selectedActor.subactors)..insert(0, widget.selectedActor.name);
     var selectedSelector = widget.timelineModel.selectors.where((e) => e.name == pointData.selectorName).firstOrNull;
     var selectorCount = selectedSelector != null ? selectedSelector.count : 0;
     
