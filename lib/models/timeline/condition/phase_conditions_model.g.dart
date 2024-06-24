@@ -38,4 +38,5 @@ const _$PhaseConditionTypeEnumMap = {
   PhaseConditionType.getAction: 'getAction',
   PhaseConditionType.hpPctBetween: 'hpPctBetween',
   PhaseConditionType.hpPctLessThan: 'hpPctLessThan',
+  PhaseConditionType.phaseActive: 'phaseActive',
 };

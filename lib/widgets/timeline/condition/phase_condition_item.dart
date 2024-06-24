@@ -10,6 +10,7 @@ import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/phaseactive_condition_widget.dart';
 
 class PhaseConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -33,13 +34,15 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
         
       });
     }
-    
-    if(widget.phaseConditionModel.condition == PhaseConditionType.getAction) {
+
+    if(widget.phaseConditionModel.condition == PhaseConditionType.combatState) {
+      return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.phaseConditionModel.condition == PhaseConditionType.getAction) {
       return GetActionConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else if(widget.phaseConditionModel.condition == PhaseConditionType.hpPctBetween) {
       return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
-    } else if(widget.phaseConditionModel.condition == PhaseConditionType.combatState) {
-      return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.phaseConditionModel.condition == PhaseConditionType.phaseActive) {
+      return PhaseActiveConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else {
       return Text("Unimplemented condition type $widget.phaseConditionModel.condition");
     }

@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/phaseactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'phase_conditions_model.g.dart';
@@ -55,6 +56,8 @@ class PhaseConditionModel {
         paramData = HPPctBetweenConditionModel.fromJson(paramData);
       } else if(type == PhaseConditionType.combatState) {
         paramData = CombatStateConditionModel.fromJson(paramData);
+      } else if(type == PhaseConditionType.phaseActive) {
+        paramData = PhaseActiveConditionModel.fromJson(paramData);
       } else {
         // keep as is, break shit
       }
@@ -74,6 +77,9 @@ class PhaseConditionModel {
     } else if (condition == PhaseConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
       summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
+    } else if (condition == PhaseConditionType.phaseActive) {
+      var param = paramData as PhaseActiveConditionModel;
+      summary += "${param.sourceActor}->${param.phaseName} is active";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
@@ -141,6 +147,8 @@ enum PhaseConditionType {
   hpPctBetween,
   @JsonValue("hpPctLessThan")
   hpPctLessThan,
+  @JsonValue("phaseActive")
+  phaseActive
 }
 
 /*

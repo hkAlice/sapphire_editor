@@ -4,10 +4,6 @@ part 'idle_point_model.g.dart';
 
 @JsonSerializable()
 class IdlePointModel {
-  //final int duration;
-
-  //final List<ActorFlag> overrideFlags; 
-
   IdlePointModel();
 
   factory IdlePointModel.fromJson(Map<String, dynamic> json) => _$IdlePointModelFromJson(json);
