@@ -8,6 +8,7 @@ import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
 
 class PhaseConditionItem extends StatefulWidget {
@@ -32,7 +33,10 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
         
       });
     }
-    if(widget.phaseConditionModel.condition == PhaseConditionType.hpPctBetween) {
+    
+    if(widget.phaseConditionModel.condition == PhaseConditionType.getAction) {
+      return GetActionConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.phaseConditionModel.condition == PhaseConditionType.hpPctBetween) {
       return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else if(widget.phaseConditionModel.condition == PhaseConditionType.combatState) {
       return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
@@ -50,6 +54,8 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedTargetActor = widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.phaseConditionModel.targetActor);
+
     return Card(
       borderOnForeground: false,
       elevation: 1.0,
@@ -167,7 +173,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         width: 240,
                         child: GenericItemPickerWidget<String>(
                           label: "Phase",
-                          items: _selectedActor.phases.map((e) => e.name).toList(),
+                          items: selectedTargetActor == null ? [] : selectedTargetActor.phases.map((e) => e.name).toList(),
                           initialValue: widget.phaseConditionModel.targetPhase,
                           onChanged: (value) {
                             setState(() {

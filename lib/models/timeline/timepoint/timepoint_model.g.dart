@@ -23,18 +23,18 @@ Map<String, dynamic> _$TimepointModelToJson(TimepointModel instance) =>
     };
 
 const _$TimepointTypeEnumMap = {
-  TimepointType.idle: 'idle',
-  TimepointType.castAction: 'castAction',
-  TimepointType.setPos: 'setPos',
-  TimepointType.directorFlags: 'directorFlags',
-  TimepointType.directorSeq: 'directorSeq',
-  TimepointType.directorVar: 'directorVar',
+  TimepointType.battleTalk: 'battleTalk',
   TimepointType.bNpcDespawn: 'bNpcDespawn',
   TimepointType.bNpcFlags: 'bNpcFlags',
   TimepointType.bNpcSpawn: 'bNpcSpawn',
+  TimepointType.castAction: 'castAction',
+  TimepointType.directorFlags: 'directorFlags',
+  TimepointType.directorSeq: 'directorSeq',
+  TimepointType.directorVar: 'directorVar',
+  TimepointType.idle: 'idle',
   TimepointType.logMessage: 'logMessage',
-  TimepointType.battleTalk: 'battleTalk',
   TimepointType.setBGM: 'setBGM',
   TimepointType.setCondition: 'setCondition',
+  TimepointType.setPos: 'setPos',
   TimepointType.snapshot: 'snapshot',
 };

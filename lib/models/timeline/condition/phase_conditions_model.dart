@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
@@ -46,7 +47,11 @@ class PhaseConditionModel {
     paramData ??= <String, dynamic>{};
 
     if(paramData is Map<String, dynamic>) {
-      if(type == PhaseConditionType.hpPctBetween) {
+      if(type == PhaseConditionType.combatState) {
+        paramData = CombatStateConditionModel.fromJson(paramData);
+      } else if(type == PhaseConditionType.getAction) {
+        paramData = GetActionConditionModel.fromJson(paramData);
+      } else if(type == PhaseConditionType.hpPctBetween) {
         paramData = HPPctBetweenConditionModel.fromJson(paramData);
       } else if(type == PhaseConditionType.combatState) {
         paramData = CombatStateConditionModel.fromJson(paramData);
@@ -63,6 +68,9 @@ class PhaseConditionModel {
     if(condition == PhaseConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
       summary += "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
+    } else if (condition == PhaseConditionType.getAction) {
+      var param = paramData as GetActionConditionModel;
+      summary += "${param.sourceActor} casts Action#${param.actionId}";
     } else if (condition == PhaseConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
       summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
@@ -127,6 +135,8 @@ enum PhaseConditionType {
   directorVarGreaterThan,
   @JsonValue("elapsedTimeGreaterThan")
   elapsedTimeGreaterThan,
+  @JsonValue("getAction")
+  getAction,
   @JsonValue("hpPctBetween")
   hpPctBetween,
   @JsonValue("hpPctLessThan")

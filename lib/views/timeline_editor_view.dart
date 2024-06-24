@@ -89,7 +89,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
 
   bool _parseTimelineToJSON() {
     _jsonTextFieldController.text = jsonEncode(_timeline!.toJson());
-    _jsonTextFieldController.formatJson(sortJson: true);
+    _jsonTextFieldController.formatJson(sortJson: true);  
     //_autosave(_jsonTextFieldController.text);
 
     return true;

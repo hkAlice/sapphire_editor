@@ -35,6 +35,7 @@ const _$PhaseConditionTypeEnumMap = {
   PhaseConditionType.combatState: 'combatState',
   PhaseConditionType.directorVarGreaterThan: 'directorVarGreaterThan',
   PhaseConditionType.elapsedTimeGreaterThan: 'elapsedTimeGreaterThan',
+  PhaseConditionType.getAction: 'getAction',
   PhaseConditionType.hpPctBetween: 'hpPctBetween',
   PhaseConditionType.hpPctLessThan: 'hpPctLessThan',
 };
