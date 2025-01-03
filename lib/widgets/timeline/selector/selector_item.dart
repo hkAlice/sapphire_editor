@@ -218,6 +218,9 @@ class _SelectorItemState extends State<SelectorItem> {
                                       onPressed: () {
                                         widget.selectorModel.filters.remove(filter);
                                         widget.onUpdate(widget.selectorModel);
+                                        setState(() {
+                                          
+                                        });
                                       },
                                     ),
                                   ),
