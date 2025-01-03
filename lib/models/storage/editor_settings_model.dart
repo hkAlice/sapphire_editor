@@ -10,5 +10,5 @@ class EditorSettingsModel extends HiveObject {
   @HiveField(1)
   String brightness;
 
-  EditorSettingsModel({this.theme = "indigoM3", this.brightness = "dark"});
+  EditorSettingsModel({this.theme = "damask", this.brightness = "dark"});
 }

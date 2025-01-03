@@ -12,7 +12,7 @@ void main() async {
   var uiSettings = await SettingsHelper().getUISettings();
 
   var themeService = ThemeService();
-  var theme = FlexScheme.values.firstWhere((e) => e.name == uiSettings.theme, orElse: () => FlexScheme.indigoM3);
+  var theme = FlexScheme.values.firstWhere((e) => e.name == uiSettings.theme, orElse: () => FlexScheme.damask);
 
   themeService.updateThemeData(FlexThemeData.dark(scheme: theme));
 

@@ -10,7 +10,7 @@ class ThemeService {
 
   ThemeService._internal();
 
-  ValueNotifier<ThemeData> themeScheme = ValueNotifier<ThemeData>(FlexThemeData.dark(scheme: FlexScheme.indigoM3));
+  ValueNotifier<ThemeData> themeScheme = ValueNotifier<ThemeData>(FlexThemeData.dark(scheme: FlexScheme.damask));
 
   void updateThemeData(ThemeData themes) {
     themeScheme.value = themes;

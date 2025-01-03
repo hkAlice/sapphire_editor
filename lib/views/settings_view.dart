@@ -76,7 +76,7 @@ class _SettingsViewState extends State<SettingsView> {
                     future: _fetchSettings(),
                     builder: (context, snapshot) {
                       if(snapshot.hasData) {
-                        var theme = FlexScheme.values.firstWhere((e) => e.name == snapshot.data!.theme, orElse: () => FlexScheme.indigoM3);
+                        var theme = FlexScheme.values.firstWhere((e) => e.name == snapshot.data!.theme, orElse: () => FlexScheme.damask);
                         var brightness = Brightness.values.firstWhere((e) => e.name == snapshot.data!.brightness, orElse: () => Brightness.dark);
                         
                         return Row(
@@ -112,7 +112,7 @@ class _SettingsViewState extends State<SettingsView> {
                                 items: Brightness.values,
                                 propertyBuilder: (value) => treatEnumName(value),
                                 onChanged: (value) {
-                                  var theme = FlexScheme.values.firstWhere((e) => e.name == snapshot.data!.theme, orElse: () => FlexScheme.indigoM3);
+                                  var theme = FlexScheme.values.firstWhere((e) => e.name == snapshot.data!.theme, orElse: () => FlexScheme.damask);
                                   var brightness = value as Brightness;
                                   snapshot.data!.brightness = brightness.name;
 
