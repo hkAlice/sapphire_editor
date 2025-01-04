@@ -24,36 +24,33 @@ class _SwitchTextWidgetState extends State<SwitchTextWidget> {
             margin: widget.leading == null ? null : const EdgeInsets.only(right: 8.0),
             child: widget.leading,
           ),
-          SizedBox(
-            width: 32,
-            child: Center(
-              child: widget.enabled ? Text(
-                  widget.toggleText.$1, style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    fontWeightDelta: 1,
-                    color: const Color(0xFFE1EBD3),
-                    shadows: <Shadow>[
-                      const Shadow(
-                        offset: Offset(0.0, 00.0),
-                        blurRadius: 3.0,
-                        color: Colors.orange,
-                      ),
-                    ]
-                  )
+          Center(
+            child: widget.enabled ? Text(
+                widget.toggleText.$1, style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  fontWeightDelta: 1,
+                  color: const Color(0xFFE1EBD3),
+                  shadows: <Shadow>[
+                    const Shadow(
+                      offset: Offset(0.0, 00.0),
+                      blurRadius: 3.0,
+                      color: Colors.orange,
+                    ),
+                  ]
                 )
-                : Text(
-                  widget.toggleText.$2, style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    color: Colors.grey,
-                    fontWeightDelta: 1,
-                    shadows: <Shadow>[
-                      const Shadow(
-                        offset: Offset(0.0, 00.0),
-                        blurRadius: 2.0,
-                        color: Colors.black26,
-                      ),
-                    ]
-                  )
-                ),
-            ),
+              )
+              : Text(
+                widget.toggleText.$2, style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  color: Colors.grey,
+                  fontWeightDelta: 1,
+                  shadows: <Shadow>[
+                    const Shadow(
+                      offset: Offset(0.0, 00.0),
+                      blurRadius: 2.0,
+                      color: Colors.black26,
+                    ),
+                  ]
+                )
+              ),
           )
           
         ],

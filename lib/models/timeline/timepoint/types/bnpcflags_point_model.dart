@@ -39,6 +39,10 @@ class BNpcFlags {
   static const untargetable       = 0x20;
   static const autoAttackDisabled = 0x40;
   static const invisible          = 0x80;
+  static const noRoam             = 0x100;
+  static const unused1            = 0x200;
+  static const unused2            = 0x400;
+  static const unused3            = 0x800;
 
   static String flagsStr(int flags) {
     String bnpcFlags = "";
@@ -66,6 +70,18 @@ class BNpcFlags {
     }
     if(flags & BNpcFlags.invisible == BNpcFlags.invisible) {
       bnpcFlags += " Invisible |";
+    }
+    if(flags & BNpcFlags.noRoam == BNpcFlags.noRoam) {
+      bnpcFlags += " NoRoam |";
+    }
+    if(flags & BNpcFlags.unused1 == BNpcFlags.unused1) {
+      bnpcFlags += " unused1 |";
+    }
+    if(flags & BNpcFlags.unused2 == BNpcFlags.unused2) {
+      bnpcFlags += " unused2 |";
+    }
+    if(flags & BNpcFlags.unused3 == BNpcFlags.unused3) {
+      bnpcFlags += " unused3 |";
     }
 
     if(bnpcFlags.isNotEmpty) {

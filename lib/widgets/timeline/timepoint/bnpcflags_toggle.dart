@@ -22,7 +22,7 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
       children: [
         widget.isDense ? Container() : Expanded(
           child: Center(
-            child: Text(widget.flags.toRadixString(2).padLeft(8, "0"), style: Theme.of(context).textTheme.displaySmall,)
+            child: Text(widget.flags.toRadixString(2).padLeft(12, "0"), style: Theme.of(context).textTheme.displaySmall,)
           )
         ),
         SizedBox(
@@ -115,6 +115,53 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
                 },
                 toggleText: ("0x80", "0x80"),
                 leading: const Text("Invisible"),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 170,
+          child: Column(
+            children: [
+              SwitchTextWidget(
+                enabled: flags & BNpcFlags.noRoam != 0,
+                onPressed: () {
+                  flags = flags ^= BNpcFlags.noRoam;
+
+                  widget.onUpdate(flags);
+                },
+                toggleText: ("0x100", "0x100"),
+                leading: const Text("NoRoam"),
+              ),
+              SwitchTextWidget(
+                enabled: flags & BNpcFlags.unused1 != 0,
+                onPressed: () {
+                  flags = flags ^= BNpcFlags.unused1;
+          
+                  widget.onUpdate(flags);
+                },
+                toggleText: ("0x200", "0x200"),
+                leading: const Text("Unused1"),
+              ),
+              SwitchTextWidget(
+                enabled: flags & BNpcFlags.unused2 != 0,
+                onPressed: () {
+                  flags = flags ^= BNpcFlags.unused2;
+
+                  widget.onUpdate(flags);
+                },
+                toggleText: ("0x400", "0x400"),
+                leading: const Text("Unused2"),
+              ),
+              SwitchTextWidget(
+                enabled: flags & BNpcFlags.unused3 != 0,
+                onPressed: () {
+                  flags = flags ^= BNpcFlags.unused3;
+
+                  widget.onUpdate(flags);
+                },
+                toggleText: ("0x800", "0x800"),
+                leading: const Text("Unused3"),
               ),
             ],
           ),
