@@ -72,7 +72,8 @@ class _NumberButtonState extends State<NumberButton> {
       child: Stack(
         children: [
           TextField(
-            enabled: widget.enabled && widget.inputEnabled,
+            enabled: widget.enabled,
+            readOnly: widget.inputEnabled,
             maxLines: 1,
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,

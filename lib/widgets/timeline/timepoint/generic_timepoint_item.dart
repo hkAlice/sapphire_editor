@@ -302,7 +302,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                   NumberButton(
                     min: 0,
                     max: 60000,
-                    inputEnabled: false,
+                    inputEnabled: true,
                     value: widget.timepointModel.duration,
                     label: "Duration",
                     builder: (value) {
