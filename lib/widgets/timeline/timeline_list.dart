@@ -35,7 +35,8 @@ class _TimelineListState extends State<TimelineList> {
       curve: Curves.easeInOutCubic,
       transitionBuilder: (child, animation) {
         animation = CurvedAnimation(
-          curve: Curves.easeInOutCubic, parent: animation
+          curve: Curves.easeInOutCubic,
+          parent: animation
         );
         return SlideTransition(
           position: Tween(

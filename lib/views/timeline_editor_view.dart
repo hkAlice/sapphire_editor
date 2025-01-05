@@ -59,6 +59,10 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
         var clearHistory = autosaveKeys.take(autosaveKeys.length - historySize);
         await autosaveBox.deleteAll(clearHistory.toList());
       }
+
+      setState(() {
+        
+      });
     });
   }
 
@@ -222,7 +226,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                 top: 8,
                                 child: Row(
                                   children: [
-                                    OutlinedButton.icon(
+                                    IconButton(
+                                      color: Theme.of(context).primaryColor,
                                       onPressed: () {
                                         Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
                                         try {
@@ -239,10 +244,11 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                         }
                                       },
                                       icon: const Icon(Icons.copy_rounded),
-                                      label: const Text("Copy")
+                                      tooltip: "Copy",
                                     ),
                                     const SizedBox(width: 8.0,),
-                                    OutlinedButton.icon(
+                                    IconButton(
+                                      color: Theme.of(context).primaryColor,
                                       onPressed: () {
                                         Clipboard.setData(ClipboardData(text: _jsonTextFieldController.text));
                                         try {
@@ -259,7 +265,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                         }
                                       },
                                       icon: const Icon(Icons.download_rounded),
-                                      label: const Text("Save")
+                                      tooltip: "Save",
                                     ),
                                   ],
                                 ),
@@ -269,13 +275,16 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                 right: 8,
                                 child: Opacity(
                                   opacity: 0.5,
-                                  child: FadeIn(
-                                    animate: !_autosaveTimer.isActive,
-                                    child: FilledButton(
-                                      onPressed: null,
-                                      child: Text("Auto-saved ${DateFormat("yyyy-MM-dd hh:mm").format(_lastAutosave)}",
-                                        style: Theme.of(context).textTheme.bodySmall,
-                                      ),
+                                  child: FilledButton(
+                                    onPressed: null,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.save),
+                                        SizedBox(width: 6.0,),
+                                        Text(DateFormat("yyyy/MM/dd HH:mm").format(_lastAutosave),
+                                          style: Theme.of(context).textTheme.bodySmall,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
