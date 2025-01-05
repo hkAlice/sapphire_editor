@@ -49,7 +49,8 @@ class _SimpleNumberFieldState extends State<SimpleNumberField> {
       ],
       controller: _controller,
       decoration: InputDecoration(
-        border: InputBorder.none,
+        filled: false,
+        border: OutlineInputBorder(), //InputBorder.none,
         label: widget.label == null ? null : Text(widget.label!),
       ),
       onChanged: (value) {

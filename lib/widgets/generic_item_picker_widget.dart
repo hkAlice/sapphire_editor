@@ -48,9 +48,9 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
       isDense: true,
       isExpanded: true,
       decoration: InputDecoration(
-        filled: true,
+        filled: false,
         labelText: widget.label,
-        border: InputBorder.none,
+        border: OutlineInputBorder(),
         contentPadding: const EdgeInsets.all(10.5),
       ),
       onChanged: !widget.enabled ? null : (T? value) {

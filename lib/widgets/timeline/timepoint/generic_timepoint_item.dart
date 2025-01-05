@@ -301,27 +301,17 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                   const SizedBox(width: 18.0,),
                   NumberButton(
                     min: 0,
-                    max: 50000,
+                    max: 60000,
+                    inputEnabled: false,
                     value: widget.timepointModel.duration,
                     label: "Duration",
                     builder: (value) {
                       var seconds = value / 1000;
-                      return SizedBox(
-                        width: 42,
-                        child: Column(
-                          children: [
-                            Text("${seconds.toStringAsFixed(2)}s", maxLines: 1,),
-                            //Text("${value}ms", style: Theme.of(context).textTheme.bodySmall,)
-                          ],
-                        ),
-                      );
+                      return "${seconds.toStringAsFixed(2)}s";
                     },
                     stepCount: 100,
                     onChanged: (value) {
                       widget.timepointModel.duration = value;
-                      setState(() {
-                        
-                      });
                       widget.onUpdate(widget.timepointModel);
                     }
                   ),

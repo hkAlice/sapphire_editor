@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NumberButton extends StatefulWidget {
   final int min;
@@ -7,14 +8,18 @@ class NumberButton extends StatefulWidget {
   final Function(int) onChanged;
   final String? label;
   final int stepCount;
-  final Widget Function(int)? builder;
+  final String Function(int)? builder;
   final Widget? action;
+  final bool enabled;
+  final bool inputEnabled;
 
   const NumberButton({
     super.key,
     required this.min,
     required this.max,
     required this.value,
+    this.enabled = true,
+    this.inputEnabled = true,
     this.stepCount = 1,
     this.builder,
     required this.onChanged,
@@ -29,147 +34,132 @@ class NumberButton extends StatefulWidget {
 class _NumberButtonState extends State<NumberButton> {
   late int _numValue;
   bool _holdingStepper = false;
+  late TextEditingController _controller;
 
-  void _subtractValue() {
+  void _setBoundValue(int value) {
+    _numValue = value;
     if(_numValue <= widget.min) {
-      return;
+      _numValue = widget.min;
     }
-    setState(() {
-      _numValue = widget.value - widget.stepCount;
-      if(_numValue <= widget.min) {
-        _numValue = widget.min;
-      }
-    });
-  }
-
-  void _incrementValue() {
     if(_numValue >= widget.max) {
-      return;
+      _numValue = widget.max;
     }
     setState(() {
-      _numValue = widget.value + widget.stepCount;
-      if(_numValue >= widget.max) {
-        _numValue = widget.max;
-      }
+      _controller.text = widget.builder != null ? widget.builder!(_numValue) : _numValue.toString();
+      _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
     });
+
+    widget.onChanged(_numValue);
   }
 
   @override
   void initState() {
-    _numValue = widget.value;
-
     super.initState();
+    _numValue = widget.value;
+    _controller = TextEditingController(text: _numValue.toString());
   }
-  
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          color: Theme.of(context).inputDecorationTheme.fillColor,
-          child: Column(
+    return SizedBox(
+      width: 90,
+      child: Stack(
+        children: [
+          TextField(
+            enabled: widget.enabled && widget.inputEnabled,
+            maxLines: 1,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            controller: _controller,
+            decoration: InputDecoration(
+              filled: false,
+              border: OutlineInputBorder(),
+              label: widget.label == null ? null : Text(widget.label!),
+            ),
+            onChanged: (value) {
+              int newValue = 0;
+              try {
+                newValue = int.tryParse(value) ?? 0;
+              }
+              catch(e) {
+                // failed to parse, ignore
+                return;
+              }
+              
+              _setBoundValue(newValue);
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 23.0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, top: 8.0),
-                  child: widget.label == null ? Container() : Text(widget.label!, style: Theme.of(context).textTheme.bodySmall),
+              InkWell(
+                borderRadius: BorderRadius.circular(30.0),
+                onTap: () {},
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (_) {
+                    _setBoundValue(_numValue - widget.stepCount);
+                  },
+                  onLongPressStart: (_) async {
+                    _holdingStepper = true;
+                
+                    do {
+                      _setBoundValue(_numValue - widget.stepCount);
+                
+                      await Future.delayed(const Duration(milliseconds: 20));
+                    } while(_holdingStepper);
+                  },
+                  onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                    child: const Icon(Icons.remove_rounded, size: 18.0,),
+                  )
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {},
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: (_) {
-                        _subtractValue();
-                        widget.onChanged(_numValue);
-                        setState(() {
-                          
-                        });
-                      },
-                      onLongPressStart: (_) async {
-                        _holdingStepper = true;
-                    
-                        do {
-                          _subtractValue();
-                          widget.onChanged(_numValue);
-                          setState(() {
-                            
-                          });
-                    
-                          await Future.delayed(const Duration(milliseconds: 20));
-                        } while(_holdingStepper);
-                      },
-                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                        child: Transform.translate(
-                          offset: const Offset(0.0, -3.0),
-                          child: const Icon(Icons.remove_rounded, size: 18.0,)
-                        ),
-                      )
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: const Offset(0.0, -4.0),
-                    child: widget.builder != null ? widget.builder!(widget.value) : SizedBox(
-                      width: 24,
-                      child: Center(
-                        child: Text(widget.value.toString(), style: Theme.of(context).textTheme.bodyLarge, maxLines: 1,),)
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: (_) {
-                        _incrementValue();
-                        widget.onChanged(_numValue);
-        
-                        setState(() {
-                          
-                        });
-                      },
-                      onLongPressStart: (_) async {
-                        _holdingStepper = true;
-                    
-                        do {
-                          _incrementValue();
-                          widget.onChanged(_numValue);
-                          setState(() {
-                            
-                          });
-                    
-                          await Future.delayed(const Duration(milliseconds: 20));
-                        } while(_holdingStepper);
-                      },
-                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                        child: Transform.translate(
-                          offset: const Offset(0.0, -3.0),
-                          child: const Icon(Icons.add_rounded, size: 18.0,)
-                        ),
-                      )
-                    ),
-                  ),
-                ],
+              SizedBox(height: 48.0,),
+              InkWell(
+                borderRadius: BorderRadius.circular(30.0),
+                onTap: () {},
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (_) {
+                    _setBoundValue(_numValue + widget.stepCount);
+                  },
+                  onLongPressStart: (_) async {
+                    _holdingStepper = true;
+                
+                    do {
+                      _setBoundValue(_numValue + widget.stepCount);
+                
+                      await Future.delayed(const Duration(milliseconds: 20));
+                    } while(_holdingStepper);
+                  },
+                  onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                    child: const Icon(Icons.add_rounded, size: 18.0,),
+                  )
+                ),
               ),
             ],
           ),
-        ),
-        Positioned(
-          top: 0,
-          right: 0,
-          child: widget.action ?? Container()
-        )
-      ],
+          /*Positioned(
+            top: 2,
+            right: 2,
+            child: widget.action ?? Container()
+          )*/
+        ],
+      ),
     );
   }
 }
