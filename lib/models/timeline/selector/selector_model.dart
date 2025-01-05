@@ -30,4 +30,30 @@ class SelectorModel {
   factory SelectorModel.fromJson(Map<String, dynamic> json) => _$SelectorModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SelectorModelToJson(this);
+
+  @override
+  String toString() {
+    var countStr = "Select $count target${count == 1 ? '' : 's'} where ";
+
+    for(int i = 0; i < filters.length; i++) {
+      var filter = filters[i];
+
+      if(i > 0) {
+        countStr += ", and ";
+      }
+
+      if(filter.negate)
+        countStr += "not ";
+      
+      countStr += filter.type.name;
+    }
+
+    if(fillRandomEntries)
+      countStr += " (fill with random)";
+
+    if(excludeSelectorName.isNotEmpty)
+      countStr += " (exclude $excludeSelectorName)";
+
+    return countStr;
+  }
 }

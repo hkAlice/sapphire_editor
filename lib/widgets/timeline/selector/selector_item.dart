@@ -42,7 +42,7 @@ class _SelectorItemState extends State<SelectorItem> {
           index: widget.index,
           child: Text(widget.selectorModel.name)
         ),
-        subtitle: Text("${filterCount.toString()} filter${filterCount == 1 ? '' : 's'}"),
+        subtitle: Text(widget.selectorModel.toString()),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -169,7 +169,7 @@ class _SelectorItemState extends State<SelectorItem> {
                                   ),
                                   SwitchIconWidget(
                                     enabled: filter.negate,
-                                    icon: Icons.priority_high_rounded,
+                                    icon: Icons.not_interested,
                                     onPressed: () {
                                       setState(() {
                                         filter.negate = !filter.negate;
