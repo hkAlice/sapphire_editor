@@ -72,7 +72,7 @@ class _TextModalEditorWidgetState extends State<TextModalEditorWidget> {
                     controller: _descriptionTextEditingController,
                     decoration: InputDecoration(
                       filled: true,
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(),
                       hintText: widget.headerText
                     ),
                     onChanged: (value) {

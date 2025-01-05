@@ -42,7 +42,7 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
         maxLines: 1,
         controller: textEditingController,
         decoration: InputDecoration(
-          border: InputBorder.none,
+          border: OutlineInputBorder(),
           label: Text(label),
         ),
         onChanged: (value) { onChanged(value); }

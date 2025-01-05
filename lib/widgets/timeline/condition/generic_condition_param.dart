@@ -62,7 +62,7 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
             ],
             controller: paramTextController,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: OutlineInputBorder(),
               label: Text(paramParser.label),
             ),
             onChanged: (value) {

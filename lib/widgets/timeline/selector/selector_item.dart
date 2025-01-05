@@ -27,7 +27,6 @@ class _SelectorItemState extends State<SelectorItem> {
   
   @override
   Widget build(BuildContext context) {
-    var filterCount = widget.selectorModel.filters.length;
     return Card(
       borderOnForeground: false,
       //shadowColor: Colors.transparent,

@@ -147,8 +147,7 @@ class __SubActorNameEditDialogState extends State<_SubActorNameEditDialog> {
         autofocus: false,
         controller: controller,
         decoration: InputDecoration(
-          filled: true,
-          border: InputBorder.none,
+          border: OutlineInputBorder(),
           helperText: subactor
         ),
         

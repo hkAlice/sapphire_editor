@@ -49,6 +49,10 @@ class SelectorModel {
       countStr += filter.type.name;
     }
 
+    if(filters.isEmpty) {
+      countStr += "🗿";
+    }
+
     if(fillRandomEntries) {
       countStr += " (fill with random)";
     }
