@@ -331,6 +331,9 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                       headerText: "Edit timepoint description",
                       onChanged: (description) {
                         widget.timepointModel.description = description;
+                        setState(() {
+                          
+                        });
                         widget.onUpdate(widget.timepointModel);
                       }
                     ),

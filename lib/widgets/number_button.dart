@@ -96,62 +96,65 @@ class _NumberButtonState extends State<NumberButton> {
               _setBoundValue(newValue);
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 2.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(30.0),
-                  onTap: () {},
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTapDown: (_) {
-                      _setBoundValue(_numValue - widget.stepCount);
-                    },
-                    onLongPressStart: (_) async {
-                      _holdingStepper = true;
-                  
-                      do {
+          Transform.translate(
+            offset: const Offset(0.0, 1.5),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(30.0),
+                    onTap: () {},
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (_) {
                         _setBoundValue(_numValue - widget.stepCount);
-                  
-                        await Future.delayed(const Duration(milliseconds: 20));
-                      } while(_holdingStepper);
-                    },
-                    onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      child: const Icon(Icons.remove_rounded, size: 16.0,),
-                    )
+                      },
+                      onLongPressStart: (_) async {
+                        _holdingStepper = true;
+                    
+                        do {
+                          _setBoundValue(_numValue - widget.stepCount);
+                    
+                          await Future.delayed(const Duration(milliseconds: 20));
+                        } while(_holdingStepper);
+                      },
+                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                        child: const Icon(Icons.remove_rounded, size: 16.0,),
+                      )
+                    ),
                   ),
-                ),
-                SizedBox(height: 48.0,),
-                InkWell(
-                  borderRadius: BorderRadius.circular(30.0),
-                  onTap: () {},
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTapDown: (_) {
-                      _setBoundValue(_numValue + widget.stepCount);
-                    },
-                    onLongPressStart: (_) async {
-                      _holdingStepper = true;
-                  
-                      do {
+                  SizedBox(height: 48.0,),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(30.0),
+                    onTap: () {},
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (_) {
                         _setBoundValue(_numValue + widget.stepCount);
-                  
-                        await Future.delayed(const Duration(milliseconds: 20));
-                      } while(_holdingStepper);
-                    },
-                    onLongPressEnd: (_) => setState(() => _holdingStepper = false),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      child: const Icon(Icons.add_rounded, size: 16.0,),
-                    )
+                      },
+                      onLongPressStart: (_) async {
+                        _holdingStepper = true;
+                    
+                        do {
+                          _setBoundValue(_numValue + widget.stepCount);
+                    
+                          await Future.delayed(const Duration(milliseconds: 20));
+                        } while(_holdingStepper);
+                      },
+                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                        child: const Icon(Icons.add_rounded, size: 16.0,),
+                      )
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
