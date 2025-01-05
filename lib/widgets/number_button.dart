@@ -45,7 +45,6 @@ class _NumberButtonState extends State<NumberButton> {
     
     _controller.text = widget.builder != null ? widget.builder!(_numValue) : _numValue.toString();
     _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
-    
 
     widget.onChanged(_numValue);
   }
@@ -98,7 +97,7 @@ class _NumberButtonState extends State<NumberButton> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3.0),
+            padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 2.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -123,7 +122,7 @@ class _NumberButtonState extends State<NumberButton> {
                     onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      child: const Icon(Icons.remove_rounded, size: 18.0,),
+                      child: const Icon(Icons.remove_rounded, size: 16.0,),
                     )
                   ),
                 ),
@@ -148,7 +147,7 @@ class _NumberButtonState extends State<NumberButton> {
                     onLongPressEnd: (_) => setState(() => _holdingStepper = false),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      child: const Icon(Icons.add_rounded, size: 18.0,),
+                      child: const Icon(Icons.add_rounded, size: 16.0,),
                     )
                   ),
                 ),

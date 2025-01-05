@@ -255,7 +255,6 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
         ],
       ),
       content: Container(
-        color: Colors.black12,
         constraints: const BoxConstraints(minWidth: 800),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -273,9 +272,9 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                     width: 180,
                     child: DropdownButtonFormField<TimepointType>(
                       decoration: const InputDecoration(
-                        filled: true,
+                        filled: false,
                         labelText: "Point type",
-                        border: InputBorder.none,
+                        border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.all(10.5)
                       ),
                       value: widget.timepointModel.type,
@@ -307,7 +306,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                     label: "Duration",
                     builder: (value) {
                       var seconds = value / 1000;
-                      return "${seconds.toStringAsFixed(2)}s";
+                      return "${seconds.toStringAsFixed(1)}s";
                     },
                     stepCount: 100,
                     onChanged: (value) {
