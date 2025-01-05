@@ -255,6 +255,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
         ],
       ),
       content: Container(
+        color: Colors.black12,
         constraints: const BoxConstraints(minWidth: 800),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
