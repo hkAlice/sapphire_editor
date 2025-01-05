@@ -42,17 +42,20 @@ class SelectorModel {
         countStr += ", and ";
       }
 
-      if(filter.negate)
+      if(filter.negate) {
         countStr += "not ";
+      }
       
       countStr += filter.type.name;
     }
 
-    if(fillRandomEntries)
+    if(fillRandomEntries) {
       countStr += " (fill with random)";
+    }
 
-    if(excludeSelectorName.isNotEmpty)
+    if(excludeSelectorName.isNotEmpty) {
       countStr += " (exclude $excludeSelectorName)";
+    }
 
     return countStr;
   }
