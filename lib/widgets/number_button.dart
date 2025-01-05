@@ -56,7 +56,7 @@ class _NumberButtonState extends State<NumberButton> {
   void initState() {
     super.initState();
     _numValue = widget.value;
-    _controller = TextEditingController(text: _numValue.toString());
+    _controller = TextEditingController(text: widget.builder != null ? widget.builder!(_numValue) : _numValue.toString());
   }
 
   @override
