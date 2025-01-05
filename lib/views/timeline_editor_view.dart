@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -197,7 +196,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
                                 expands: true,
                                 showErrorMessage: true,
                                 decoration: InputDecoration(
-                                  fillColor: const Color(0xFF141414),
+                                  filled: true,
+                                  fillColor: Theme.of(context).hoverColor,
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius: BorderRadius.circular(16.0)
