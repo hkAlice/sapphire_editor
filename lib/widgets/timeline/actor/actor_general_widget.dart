@@ -112,33 +112,6 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
             
                     widget.onUpdate();
                   },
-                  action: Opacity(
-                    opacity: 0.75,
-                    child: Container(
-                      width: 16.0,
-                      height: 16.0,
-                      margin: const EdgeInsets.only(top: 4, right: 4),
-                      child: IconButton(
-                        splashRadius: 8.0,
-                        icon: const Icon(Icons.edit,),
-                        iconSize: 16,
-                        padding: const EdgeInsets.all(0),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return _SubActorNameEditDialog(
-                                selectedActor: widget.actorModel,
-                                onChanged: () {
-                                  widget.onUpdate();
-                                },
-                              );
-                            }
-                          );
-                        },
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
