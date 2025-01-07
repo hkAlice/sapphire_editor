@@ -5,6 +5,7 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/battletalk_point_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 
 class BattleTalkPointWidget extends StatefulWidget {
@@ -59,22 +60,6 @@ class _BattleTalkPointWidgetState extends State<BattleTalkPointWidget> {
           children: [
             SizedBox(
               width: 180,
-              child: GenericItemPickerWidget<ActorModel>(
-                label: "Handler Actor",
-                items: widget.timelineModel.actors,
-                initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == pointData.handlerActorName),
-                onChanged: (newValue) {
-                  pointData.handlerActorName = newValue.name;
-                  widget.onUpdate();
-                  setState(() {
-                    
-                  });
-                },
-              ),
-            ),
-            const SizedBox(width: 18.0,),
-            SizedBox(
-              width: 110,
               child: SimpleNumberField(
                 label: "BattleTalk ID",
                 initialValue: pointData.battleTalkId,
@@ -86,7 +71,7 @@ class _BattleTalkPointWidgetState extends State<BattleTalkPointWidget> {
             ),
             const SizedBox(width: 18.0,),
             SizedBox(
-              width: 80,
+              width: 90,
               child: SimpleNumberField(
                 label: "Kind",
                 initialValue: pointData.kind,
@@ -98,7 +83,7 @@ class _BattleTalkPointWidgetState extends State<BattleTalkPointWidget> {
             ),
             const SizedBox(width: 18.0,),
             SizedBox(
-              width: 80,
+              width: 90,
               child: SimpleNumberField(
                 label: "Name ID",
                 initialValue: pointData.nameId,
@@ -108,9 +93,26 @@ class _BattleTalkPointWidgetState extends State<BattleTalkPointWidget> {
                 }
               ),
             ),
+            const SizedBox(width: 18.0,),
+            NumberButton(
+              min: 0,
+              max: 60000,
+              readOnlyField: true,
+              value: pointData.length,
+              label: "Length",
+              builder: (value) {
+                var seconds = value / 1000;
+                return "${seconds.toStringAsFixed(1)}s";
+              },
+              stepCount: 100,
+              onChanged: (value) {
+                pointData.length = value;
+                widget.onUpdate();
+              }
+            ),
           ],
         ),
-        const SizedBox(height: 9.0,),
+        const SizedBox(height: 18.0,),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

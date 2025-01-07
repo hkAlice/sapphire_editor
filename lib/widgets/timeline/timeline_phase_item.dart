@@ -3,7 +3,6 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
 

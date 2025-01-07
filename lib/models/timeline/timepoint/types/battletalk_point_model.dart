@@ -5,16 +5,16 @@ part 'battletalk_point_model.g.dart';
 // TODO: change ids to actor str ref
 @JsonSerializable()
 class BattleTalkPointModel {
-  String handlerActorName;
   String talkerActorName;
   int kind;
   int nameId;
   int battleTalkId;
+  int length; 
 
   @JsonKey(defaultValue: [0])
   List<int> params = [0];
 
-  BattleTalkPointModel({this.handlerActorName = "<unknown>", this.talkerActorName  = "<unknown>", this.kind = 0, this.nameId = 2961, this.battleTalkId = 2939, required this.params});
+  BattleTalkPointModel({this.talkerActorName  = "<unknown>", this.kind = 0, this.nameId = 2961, this.battleTalkId = 2939, required this.params, this.length = 5000});
 
   factory BattleTalkPointModel.fromJson(Map<String, dynamic> json) => _$BattleTalkPointModelFromJson(json);
 
@@ -22,6 +22,6 @@ class BattleTalkPointModel {
 
   @override
   String toString() {
-    return "BattleTalk#$battleTalkId kind $kind with nameId#$nameId (talker actor $talkerActorName, handler actor $handlerActorName)";
+    return "BattleTalk#$battleTalkId kind $kind with nameId#$nameId (talker actor $talkerActorName), for ${(length / 1000).toStringAsFixed(2)}s";
   }
 }
