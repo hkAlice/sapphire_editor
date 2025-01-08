@@ -17,7 +17,7 @@ BattleTalkPointModel _$BattleTalkPointModelFromJson(
               ?.map((e) => (e as num).toInt())
               .toList() ??
           [0],
-      length: (json['duration'] as num?)?.toInt() ?? 5000,
+      length: (json['length'] as num?)?.toInt() ?? 5000,
     );
 
 Map<String, dynamic> _$BattleTalkPointModelToJson(
@@ -27,6 +27,6 @@ Map<String, dynamic> _$BattleTalkPointModelToJson(
       'kind': instance.kind,
       'nameId': instance.nameId,
       'battleTalkId': instance.battleTalkId,
-      'duration': instance.length,
+      'length': instance.length,
       'params': instance.params,
     };

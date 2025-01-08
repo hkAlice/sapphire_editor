@@ -225,7 +225,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
       case TimepointType.setCondition:
         return SetConditionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.setPos:
-        return SetPosPointWidget(timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
+        return SetPosPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.snapshot:
         return SnapshotPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       default:
