@@ -23,6 +23,7 @@ Map<String, dynamic> _$TimepointModelToJson(TimepointModel instance) =>
     };
 
 const _$TimepointTypeEnumMap = {
+  TimepointType.actionTimeline: 'actionTimeline',
   TimepointType.battleTalk: 'battleTalk',
   TimepointType.bNpcDespawn: 'bNpcDespawn',
   TimepointType.bNpcFlags: 'bNpcFlags',

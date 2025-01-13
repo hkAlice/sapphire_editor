@@ -8,6 +8,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/actiontimeline_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcdespawn_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
@@ -105,7 +106,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 100,
+                        width: 110,
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(treatEnumName(widget.timepointModel.type), style: Theme.of(context).textTheme.bodyMedium,)
                       ),
@@ -200,6 +201,8 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
     }
 
     switch(widget.timepointModel.type) {
+      case TimepointType.actionTimeline:
+        return ActionTimelinePointWidget(timelineModel: timelineModel, timepointModel: timepointModel, onUpdate: onUpdate);
       case TimepointType.castAction:
         return CastActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.battleTalk:

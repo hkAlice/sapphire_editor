@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/battletalk_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
@@ -74,6 +75,8 @@ class TimepointModel {
         data = SetConditionPointModel.fromJson(data);
       } else if(type == TimepointType.snapshot) {
         data = SnapshotPointModel.fromJson(data);
+      } else if(type == TimepointType.actionTimeline) {
+        data = ActionTimelinePointModel.fromJson(data);
       }
       else {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
@@ -90,6 +93,7 @@ class TimepointModel {
       case TimepointType.directorFlags:
         return Colors.redAccent;
       case TimepointType.castAction:
+      case TimepointType.actionTimeline:
         return Colors.orangeAccent;
       case TimepointType.setPos:
         return Colors.blueGrey;
@@ -111,6 +115,8 @@ class TimepointModel {
 }
 
 enum TimepointType {
+  @JsonValue("actionTimeline")
+  actionTimeline,
   @JsonValue("battleTalk")
   battleTalk,
   @JsonValue("bNpcDespawn")
