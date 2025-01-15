@@ -105,12 +105,16 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      SizedBox(
+                        width: 48.0,
+                        child: Center(child: Text("${(widget.timepointModel.startTime / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
+                      ),
+                      const VerticalDivider(),
                       Container(
                         width: 110,
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(treatEnumName(widget.timepointModel.type), style: Theme.of(context).textTheme.bodyMedium,)
                       ),
-                      
                       const VerticalDivider(),
                       Expanded(child: Text(widget.timepointModel.data.toString(), style: Theme.of(context).textTheme.bodySmall,)),
                       const VerticalDivider(),
@@ -120,11 +124,6 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                           opacity: 0.7,
                           child: Center(child: Text(_calcDuration(), style: Theme.of(context).textTheme.labelSmall, maxLines: 1,))
                         )
-                      ),
-                      const VerticalDivider(),
-                      SizedBox(
-                        width: 48.0,
-                        child: Center(child: Text("${(widget.timepointModel.duration / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
                       ),
                       const VerticalDivider(),
                       SizedBox(
@@ -306,15 +305,15 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                     min: 0,
                     max: 60000,
                     readOnlyField: true,
-                    value: widget.timepointModel.duration,
-                    label: "Duration",
+                    value: widget.timepointModel.startTime,
+                    label: "Start time",
                     builder: (value) {
                       var seconds = value / 1000;
                       return "${seconds.toStringAsFixed(1)}s";
                     },
                     stepCount: 100,
                     onChanged: (value) {
-                      widget.timepointModel.duration = value;
+                      widget.timepointModel.startTime = value;
                       widget.onUpdate(widget.timepointModel);
                     }
                   ),

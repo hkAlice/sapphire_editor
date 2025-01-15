@@ -30,7 +30,7 @@ class _TimelineScheduleItemState extends State<TimelineScheduleItem> {
   String _calcDuration() {
     int durationTotalMs = 0;
     for(var timepoint in widget.scheduleModel.timepoints) {
-      durationTotalMs += timepoint.duration;
+      durationTotalMs += timepoint.startTime;
     }
 
     Duration duration = Duration(milliseconds: durationTotalMs);
@@ -66,7 +66,7 @@ class _TimelineScheduleItemState extends State<TimelineScheduleItem> {
 
     for(int i = 0; i < widget.scheduleModel.timepoints.length; i++) {
       timeElapsedMap[i] = timeElapsedMs;
-      timeElapsedMs += widget.scheduleModel.timepoints[i].duration;
+      //timeElapsedMs += widget.scheduleModel.timepoints[i].startTime;
     }
     
     return Card(

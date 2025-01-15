@@ -24,11 +24,11 @@ class TimepointModel {
   TimepointType type;
   String description;
 
-  int duration;
+  int startTime;
 
   dynamic data = {};
 
-  TimepointModel({required this.type, this.description = "", this.duration = 5000, this.data}) {
+  TimepointModel({required this.type, this.description = "", this.startTime = 0, this.data}) {
     changeType(type);
   }
 
