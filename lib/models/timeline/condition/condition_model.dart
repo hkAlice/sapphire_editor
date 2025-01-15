@@ -2,25 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/types/phaseactive_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
-part 'phase_conditions_model.g.dart';
+part 'condition_model.g.dart';
 
 // todo: wish generics would work well here instead of infinite cast for paramData
 @JsonSerializable()
-class PhaseConditionModel {
+class ConditionModel {
   int id;
   String? description;
-  PhaseConditionType condition;
+  ConditionType condition;
   dynamic paramData = {};
   bool loop;
   bool enabled;
   
   String? targetActor;
-  String? targetPhase;
+  String? targetSchedule;
 
-  PhaseConditionModel({
+  ConditionModel({
     required this.id,
     required this.condition,
     required this.loop,
@@ -28,17 +28,17 @@ class PhaseConditionModel {
     this.enabled = true,
     this.description = "",
     this.targetActor,
-    this.targetPhase
+    this.targetSchedule
   }) {
     changeType(condition);
   }
 
-  factory PhaseConditionModel.fromJson(Map<String, dynamic> json) => _$PhaseConditionModelFromJson(json);
+  factory ConditionModel.fromJson(Map<String, dynamic> json) => _$ConditionModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PhaseConditionModelToJson(this);
+  Map<String, dynamic> toJson() => _$ConditionModelToJson(this);
 
   // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
-  void changeType(PhaseConditionType type) {
+  void changeType(ConditionType type) {
     if(type != condition) {
       paramData = <String, dynamic>{};
     }
@@ -48,16 +48,16 @@ class PhaseConditionModel {
     paramData ??= <String, dynamic>{};
 
     if(paramData is Map<String, dynamic>) {
-      if(type == PhaseConditionType.combatState) {
+      if(type == ConditionType.combatState) {
         paramData = CombatStateConditionModel.fromJson(paramData);
-      } else if(type == PhaseConditionType.getAction) {
+      } else if(type == ConditionType.getAction) {
         paramData = GetActionConditionModel.fromJson(paramData);
-      } else if(type == PhaseConditionType.hpPctBetween) {
+      } else if(type == ConditionType.hpPctBetween) {
         paramData = HPPctBetweenConditionModel.fromJson(paramData);
-      } else if(type == PhaseConditionType.combatState) {
+      } else if(type == ConditionType.combatState) {
         paramData = CombatStateConditionModel.fromJson(paramData);
-      } else if(type == PhaseConditionType.phaseActive) {
-        paramData = PhaseActiveConditionModel.fromJson(paramData);
+      } else if(type == ConditionType.scheduleActive) {
+        paramData = ScheduleActiveConditionModel.fromJson(paramData);
       } else {
         // keep as is, break shit
       }
@@ -68,73 +68,73 @@ class PhaseConditionModel {
   String getReadableConditionStr() {
     String summary = "If ";
 
-    if(condition == PhaseConditionType.hpPctBetween) {
+    if(condition == ConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
       summary += "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
-    } else if (condition == PhaseConditionType.getAction) {
+    } else if (condition == ConditionType.getAction) {
       var param = paramData as GetActionConditionModel;
       summary += "${param.sourceActor} casts Action#${param.actionId}";
-    } else if (condition == PhaseConditionType.combatState) {
+    } else if (condition == ConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
       summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
-    } else if (condition == PhaseConditionType.phaseActive) {
-      var param = paramData as PhaseActiveConditionModel;
-      summary += "${param.sourceActor}->${param.phaseName} is active";
+    } else if (condition == ConditionType.scheduleActive) {
+      var param = paramData as ScheduleActiveConditionModel;
+      summary += "${param.sourceActor}->${param.scheduleName} is active";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
     }
 
-    summary += ", ${loop ? "loop" : "push"} $targetActor->$targetPhase";
+    summary += ", ${loop ? "loop" : "push"} $targetActor->$targetSchedule";
     return summary;
   }
   
-  List<PhaseConditionParamParser> getConditionParamParser() {
+  List<ConditionParamParser> getConditionParamParser() {
 
     switch(condition) {
-      case PhaseConditionType.combatState: {
+      case ConditionType.combatState: {
         return [
-          PhaseConditionParamParser(label: "Actor", initialValue: 0),
-          PhaseConditionParamParser(label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
+          ConditionParamParser(label: "Actor", initialValue: 0),
+          ConditionParamParser(label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
         ];
       }
-      case PhaseConditionType.directorVarGreaterThan: {
+      case ConditionType.directorVarGreaterThan: {
         return [
-          PhaseConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
-          PhaseConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
+          ConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
+          ConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
         ];
       }
-      case PhaseConditionType.elapsedTimeGreaterThan: {
+      case ConditionType.elapsedTimeGreaterThan: {
         return [
-          PhaseConditionParamParser(label: "Elapsed time (ms)", initialValue: 30000),
+          ConditionParamParser(label: "Elapsed time (ms)", initialValue: 30000),
         ];
       }
-      case PhaseConditionType.hpPctBetween: {
+      case ConditionType.hpPctBetween: {
         return [
-          PhaseConditionParamParser(label: "Actor", initialValue: 0),
-          PhaseConditionParamParser(label: "HP Min", initialValue: 25),
-          PhaseConditionParamParser(label: "HP Max", initialValue: 50),
+          ConditionParamParser(label: "Actor", initialValue: 0),
+          ConditionParamParser(label: "HP Min", initialValue: 25),
+          ConditionParamParser(label: "HP Max", initialValue: 50),
         ];
       }
-      case PhaseConditionType.hpPctLessThan: {
+      case ConditionType.hpPctLessThan: {
         return [
-          PhaseConditionParamParser(label: "Actor", initialValue: 0),
-          PhaseConditionParamParser(label: "HP Less Than", initialValue: 70),
+          ConditionParamParser(label: "Actor", initialValue: 0),
+          ConditionParamParser(label: "HP Less Than", initialValue: 70),
         ];
       }
       default: {
         return [
-          PhaseConditionParamParser(label: "Param1",),
-          PhaseConditionParamParser(label: "Param2",),
-          PhaseConditionParamParser(label: "Param3",),
-          PhaseConditionParamParser(label: "Param4",),
+          ConditionParamParser(label: "Param1",),
+          ConditionParamParser(label: "Param2",),
+          ConditionParamParser(label: "Param3",),
+          ConditionParamParser(label: "Param4",),
         ];
       }
     }
   }
 }
 
-enum PhaseConditionType {
+enum ConditionType {
   @JsonValue("combatState")
   combatState,
   @JsonValue("directorVarGreaterThan")
@@ -147,8 +147,8 @@ enum PhaseConditionType {
   hpPctBetween,
   @JsonValue("hpPctLessThan")
   hpPctLessThan,
-  @JsonValue("phaseActive")
-  phaseActive
+  @JsonValue("scheduleActive")
+  scheduleActive
 }
 
 /*
@@ -156,13 +156,13 @@ extension PhaseConditionTypeExt on PhaseConditionType {
   List<PhaseConditionParamParser> getConditionParamParser() {
 }*/
 
-class PhaseConditionParamParser {
+class ConditionParamParser {
   final String label;
   final String type;
   final int initialValue;
   final bool isHex;
 
-  PhaseConditionParamParser({
+  ConditionParamParser({
     required this.label,
     this.type = "input",
     this.initialValue = 50,

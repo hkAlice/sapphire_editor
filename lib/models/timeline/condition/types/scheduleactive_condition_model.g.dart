@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'phaseactive_condition_model.dart';
+part of 'scheduleactive_condition_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-PhaseActiveConditionModel _$PhaseActiveConditionModelFromJson(
+ScheduleActiveConditionModel _$ScheduleActiveConditionModelFromJson(
         Map<String, dynamic> json) =>
-    PhaseActiveConditionModel(
+    ScheduleActiveConditionModel(
       sourceActor: json['sourceActor'] as String? ?? "<unknown>",
-      phaseName: json['phaseName'] as String? ?? "<unset>",
+      scheduleName: json['scheduleName'] as String? ?? "<unset>",
     );
 
-Map<String, dynamic> _$PhaseActiveConditionModelToJson(
-        PhaseActiveConditionModel instance) =>
+Map<String, dynamic> _$ScheduleActiveConditionModelToJson(
+        ScheduleActiveConditionModel instance) =>
     <String, dynamic>{
       'sourceActor': instance.sourceActor,
-      'phaseName': instance.phaseName,
+      'scheduleName': instance.scheduleName,
     };

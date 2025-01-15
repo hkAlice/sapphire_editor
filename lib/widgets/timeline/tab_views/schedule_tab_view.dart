@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_phase_item.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_schedule_item.dart';
 
-class PhaseTabView extends StatefulWidget {
+class ScheduleTabView extends StatefulWidget {
   final TimelineModel timelineModel;
   final int currentActorIndex;
   final Function() onUpdate;
 
-  const PhaseTabView({super.key, required this.timelineModel, required this.currentActorIndex, required this.onUpdate});
+  const ScheduleTabView({super.key, required this.timelineModel, required this.currentActorIndex, required this.onUpdate});
 
   @override
-  State<PhaseTabView> createState() => _PhaseTabViewState();
+  State<ScheduleTabView> createState() => _ScheduleTabViewState();
 }
 
-class _PhaseTabViewState extends State<PhaseTabView> {
+class _ScheduleTabViewState extends State<ScheduleTabView> {
   ActorModel _getCurrentActor() {
     return widget.timelineModel.actors[widget.currentActorIndex];
   }
 
-  void _addNewPhase() {
-    widget.timelineModel.addNewPhase(_getCurrentActor());
+  void _addNewSchedule() {
+    widget.timelineModel.addNewSchedule(_getCurrentActor());
     widget.onUpdate();
   }
   
@@ -42,30 +42,29 @@ class _PhaseTabViewState extends State<PhaseTabView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
             child: ReorderableListView.builder(
-              
               buildDefaultDragHandles: false,
               onReorder: (int oldindex, int newindex) {
                 setState(() {
                   if(newindex > oldindex) {
                     newindex -= 1;
                   }
-                  final items = _getCurrentActor().phases.removeAt(oldindex);
-                  _getCurrentActor().phases.insert(newindex, items);
+                  final items = _getCurrentActor().schedules.removeAt(oldindex);
+                  _getCurrentActor().schedules.insert(newindex, items);
                 });
             
                 widget.onUpdate();
               },
-              itemCount: _getCurrentActor().phases.length,
+              itemCount: _getCurrentActor().schedules.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                return TimelinePhaseItem(
-                  key: Key("phase_${_getCurrentActor().phases[i].hashCode}"),
+                return TimelineScheduleItem(
+                  key: Key("schedule_${_getCurrentActor().schedules[i].hashCode}"),
                   index: i,
                   selectedActor: _getCurrentActor(),
                   timelineModel: widget.timelineModel,
-                  phaseModel: _getCurrentActor().phases[i],
-                  onUpdate: (phaseModel) {
+                  scheduleModel: _getCurrentActor().schedules[i],
+                  onUpdate: (scheduleModel) {
                     widget.onUpdate();
                   },
                 );
@@ -75,9 +74,9 @@ class _PhaseTabViewState extends State<PhaseTabView> {
           Padding(
             padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 14.0),
             child: AddGenericWidget(
-              text: "New phase",
+              text: "New Schedule",
               onTap: () {
-                _addNewPhase();
+                _addNewSchedule();
                 setState(() {
                   
                 });

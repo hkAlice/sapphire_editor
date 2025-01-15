@@ -16,7 +16,7 @@ TimelineModel _$TimelineModelFromJson(Map<String, dynamic> json) =>
           .map((e) => ActorModel.fromJson(e as Map<String, dynamic>))
           .toList()
       ..conditions = (json['conditions'] as List<dynamic>)
-          .map((e) => PhaseConditionModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => ConditionModel.fromJson(e as Map<String, dynamic>))
           .toList()
       ..selectors = (json['selectors'] as List<dynamic>)
           .map((e) => SelectorModel.fromJson(e as Map<String, dynamic>))

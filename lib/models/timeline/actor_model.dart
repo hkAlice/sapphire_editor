@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 
 part 'actor_model.g.dart';
 
@@ -10,7 +10,7 @@ class ActorModel {
   String type;
   int layoutId;
   int hp;
-  List<TimelinePhaseModel> phases;
+  List<TimelineScheduleModel> schedules;
   List<String> subactors;
 
   ActorModel({
@@ -20,8 +20,8 @@ class ActorModel {
     required this.layoutId,
     required this.hp,
     subactorsList,
-    phasesList,
-  }) : phases = phasesList ?? [], subactors = subactorsList ?? [];
+    scheduleList,
+  }) : schedules = scheduleList ?? [], subactors = subactorsList ?? [];
 
   factory ActorModel.fromJson(Map<String, dynamic> json) => _$ActorModelFromJson(json);
 

@@ -1,7 +1,7 @@
 // todo: ideally this would be a service and handle everything timeline based (adding, etc)
 import 'package:collection/collection.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
@@ -13,7 +13,7 @@ class TimelineSanitySvc {
   static List<SanityItem> run(TimelineModel timeline) {
     List<SanityItem> items = [];
 
-    // todo: copy and ignore disabled conditions and phases
+    // todo: copy and ignore disabled conditions and schedules
 
     _checkStalls(timeline, items);
     
@@ -35,50 +35,50 @@ class TimelineSanitySvc {
   static void _checkTimepoints(TimelineModel timeline, ActorModel actor, List<SanityItem> items) {
     List<String> refSelectors = [];
     List<String> snapshotSelectors = [];
-    List<String> phaseNameList = [];
+    List<String> scheduleNameList = [];
     // todo: add bnpcpart here !! squid game
     List<String> actorRefNameList = [actor.name, ...actor.subactors];
     List<String> allMainActorRefNameList = timeline.actors.map((e) => e.name).toList();
 
-    for(var phase in actor.phases) {
-      if(phase.timepoints.isEmpty) {
-        _warn("EmptyPhase", "Phase ${actor.name}->${phase.name} has no timepoints.", items);
+    for(var schedule in actor.schedules) {
+      if(schedule.timepoints.isEmpty) {
+        _warn("EmptySchedule", "Schedule ${actor.name}->${schedule.name} has no timepoints.", items);
         continue;
       }
 
-      if(phaseNameList.contains(phase.name)) {
-        _err("UnresolvedDuplicatePhaseRef", "Duplicate phase name ${actor.name}->${phase.name}. Ensure that phases have distinct names within an actor.", items);
+      if(scheduleNameList.contains(schedule.name)) {
+        _err("UnresolvedDuplicateScheduleRef", "Duplicate schedule name ${actor.name}->${schedule.name}. Ensure that schedules have distinct names within an actor.", items);
       }
 
-      phaseNameList.add(phase.name);
+      scheduleNameList.add(schedule.name);
 
-      for(var timepoint in phase.timepoints) {
+      for(var timepoint in schedule.timepoints) {
         if(timepoint.type == TimepointType.bNpcDespawn) {
           var pointData = timepoint.data as BNpcDespawnPointModel;
           if(!allMainActorRefNameList.contains(pointData.despawnActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcDespawn with invalid actor ${pointData.despawnActor}.", items);
+            _err("InvalidActorRef", "Schedule ${actor.name}->${schedule.name} has BNpcDespawn with invalid actor ${pointData.despawnActor}.", items);
           }
         }
         if(timepoint.type == TimepointType.bNpcSpawn) {
           var pointData = timepoint.data as BNpcSpawnPointModel;
           if(!allMainActorRefNameList.contains(pointData.spawnActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has BNpcSpawn with invalid actor ${pointData.spawnActor}.", items);
+            _err("InvalidActorRef", "Schedule ${actor.name}->${schedule.name} has BNpcSpawn with invalid actor ${pointData.spawnActor}.", items);
           }
         }
         // validate castAction timepoint
         if(timepoint.type == TimepointType.castAction) {
           var pointData = timepoint.data as CastActionPointModel;
           if(pointData.actionId == 0) {
-            _err("InvalidActionID", "Phase ${actor.name}->${phase.name} has CastAction ActionID 0.", items);
+            _err("InvalidActionID", "Schedule ${actor.name}->${schedule.name} has CastAction ActionID 0.", items);
           }
 
           if(pointData.actionId == 69) {
-            _info("Nice", "Phase ${actor.name}->${phase.name} has CastAction ActionID 69. Nice", items);
+            _info("Nice", "Schedule ${actor.name}->${schedule.name} has CastAction ActionID 69. Nice", items);
           }
 
           if(pointData.targetType == ActorTargetType.selector) {
             if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
-              _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
+              _err("InvalidSelectorRef", "Schedule ${actor.name}->${schedule.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
             }
             else {
               if(!snapshotSelectors.contains(pointData.selectorName) && !pointData.snapshot) {
@@ -88,11 +88,11 @@ class TimelineSanitySvc {
             }
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has CastAction with invalid local actor ${pointData.sourceActor}.", items);
+            _err("InvalidActorRef", "Schedule ${actor.name}->${schedule.name} has CastAction with invalid local actor ${pointData.sourceActor}.", items);
           }
 
           if(pointData.targetType == ActorTargetType.none) {
-            _warn("UnsupportedTargetType", "Phase ${actor.name}->${phase.name} has CastAction TargetType 'none', and is undefined behavior.", items);
+            _warn("UnsupportedTargetType", "Schedule ${actor.name}->${schedule.name} has CastAction TargetType 'none', and is undefined behavior.", items);
           }
         }
 
@@ -100,10 +100,10 @@ class TimelineSanitySvc {
           var pointData = timepoint.data as SnapshotPointModel;
           snapshotSelectors.add(pointData.selectorName);
           if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
-            _err("InvalidSelectorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
+            _err("InvalidSelectorRef", "Schedule ${actor.name}->${schedule.name} has Snapshot with invalid selector ${pointData.selectorName}.", items);
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
-            _err("InvalidActorRef", "Phase ${actor.name}->${phase.name} has Snapshot with invalid local actor ${pointData.sourceActor}.", items);
+            _err("InvalidActorRef", "Schedule ${actor.name}->${schedule.name} has Snapshot with invalid local actor ${pointData.sourceActor}.", items);
           }
         }
       }
@@ -111,14 +111,14 @@ class TimelineSanitySvc {
   }
 
   static void _checkStalls(TimelineModel timeline, List<SanityItem> items) {
-    bool hasCombatPhaseCondition = timeline.conditions.where((e) => e.condition == PhaseConditionType.combatState).isNotEmpty;
+    bool hasCombatScheduleCondition = timeline.conditions.where((e) => e.condition == ConditionType.combatState).isNotEmpty;
 
     List<String> actorNameList = [];
     List<int> layoutIdList = [];
 
     for(var actor in timeline.actors) {
-      if(actor.phases.isEmpty) {
-        _warn("StallActor", "Actor ${actor.name} has no phases and may stall.", items);
+      if(actor.schedules.isEmpty) {
+        _warn("StallActor", "Actor ${actor.name} has no schedules and may stall.", items);
       }
 
       if(actorNameList.contains(actor.name)) {
@@ -143,15 +143,15 @@ class TimelineSanitySvc {
     layoutIdList.where((e) => layoutIdList.where((element) => element == e).length > 1).toSet().toList();
 
     if(timeline.conditions.isEmpty) {
-      _err("StallNoConds", "No conditions to push phases with. Ensure that the timeline has conditions.", items);
+      _err("StallNoConds", "No conditions to push schedules with. Ensure that the timeline has conditions.", items);
     }
 
     {
       // check condition conflictsz (only check if the *NEXT* condition is a duplicate, allow inbetween conditions)
       // todo: there may be valid instances of duplicate conditions, not much point in raising warning issue here
-      /*for(int i = 0; i < timeline.phaseConditions.length - 1; i++) {
-        final cond1 = timeline.phaseConditions[i];
-        final cond2 = timeline.phaseConditions[i + 1];
+      /*for(int i = 0; i < timeline.scheduleConditions.length - 1; i++) {
+        final cond1 = timeline.scheduleConditions[i];
+        final cond2 = timeline.scheduleConditions[i + 1];
         if(cond1.paramData == cond && cond1.condition == cond2.condition) {
           items.add(SanityItem(SanitySeverity.warning, "DuplicateConditionConflict", "Condition of type ${cond1.condition} and params ${cond1.params.join(", ")} is duplicate of next condition"));
         }
@@ -160,21 +160,21 @@ class TimelineSanitySvc {
     }
 
     {
-      // check if last phase in actor loops and has end scenario
+      // check if last schedule in actor loops and has end scenario
       if(timeline.conditions.isNotEmpty && !timeline.conditions.last.loop) {
-        _warn("MissingTailPhaseClosure", "Last phase ${timeline.conditions.last.targetPhase} does not loop. Ensure that the phase ends with an enrage, fail flag, or idle phase.", items);
+        _warn("MissingTailScheduleClosure", "Last schedule ${timeline.conditions.last.targetSchedule} does not loop. Ensure that the schedule ends with an enrage, fail flag, or idle schedule.", items);
       }
 
       // check if timeline has on combat check
-      if(!hasCombatPhaseCondition) {
-        _warn("NoCombatPhaseCondition", "Timeline is indifferent to whether mob is in combat or not.", items);
+      if(!hasCombatScheduleCondition) {
+        _warn("NoCombatScheduleCondition", "Timeline is indifferent to whether mob is in combat or not.", items);
       }
     }
 
     {
       // check hp sanity
-      /*List<PhaseConditionType> hpCondCheck = [PhaseConditionType.hpPctBetween, PhaseConditionType.hpPctLessThan];
-      List<PhaseConditionModel?> hpCondList = timeline.phaseConditions.where((e) { if(hpCondCheck.contains(e.condition)) return true; return false; }).toList();
+      /*List<ScheduleConditionType> hpCondCheck = [ScheduleConditionType.hpPctBetween, ScheduleConditionType.hpPctLessThan];
+      List<ScheduleConditionModel?> hpCondList = timeline.scheduleConditions.where((e) { if(hpCondCheck.contains(e.condition)) return true; return false; }).toList();
       if(hpCondList.isNotEmpty) {
         List<(int, int)> hpRanges = [];
         //int lastMax = -1;
@@ -183,7 +183,7 @@ class TimelineSanitySvc {
           if(cond == null)
             continue;
 
-          if(cond == timeline.phaseConditions.first) {
+          if(cond == timeline.scheduleConditions.first) {
             hasFirstCondAsHp = true;
           }
 
@@ -192,13 +192,13 @@ class TimelineSanitySvc {
             items.add(const SanityItem(SanitySeverity.warning, "AvoidHP100Usage", "Avoid usage of HP% conditions == 100. Prefer checking if mob is in combat."));
           }
 
-          if(hasFirstCondAsHp && !hasCombatPhaseCondition) {
+          if(hasFirstCondAsHp && !hasCombatScheduleCondition) {
             if(cond.params[1] != 100) {
-              items.add(const SanityItem(SanitySeverity.warning, "PossibleHPGapStall", "Avoid priority of HP condition as initial phase as mob may not take damage and stall. Prefer checking if mob is in combat."));
+              items.add(const SanityItem(SanitySeverity.warning, "PossibleHPGapStall", "Avoid priority of HP condition as initial schedule as mob may not take damage and stall. Prefer checking if mob is in combat."));
             }
           }
           
-          if(cond.condition == PhaseConditionType.hpPctLessThan) {
+          if(cond.condition == ScheduleConditionType.hpPctLessThan) {
             if(cond.params[1] > 100) {
               items.add(const SanityItem(SanitySeverity.error, "InvalidHPVal", "Condition target HP is greater than 100."));
             }
@@ -207,7 +207,7 @@ class TimelineSanitySvc {
             lastMax = cond.params[1];
           }
 
-          if(cond.condition == PhaseConditionType.hpPctBetween) {
+          if(cond.condition == ScheduleConditionType.hpPctBetween) {
             if(cond.params[2] < cond.params[1]) {
               items.add(const SanityItem(SanitySeverity.error, "InvalidHPMinMax", "Minimum HP is greater than maximum HP for condition type hpPctBetween."));
             }

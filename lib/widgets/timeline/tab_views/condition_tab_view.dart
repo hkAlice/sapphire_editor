@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/phase_condition_item.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/condition_item.dart';
 
 class ConditionTabView extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -15,7 +15,7 @@ class ConditionTabView extends StatefulWidget {
 }
 
 class _ConditionTabViewState extends State<ConditionTabView> {
-  void _addNewPhaseCondition() {
+  void _addNewCondition() {
     widget.timelineModel.addNewCondition();
 
     setState(() {
@@ -86,12 +86,12 @@ class _ConditionTabViewState extends State<ConditionTabView> {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                return PhaseConditionItem(
+                return ConditionItem(
                   key: Key("condition_${widget.timelineModel.conditions[i].id}"),
                   index: i,
                   timelineModel: widget.timelineModel,
-                  phaseConditionModel: widget.timelineModel.conditions[i],
-                  onUpdate: (phaseConditionModel) {
+                  conditionModel: widget.timelineModel.conditions[i],
+                  onUpdate: (conditionModel) {
                     setState(() {
                       
                     });
@@ -103,7 +103,7 @@ class _ConditionTabViewState extends State<ConditionTabView> {
           ),
           Padding(
             padding: const EdgeInsets.all(14.0),
-            child: AddGenericWidget(text: "New condition", onTap: () { _addNewPhaseCondition(); }),
+            child: AddGenericWidget(text: "New condition", onTap: () { _addNewCondition(); }),
           ),
         ],
       ),

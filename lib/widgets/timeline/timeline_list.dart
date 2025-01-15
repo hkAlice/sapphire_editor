@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/tab_views/phase_tab_view.dart';
+import 'package:sapphire_editor/widgets/timeline/tab_views/schedule_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/selector_tab_view.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -58,7 +58,7 @@ class _TimelineListState extends State<TimelineList> {
           children: [
             Icon(Icons.cruelty_free_outlined, size: 22.0,),
             SizedBox(width: 8.0,),
-            Text("Actors")
+            Text("Actor")
           ],
         ),
         Row(
@@ -66,7 +66,7 @@ class _TimelineListState extends State<TimelineList> {
           children: [
             Icon(Icons.g_mobiledata, size: 28.0,),
             SizedBox(width: 8.0,),
-            Text("Conditions")
+            Text("Condition")
           ],
         ),
         Row(
@@ -74,7 +74,7 @@ class _TimelineListState extends State<TimelineList> {
           children: [
             Icon(Icons.linear_scale_rounded, size: 22.0,),
             SizedBox(width: 8.0,),
-            Text("Phases")
+            Text("Schedule")
           ],
         ),
         Row(
@@ -82,7 +82,7 @@ class _TimelineListState extends State<TimelineList> {
           children: [
             Icon(Icons.scatter_plot_outlined, size: 22.0,),
             SizedBox(width: 8.0,),
-            Text("Selectors")
+            Text("Selector")
           ],
         )
       ],
@@ -105,7 +105,7 @@ class _TimelineListState extends State<TimelineList> {
             widget.onUpdate(widget.timeline);
           }
         ),
-        PhaseTabView(
+        ScheduleTabView(
           timelineModel: widget.timeline,
           currentActorIndex: _selectedActor,
           onUpdate: () {

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
@@ -26,7 +26,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widge
 
 class GenericTimepointItem extends StatefulWidget {
   final TimelineModel timelineModel;
-  final TimelinePhaseModel phaseModel;
+  final TimelineScheduleModel scheduleModel;
   final TimepointModel timepointModel;
   final ActorModel selectedActor;
   final Function(TimepointModel) onUpdate;
@@ -36,7 +36,7 @@ class GenericTimepointItem extends StatefulWidget {
   const GenericTimepointItem({
     super.key,
     required this.timelineModel,
-    required this.phaseModel,
+    required this.scheduleModel,
     required this.timepointModel,
     required this.selectedActor,
     required this.onUpdate,
@@ -136,9 +136,9 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                           splashRadius: 14.0,
                           onPressed: () {
                             var newTimepoint = TimepointModel.fromJson(jsonDecode(jsonEncode(widget.timepointModel)));
-                            var index = widget.phaseModel.timepoints.indexOf(widget.timepointModel);
+                            var index = widget.scheduleModel.timepoints.indexOf(widget.timepointModel);
 
-                            widget.phaseModel.timepoints.insert(index + 1, newTimepoint);
+                            widget.scheduleModel.timepoints.insert(index + 1, newTimepoint);
                             widget.onUpdate(widget.timepointModel);
                           },
                         ),
@@ -152,7 +152,7 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                           icon: const Icon(Icons.clear_rounded, size: 16.0,),
                           splashRadius: 14.0,
                           onPressed: () {
-                            widget.phaseModel.timepoints.remove(widget.timepointModel);
+                            widget.scheduleModel.timepoints.remove(widget.timepointModel);
                             widget.onUpdate(widget.timepointModel);
                           },
                         ),

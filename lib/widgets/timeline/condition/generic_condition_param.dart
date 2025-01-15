@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
 
 class GenericConditionParam extends StatefulWidget {
-  final PhaseConditionModel phaseConditionModel;
-  final List<PhaseConditionParamParser> paramData;
+  final ConditionModel conditionModel;
+  final List<ConditionParamParser> paramData;
   final Function() onUpdate;
 
-  const GenericConditionParam({super.key, required this.phaseConditionModel, required this.paramData, required this.onUpdate});
+  const GenericConditionParam({super.key, required this.conditionModel, required this.paramData, required this.onUpdate});
 
   @override
   State<GenericConditionParam> createState() => _GenericConditionParamState();
@@ -16,7 +16,7 @@ class GenericConditionParam extends StatefulWidget {
 class _GenericConditionParamState extends State<GenericConditionParam> {
   final List<TextEditingController> _paramTextControllers = [];
   final List<Widget> _paramWidgets = [];
-  late PhaseConditionType _lastConditionType;
+  late ConditionType _lastConditionType;
 
   @override
   void initState() {
@@ -90,12 +90,12 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
       );
     }
 
-    _lastConditionType = widget.phaseConditionModel.condition;
+    _lastConditionType = widget.conditionModel.condition;
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_lastConditionType != widget.phaseConditionModel.condition) {
+    if(_lastConditionType != widget.conditionModel.condition) {
       _buildParamWidgets();
     }
 

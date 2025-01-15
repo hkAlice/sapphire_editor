@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
@@ -10,41 +10,41 @@ import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/phaseactive_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/scheduleactive_condition_widget.dart';
 
-class PhaseConditionItem extends StatefulWidget {
+class ConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
-  final PhaseConditionModel phaseConditionModel;
+  final ConditionModel conditionModel;
   final int index;
-  final Function(PhaseConditionModel) onUpdate;
+  final Function(ConditionModel) onUpdate;
 
-  const PhaseConditionItem({super.key, required this.timelineModel, required this.phaseConditionModel, required this.index, required this.onUpdate});
+  const ConditionItem({super.key, required this.timelineModel, required this.conditionModel, required this.index, required this.onUpdate});
 
   @override
-  State<PhaseConditionItem> createState() => _PhaseConditionItemState();
+  State<ConditionItem> createState() => _ConditionItemState();
 }
 
-class _PhaseConditionItemState extends State<PhaseConditionItem> {
+class _ConditionItemState extends State<ConditionItem> {
   late ActorModel _selectedActor;
 
   Widget _getCondDataWidget() {
     void genericCallback() {
-      widget.onUpdate(widget.phaseConditionModel);
+      widget.onUpdate(widget.conditionModel);
       setState(() {
         
       });
     }
 
-    if(widget.phaseConditionModel.condition == PhaseConditionType.combatState) {
-      return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
-    } else if(widget.phaseConditionModel.condition == PhaseConditionType.getAction) {
-      return GetActionConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
-    } else if(widget.phaseConditionModel.condition == PhaseConditionType.hpPctBetween) {
-      return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
-    } else if(widget.phaseConditionModel.condition == PhaseConditionType.phaseActive) {
-      return PhaseActiveConditionWidget(timelineModel: widget.timelineModel, paramData: widget.phaseConditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    if(widget.conditionModel.condition == ConditionType.combatState) {
+      return CombatStateConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.conditionModel.condition == ConditionType.getAction) {
+      return GetActionConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.conditionModel.condition == ConditionType.hpPctBetween) {
+      return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.conditionModel.condition == ConditionType.scheduleActive) {
+      return ScheduleActiveConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else {
-      return Text("Unimplemented condition type $widget.phaseConditionModel.condition");
+      return Text("Unimplemented condition type $widget.conditionModel.condition");
     }
   }
 
@@ -57,7 +57,7 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedTargetActor = widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.phaseConditionModel.targetActor);
+    var selectedTargetActor = widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.conditionModel.targetActor);
 
     return Card(
       borderOnForeground: false,
@@ -75,37 +75,37 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
               child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.70, color: Theme.of(context).primaryColor),)
             ),
             SwitchTextWidget(
-              enabled: widget.phaseConditionModel.enabled,
+              enabled: widget.conditionModel.enabled,
               onPressed: () {
                 setState(() {
-                  widget.phaseConditionModel.enabled = !widget.phaseConditionModel.enabled;
+                  widget.conditionModel.enabled = !widget.conditionModel.enabled;
                 });
-                widget.onUpdate(widget.phaseConditionModel);
+                widget.onUpdate(widget.conditionModel);
               },
             ),
             const VerticalDivider(),
           ],
         ),
-        title: Text(widget.phaseConditionModel.getReadableConditionStr()),
-        subtitle: widget.phaseConditionModel.description?.isNotEmpty ?? false ? Text(widget.phaseConditionModel.description!) : null,
+        title: Text(widget.conditionModel.getReadableConditionStr()),
+        subtitle: widget.conditionModel.description?.isNotEmpty ?? false ? Text(widget.conditionModel.description!) : null,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             SwitchIconWidget(
               icon: Icons.loop_rounded,
-              enabled: widget.phaseConditionModel.loop,
+              enabled: widget.conditionModel.loop,
               onPressed: () {
                 setState(() {
-                  widget.phaseConditionModel.loop = !widget.phaseConditionModel.loop;
+                  widget.conditionModel.loop = !widget.conditionModel.loop;
                 });
-                widget.onUpdate(widget.phaseConditionModel);
+                widget.onUpdate(widget.conditionModel);
               }
             ),
             IconButton(
               icon: const Icon(Icons.clear_rounded),
               onPressed: () {
                 widget.timelineModel.conditions.removeAt(widget.index);
-                widget.onUpdate(widget.phaseConditionModel);
+                widget.onUpdate(widget.conditionModel);
               },
             ),
             
@@ -126,18 +126,18 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                     children: [
                       SizedBox(
                         width: 220,
-                        child: GenericItemPickerWidget<PhaseConditionType>(
+                        child: GenericItemPickerWidget<ConditionType>(
                           label: "Condition",
-                          items: PhaseConditionType.values,
-                          initialValue: widget.phaseConditionModel.condition,
+                          items: ConditionType.values,
+                          initialValue: widget.conditionModel.condition,
                           propertyBuilder: (value) {
                             return treatEnumName(value);
                           },
                           onChanged: (newValue) {
                             setState(() {
-                              widget.phaseConditionModel.changeType(newValue);
+                              widget.conditionModel.changeType(newValue);
                             });
-                            widget.onUpdate(widget.phaseConditionModel);
+                            widget.onUpdate(widget.conditionModel);
                           },
                         ),
                       ),
@@ -150,24 +150,24 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                         child: GenericItemPickerWidget<ActorModel>(
                           label: "Target Actor",
                           items: widget.timelineModel.actors,
-                          initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.phaseConditionModel.targetActor),
+                          initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.conditionModel.targetActor),
                           onChanged: (newValue) {
                             _selectedActor = newValue as ActorModel;
                             
-                            widget.phaseConditionModel.targetActor = _selectedActor.name;
+                            widget.conditionModel.targetActor = _selectedActor.name;
                             
-                            if(_selectedActor.phases.isEmpty) {
-                              widget.phaseConditionModel.targetPhase = null;
+                            if(_selectedActor.schedules.isEmpty) {
+                              widget.conditionModel.targetSchedule = null;
                             }
                             else {
-                              widget.phaseConditionModel.targetPhase = _selectedActor.phases.first.name;
+                              widget.conditionModel.targetSchedule = _selectedActor.schedules.first.name;
                             }
                             
                             setState(() {
                               
                             });
                             
-                            widget.onUpdate(widget.phaseConditionModel);
+                            widget.onUpdate(widget.conditionModel);
                           },
                         )
                       ),
@@ -175,14 +175,14 @@ class _PhaseConditionItemState extends State<PhaseConditionItem> {
                       SizedBox(
                         width: 240,
                         child: GenericItemPickerWidget<String>(
-                          label: "Phase",
-                          items: selectedTargetActor == null ? [] : selectedTargetActor.phases.map((e) => e.name).toList(),
-                          initialValue: widget.phaseConditionModel.targetPhase,
+                          label: "Schedule",
+                          items: selectedTargetActor == null ? [] : selectedTargetActor.schedules.map((e) => e.name).toList(),
+                          initialValue: widget.conditionModel.targetSchedule,
                           onChanged: (value) {
                             setState(() {
-                              widget.phaseConditionModel.targetPhase = value;
+                              widget.conditionModel.targetSchedule = value;
                             });
-                            widget.onUpdate(widget.phaseConditionModel);
+                            widget.onUpdate(widget.conditionModel);
                           },
                         ),
                       ),

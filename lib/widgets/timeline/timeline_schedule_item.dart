@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
 
-class TimelinePhaseItem extends StatefulWidget {
+class TimelineScheduleItem extends StatefulWidget {
   final TimelineModel timelineModel;
-  final TimelinePhaseModel phaseModel;
+  final TimelineScheduleModel scheduleModel;
   final ActorModel selectedActor;
   final int index;
-  final Function(TimelinePhaseModel) onUpdate;
+  final Function(TimelineScheduleModel) onUpdate;
 
-  const TimelinePhaseItem({
+  const TimelineScheduleItem({
     super.key,
     required this.timelineModel,
-    required this.phaseModel,
+    required this.scheduleModel,
     required this.index,
     required this.selectedActor,
     required this.onUpdate
   });
 
   @override
-  State<TimelinePhaseItem> createState() => _TimelinePhaseItemState();
+  State<TimelineScheduleItem> createState() => _TimelineScheduleItemState();
 }
 
-class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
+class _TimelineScheduleItemState extends State<TimelineScheduleItem> {
   String _calcDuration() {
     int durationTotalMs = 0;
-    for(var timepoint in widget.phaseModel.timepoints) {
+    for(var timepoint in widget.scheduleModel.timepoints) {
       durationTotalMs += timepoint.duration;
     }
 
@@ -50,23 +50,23 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
   }
 
   void _addNewTimepoint() {
-    widget.phaseModel.timepoints.add(TimepointModel(type: TimepointType.idle));
+    widget.scheduleModel.timepoints.add(TimepointModel(type: TimepointType.idle));
     setState(() {
       
     });
 
-    widget.onUpdate(widget.phaseModel);
+    widget.onUpdate(widget.scheduleModel);
   }
 
   @override
   Widget build(BuildContext context) {
-    var timepointCountStr = "${widget.phaseModel.timepoints.length} timepoint${(widget.phaseModel.timepoints.length != 1 ? 's' : '')}";
+    var timepointCountStr = "${widget.scheduleModel.timepoints.length} timepoint${(widget.scheduleModel.timepoints.length != 1 ? 's' : '')}";
     int timeElapsedMs = 0;
     Map<int, int> timeElapsedMap = {};
 
-    for(int i = 0; i < widget.phaseModel.timepoints.length; i++) {
+    for(int i = 0; i < widget.scheduleModel.timepoints.length; i++) {
       timeElapsedMap[i] = timeElapsedMs;
-      timeElapsedMs += widget.phaseModel.timepoints[i].duration;
+      timeElapsedMs += widget.scheduleModel.timepoints[i].duration;
     }
     
     return Card(
@@ -78,19 +78,19 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
           borderRadius: BorderRadius.circular(4.0),
         ),
         initiallyExpanded: true,
-        title: ReorderableDragStartListener(index: widget.index, child: Text(widget.phaseModel.name)),
-        subtitle: Text(widget.phaseModel.description.isNotEmpty ? widget.phaseModel.description : timepointCountStr),
+        title: ReorderableDragStartListener(index: widget.index, child: Text(widget.scheduleModel.name)),
+        subtitle: Text(widget.scheduleModel.description.isNotEmpty ? widget.scheduleModel.description : timepointCountStr),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
               height: 54.0,
               child: TextModalEditorWidget(
-                text: widget.phaseModel.description,
+                text: widget.scheduleModel.description,
                 headerText: "Edit timepoint description",
                 onChanged: (description) {
-                  widget.phaseModel.description = description;
-                  widget.onUpdate(widget.phaseModel);
+                  widget.scheduleModel.description = description;
+                  widget.onUpdate(widget.scheduleModel);
                 }
               ),
             ),
@@ -99,16 +99,16 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
               width: 32.0,
               height: 32.0,
               child: TextModalEditorWidget(
-                text: widget.phaseModel.name,
-                headerText: "Edit phase name",
+                text: widget.scheduleModel.name,
+                headerText: "Edit schedule name",
                 icon: const Icon(Icons.edit_rounded),
                 minLines: 1,
                 maxLines: 1,
                 onChanged: (value) {
                   setState(() {
-                    widget.phaseModel.name = value;
+                    widget.scheduleModel.name = value;
                   });
-                  widget.onUpdate(widget.phaseModel);
+                  widget.onUpdate(widget.scheduleModel);
                 }
               ),
             ),
@@ -127,23 +127,23 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
                 if(newindex > oldindex) {
                   newindex -= 1;
                 }
-                final items = widget.phaseModel.timepoints.removeAt(oldindex);
-                widget.phaseModel.timepoints.insert(newindex, items);
+                final items = widget.scheduleModel.timepoints.removeAt(oldindex);
+                widget.scheduleModel.timepoints.insert(newindex, items);
               });
           
-              widget.onUpdate(widget.phaseModel);
+              widget.onUpdate(widget.scheduleModel);
             },
-            itemCount: widget.phaseModel.timepoints.length,
+            itemCount: widget.scheduleModel.timepoints.length,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, i) {
-              var timepointModel = widget.phaseModel.timepoints[i];
+              var timepointModel = widget.scheduleModel.timepoints[i];
 
               return GenericTimepointItem(
                 key: Key("timepoint_${timepointModel.hashCode}"),
                 timelineModel: widget.timelineModel,
                 timepointModel: timepointModel,
-                phaseModel: widget.phaseModel,
+                scheduleModel: widget.scheduleModel,
                 selectedActor: widget.selectedActor,
                 timeElapsedMs: timeElapsedMap[i]!,
                 index: i,
@@ -152,7 +152,7 @@ class _TimelinePhaseItemState extends State<TimelinePhaseItem> {
           
                   });
 
-                  widget.onUpdate(widget.phaseModel);
+                  widget.onUpdate(widget.scheduleModel);
                 },
               );
             }

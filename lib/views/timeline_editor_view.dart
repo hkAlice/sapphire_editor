@@ -135,7 +135,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
         layoutId: 4126285,
         hp: 445
       );
-      _timeline!.addNewPhase(_timeline!.actors.first);
+      _timeline!.addNewSchedule(_timeline!.actors.first);
       _timeline!.addNewCondition();
     }
 

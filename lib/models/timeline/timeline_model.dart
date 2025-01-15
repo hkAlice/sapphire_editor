@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/phase_conditions_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
-import 'timeline_phase_model.dart';
+import 'timeline_schedule_model.dart';
 
 part 'timeline_model.g.dart';
 
@@ -14,19 +14,19 @@ class TimelineModel {
   int version;
 
   List<ActorModel> actors;
-  List<PhaseConditionModel> conditions;
+  List<ConditionModel> conditions;
   List<SelectorModel> selectors;
 
   TimelineModel({
     required this.name,
     this.version = TimelineModel.VERSION_MODEL,
-    phaseList,
+    scheduleList,
     conditionList,
     actorList,
     selectorList
   }) : conditions = conditionList ?? [], actors = actorList ?? [], selectors = selectorList ?? [];
 
-  static const VERSION_MODEL = 9;
+  static const VERSION_MODEL = 10;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
 
@@ -48,23 +48,23 @@ class TimelineModel {
   }
 
   // todo: move this to timelinesvc ideally
-  TimelinePhaseModel addNewPhase(ActorModel? actor) {
+  TimelineScheduleModel addNewSchedule(ActorModel? actor) {
     actor ??= actors.first;
     // todo: enable adding phases to other actors
 
-    var newPhase = TimelinePhaseModel(id: actor.phases.length + 1, name: "Phase ${actor.phases.length + 1}");
-    actor.phases.add(newPhase);
+    var newSchedule = TimelineScheduleModel(id: actor.schedules.length + 1, name: "Schedule ${actor.schedules.length + 1}");
+    actor.schedules.add(newSchedule);
 
-    return newPhase;
+    return newSchedule;
   }
 
-  PhaseConditionModel addNewCondition([PhaseConditionModel? condition]) {
-    condition ??= PhaseConditionModel(
+  ConditionModel addNewCondition([ConditionModel? condition]) {
+    condition ??= ConditionModel(
       id: conditions.length + 1,
-      condition: PhaseConditionType.combatState,
+      condition: ConditionType.combatState,
       paramData: CombatStateConditionModel(combatState: ActorCombatState.combat, sourceActor: actors.first.name),
       targetActor: actors.first.name,
-      targetPhase: actors.first.phases.isEmpty ? "" : actors.first.phases.first.name,
+      targetSchedule: actors.first.schedules.isEmpty ? "" : actors.first.schedules.first.name,
       description: "",
       loop: true,
     );

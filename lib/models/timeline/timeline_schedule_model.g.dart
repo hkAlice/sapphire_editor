@@ -1,13 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'timeline_phase_model.dart';
+part of 'timeline_schedule_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TimelinePhaseModel _$TimelinePhaseModelFromJson(Map<String, dynamic> json) =>
-    TimelinePhaseModel(
+TimelineScheduleModel _$TimelineScheduleModelFromJson(
+        Map<String, dynamic> json) =>
+    TimelineScheduleModel(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       description: json['description'] as String? ?? "",
@@ -15,7 +16,8 @@ TimelinePhaseModel _$TimelinePhaseModelFromJson(Map<String, dynamic> json) =>
         .map((e) => TimepointModel.fromJson(e as Map<String, dynamic>))
         .toList();
 
-Map<String, dynamic> _$TimelinePhaseModelToJson(TimelinePhaseModel instance) =>
+Map<String, dynamic> _$TimelineScheduleModelToJson(
+        TimelineScheduleModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
