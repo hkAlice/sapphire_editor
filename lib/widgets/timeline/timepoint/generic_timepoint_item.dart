@@ -49,18 +49,18 @@ class GenericTimepointItem extends StatefulWidget {
 }
 
 class _GenericTimepointItemState extends State<GenericTimepointItem> {
-  String _calcDuration() {
-    Duration duration = Duration(milliseconds: widget.timeElapsedMs);
+  String twoDigits(int n) {
+    if(n >= 10) return "$n";
+    return "0$n";
+  }
+  
+  String _calcT() {
+    Duration startTime = Duration(milliseconds: widget.timepointModel.startTime);
 
-    String twoDigits(int n) {
-      if(n >= 10) return "$n";
-      return "0$n";
-    }
-
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    if(duration.inHours > 0) {
-      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    String twoDigitMinutes = twoDigits(startTime.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(startTime.inSeconds.remainder(60));
+    if(startTime.inHours > 0) {
+      return "${twoDigits(startTime.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
     } else {
       return "$twoDigitMinutes:$twoDigitSeconds";
     }
@@ -105,9 +105,12 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        width: 48.0,
-                        child: Center(child: Text("${(widget.timepointModel.startTime / 1000).toStringAsFixed(2)}s", style: Theme.of(context).textTheme.labelMedium,))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.5),
+                        child: Opacity(
+                          opacity: 0.7,
+                          child: Text(_calcT(), style: Theme.of(context).textTheme.labelSmall, maxLines: 1, textAlign: TextAlign.right,)
+                        ),
                       ),
                       const VerticalDivider(),
                       Container(
@@ -117,14 +120,6 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
                       ),
                       const VerticalDivider(),
                       Expanded(child: Text(widget.timepointModel.data.toString(), style: Theme.of(context).textTheme.bodySmall,)),
-                      const VerticalDivider(),
-                      SizedBox(
-                        width: 36.0,
-                        child: Opacity(
-                          opacity: 0.7,
-                          child: Center(child: Text(_calcDuration(), style: Theme.of(context).textTheme.labelSmall, maxLines: 1,))
-                        )
-                      ),
                       const VerticalDivider(),
                       SizedBox(
                         width: 24.0,

@@ -20,9 +20,21 @@ class _ScheduleTabViewState extends State<ScheduleTabView> {
     return widget.timelineModel.actors[widget.currentActorIndex];
   }
 
+  void _onUpdate() {
+    try {
+      for(var actor in widget.timelineModel.actors) {
+        for(var schedule in actor.schedules) {
+          schedule.timepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
+        }
+      }
+    }
+    catch(_) {}
+    
+    widget.onUpdate();
+  }
+
   void _addNewSchedule() {
     widget.timelineModel.addNewSchedule(_getCurrentActor());
-    widget.onUpdate();
   }
   
   @override
@@ -52,7 +64,7 @@ class _ScheduleTabViewState extends State<ScheduleTabView> {
                   _getCurrentActor().schedules.insert(newindex, items);
                 });
             
-                widget.onUpdate();
+                _onUpdate();
               },
               itemCount: _getCurrentActor().schedules.length,
               physics: const NeverScrollableScrollPhysics(),
@@ -65,7 +77,7 @@ class _ScheduleTabViewState extends State<ScheduleTabView> {
                   timelineModel: widget.timelineModel,
                   scheduleModel: _getCurrentActor().schedules[i],
                   onUpdate: (scheduleModel) {
-                    widget.onUpdate();
+                    _onUpdate();
                   },
                 );
               }
@@ -77,9 +89,7 @@ class _ScheduleTabViewState extends State<ScheduleTabView> {
               text: "New Schedule",
               onTap: () {
                 _addNewSchedule();
-                setState(() {
-                  
-                });
+                _onUpdate();
               }
             ),
           )
