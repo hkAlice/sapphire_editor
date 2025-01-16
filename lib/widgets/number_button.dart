@@ -11,12 +11,14 @@ class NumberButton extends StatefulWidget {
   final String Function(int)? builder;
   final bool enabled;
   final bool readOnlyField;
+  final List<TextInputFormatter>? inputFormatters;
 
   const NumberButton({
     super.key,
     required this.min,
     required this.max,
     required this.value,
+    this.inputFormatters,
     this.enabled = true,
     this.readOnlyField = false,
     this.stepCount = 1,
@@ -74,7 +76,7 @@ class _NumberButtonState extends State<NumberButton> {
             maxLines: 1,
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
-            inputFormatters: <TextInputFormatter>[
+            inputFormatters: widget.inputFormatters ?? <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
             controller: _controller,

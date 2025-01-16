@@ -36,20 +36,20 @@ class SetPosPointModel {
       String sumStr = "Actor $actorName to ";
       switch(targetType) {
         case ActorTargetType.self:
-          sumStr += "self";
-          break;
+          sumStr += "(X: ${pos[0]}, Y: ${pos[1]}, Z: ${pos[2]}, Rot: $rot})";
+          return sumStr;
         case ActorTargetType.target:
           sumStr += "actor $targetActor";
-          return sumStr;
+          break;
         case ActorTargetType.selector:
           sumStr += "selector $selectorName#$selectorIndex";
-          return sumStr;
+          break;
         default:
           sumStr += "<unknown>";
-          return sumStr;
+          break;
       }
 
-      sumStr += " by (Forward: ${pos[0]}, Right: ${pos[1]}, Up: ${pos[2]}, Rot: $rot})";
+      sumStr += ", offset (Forward: ${pos[0]}, Right: ${pos[1]}, Up: ${pos[2]}, Rot: $rot})";
       return sumStr;
     }
     else {

@@ -266,6 +266,22 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  NumberButton(
+                    min: 0,
+                    max: 60000,
+                    value: widget.timepointModel.startTime,
+                    label: "Start time",
+                    builder: (value) {
+                      var seconds = value / 1000;
+                      return "${seconds.toStringAsFixed(1)}s";
+                    },
+                    stepCount: 100,
+                    onChanged: (value) {
+                      widget.timepointModel.startTime = value;
+                      widget.onUpdate(widget.timepointModel);
+                    }
+                  ),
+                  const SizedBox(width: 18.0,),
                   SizedBox(
                     width: 180,
                     child: DropdownButtonFormField<TimepointType>(
@@ -294,23 +310,6 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                           child: Text(treatEnumName(type)));
                       }).toList()
                     ),
-                  ),
-                  const SizedBox(width: 18.0,),
-                  NumberButton(
-                    min: 0,
-                    max: 60000,
-                    readOnlyField: true,
-                    value: widget.timepointModel.startTime,
-                    label: "Start time",
-                    builder: (value) {
-                      var seconds = value / 1000;
-                      return "${seconds.toStringAsFixed(1)}s";
-                    },
-                    stepCount: 100,
-                    onChanged: (value) {
-                      widget.timepointModel.startTime = value;
-                      widget.onUpdate(widget.timepointModel);
-                    }
                   ),
                   const SizedBox(width: 18.0,),
                   Expanded(
