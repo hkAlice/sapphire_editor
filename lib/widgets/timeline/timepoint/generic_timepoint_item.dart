@@ -57,12 +57,12 @@ class _GenericTimepointItemState extends State<GenericTimepointItem> {
   String _calcT() {
     Duration startTime = Duration(milliseconds: widget.timepointModel.startTime);
 
-    String twoDigitMinutes = twoDigits(startTime.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(startTime.inSeconds.remainder(60));
+    String twoDigitMinutes = twoDigits(startTime.inSeconds.remainder(60));
+    String twoDigitSeconds = twoDigits(startTime.inMilliseconds.remainder(60));
     if(startTime.inHours > 0) {
       return "${twoDigits(startTime.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
     } else {
-      return "$twoDigitMinutes:$twoDigitSeconds";
+      return "$twoDigitMinutes.${twoDigitSeconds}s";
     }
   }
 
