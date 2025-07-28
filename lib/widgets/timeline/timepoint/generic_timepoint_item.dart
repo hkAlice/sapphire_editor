@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
@@ -271,6 +273,13 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                     max: 60000,
                     value: widget.timepointModel.startTime,
                     label: "Start time",
+                    inputFormatters: <TextInputFormatter>[
+                      MaskTextInputFormatter(
+                        mask: "##:##", 
+                        filter: { "#": RegExp(r'[0-9]') },
+                        type: MaskAutoCompletionType.lazy
+                      )
+                    ],
                     builder: (value) {
                       var seconds = value / 1000;
                       return "${seconds.toStringAsFixed(1)}s";
