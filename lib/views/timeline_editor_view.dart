@@ -132,7 +132,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> with AutomaticK
       );
       _timeline!.addNewActor(
         bnpcName: "Ifrit Nail 1",
-        layoutId: 4126285,
+        layoutId: 4126281,
         hp: 445
       );
       _timeline!.addNewSchedule(_timeline!.actors.first);
