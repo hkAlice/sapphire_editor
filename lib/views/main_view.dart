@@ -44,6 +44,10 @@ class _MainViewState extends State<MainView> {
                 label: Text("Timeline")
               ), 
               NavigationRailDestination(
+                icon: Image.asset("assets/images/icon_loottables_rounded.png", width: 24.0,),
+                label: Text("Loot Tables")
+              ), 
+              NavigationRailDestination(
                 icon: Icon(Icons.settings_rounded),
                 label: Text("Settings")
               )
@@ -78,6 +82,10 @@ class _MainViewState extends State<MainView> {
           BottomNavigationBarItem(
             icon: Image.asset("assets/images/icon_trials_rounded.png", width: 24.0,),
             label: "Timeline"
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset("assets/images/icon_loottables_rounded.png", width: 24.0,),
+            label: "Loot Tables"
           ), 
           const BottomNavigationBarItem(
             icon: Icon(Icons.settings_rounded),
