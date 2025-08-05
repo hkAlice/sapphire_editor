@@ -66,7 +66,6 @@ class _PoolItemState extends State<PoolItem> {
               children: [
                 Row(
                   children: [
-                    
                     SizedBox(
                       width: 100,
                       child: SimpleNumberField(
@@ -96,7 +95,10 @@ class _PoolItemState extends State<PoolItem> {
                         },
                       ),
                     ),
-                    SizedBox(width: 146,),
+                  ],
+                ),
+                Row(
+                  children: [
                     SizedBox(
                       width: 100,
                       child: SimpleNumberField(
@@ -109,39 +111,40 @@ class _PoolItemState extends State<PoolItem> {
                         },
                       ),
                     ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    SizedBox(
-                      width: 180,
-                      child: SwitchTextWidget(
-                        enabled: widget.lootPoolModel.enabled,
-                        onPressed: () {
-                          widget.lootPoolModel.enabled = !widget.lootPoolModel.enabled;
-                          widget.onUpdate(widget.lootPoolModel);
-                          setState(() {
-                            
-                          });
-                        },
-                        toggleText: ("ENABLED", "DISABLED"),
-                        leading: const Text("Toggle Pool"),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 180,
-                      child: SwitchTextWidget(
-                        enabled: widget.lootPoolModel.duplicates,
-                        onPressed: () {
-                          widget.lootPoolModel.duplicates = !widget.lootPoolModel.duplicates;
-                          widget.onUpdate(widget.lootPoolModel);
-                          setState(() {
-                            
-                          });
-                        },
-                        toggleText: ("ENABLED", "DISABLED"),
-                        leading: const Text("Duplicates"),
-                      ),
+                    SizedBox(width: 24.0,),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: 180,
+                          child: SwitchTextWidget(
+                            enabled: widget.lootPoolModel.enabled,
+                            onPressed: () {
+                              widget.lootPoolModel.enabled = !widget.lootPoolModel.enabled;
+                              widget.onUpdate(widget.lootPoolModel);
+                              setState(() {
+                                
+                              });
+                            },
+                            toggleText: ("ENABLED", "DISABLED"),
+                            leading: const Text("Toggle Pool"),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 180,
+                          child: SwitchTextWidget(
+                            enabled: widget.lootPoolModel.duplicates,
+                            onPressed: () {
+                              widget.lootPoolModel.duplicates = !widget.lootPoolModel.duplicates;
+                              widget.onUpdate(widget.lootPoolModel);
+                              setState(() {
+                                
+                              });
+                            },
+                            toggleText: ("ENABLED", "DISABLED"),
+                            leading: const Text("Duplicates"),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

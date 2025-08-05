@@ -45,7 +45,36 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
   Widget build(BuildContext context) {
     // big list, delegate search
     if(widget.items.length > widget.searchThreshold) {
-      return ElevatedButton.icon(
+      return InkWell(
+        onTap: () async {
+          final result = await showSearch<T?>(
+            context: context,
+            delegate: _GenericSearchDelegate<T>(
+              items: widget.items,
+              propertyBuilder: widget.propertyBuilder,
+            ),
+          );
+
+          if(result != null) {
+            widget.onChanged(result);
+          }
+        },
+        borderRadius: BorderRadius.circular(4),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: widget.label,
+            border: const OutlineInputBorder(),
+            suffixIcon: const Icon(Icons.arrow_drop_down),
+          ),
+          child: Row(
+            children: [
+              widget.leading ?? Container(),
+              Text(widget.propertyBuilder?.call(_selectedValue!) ?? _selectedValue.toString()),
+            ],
+          ),
+        ),
+      ); /*
+      return OutlinedButton.icon(
         onPressed: () async {
           final result = await showSearch<T?>(
             context: context,
@@ -62,7 +91,8 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
         icon: widget.leading ?? const Icon(Icons.search),
         label: Text(widget.propertyBuilder?.call(_selectedValue!) ??
             _selectedValue.toString()),
-      );
+        style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),))
+      );*/
     }
 
     // smoll list, use regular dropdownmenu

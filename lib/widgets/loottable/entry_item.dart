@@ -19,6 +19,8 @@ class EntryItem extends StatefulWidget {
 }
 
 class _EntryItemState extends State<EntryItem> {
+  late TextEditingController _itemIdController;
+
   double calculateChance() {
     final totalWeight = widget.lootPoolModel.entries.fold(0, (sum, e) => sum + e.weight);
 
@@ -26,9 +28,16 @@ class _EntryItemState extends State<EntryItem> {
   }
 
   @override
+  void initState() {
+    _itemIdController = TextEditingController(text: widget.lootEntryModel.item.toString());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var itemMinimal = LocalRepository().getItemMinimal(widget.lootEntryModel.item);
     var iconId = itemMinimal?.icon;
+    
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
@@ -47,17 +56,18 @@ class _EntryItemState extends State<EntryItem> {
                   VerticalDivider(),
                   SizedBox(
                     width: 300,
-                    height: 50,
                     child: GenericSearchPickerWidget<ItemMinimal>(
                       items: LocalRepository().getAllItemMinimal(),
                       value: itemMinimal,
                       propertyBuilder: (item) => item.name.isEmpty ? "<empty>" : item.name,
+                      label: "Item",
                       itemBuilder: (item) => DropdownMenuEntry(
                         value: item,
                         label: item.name,
                       ),
                       onChanged: (item) {
                         widget.lootEntryModel.item = item.id;
+                        _itemIdController.text = item.id.toString();
                         widget.onUpdate(widget.lootEntryModel);
                         setState(() {
                           
@@ -107,10 +117,12 @@ class _EntryItemState extends State<EntryItem> {
                       }
                     ),
                   ),*/
+                  SizedBox(width: 18.0,),
                   SizedBox(
                     width: 100,
                     child: SimpleNumberField(
                       initialValue: widget.lootEntryModel.item,
+                      controller: _itemIdController,
                       label: "Item ID",
                       onChanged: (value) {
                         widget.lootEntryModel.item = value;
