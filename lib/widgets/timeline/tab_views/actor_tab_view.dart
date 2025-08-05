@@ -25,6 +25,7 @@ class _ActorTabViewState extends State<ActorTabView> {
 
     super.initState();
   }
+  
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
