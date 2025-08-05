@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:json_text_field/json_text_field.dart';
+import 'package:sapphire_editor/models/loottable/lootpool_model.dart';
 import 'package:sapphire_editor/models/loottable/loottable_model.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
@@ -118,7 +119,19 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
     }
 
     if(!hasLootTable) {
-      _lootTable = LootTableModel(lootTable: "NewLootTable", pools: [], type: LootTableType.bNPC);
+      _lootTable = LootTableModel(
+        lootTable: "NewLootTable",
+        pools: [
+          LootPoolModel(
+            name: "Loot #1",
+            pick: LootPickModel(min: 1, max: 1),
+            entries: [LootEntryModel(item: 0, weight: 1)],
+            enabled: true,
+            duplicates: true
+          )
+        ],
+        type: LootTableType.bNPC
+      );
     }
 
     return true;
