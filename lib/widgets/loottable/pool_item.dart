@@ -82,7 +82,7 @@ class _PoolItemState extends State<PoolItem> {
                       ),
                     ),
                     SizedBox(width: 8.0),
-                    Opacity(opacity: 0.5, child: Text("→", style: Theme.of(context).textTheme.headlineSmall)),
+                    Opacity(opacity: 0.5, child: Icon(Icons.arrow_right_alt_rounded)),
                     SizedBox(width: 8.0),
                     SizedBox(
                       width: 100,
