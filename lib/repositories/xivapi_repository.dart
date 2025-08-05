@@ -11,7 +11,7 @@ class XivApiRepository {
 
   XivApiRepository._internal();
 
-  static String XIVAPI_URL = "https://xivapi.com";
+  static String XIVAPI_URL = "https://v2.xivapi.com/api/";
 
   String getItemIconURL(int itemId, {bool hd = true}) {
     int num = int.tryParse(itemId.toString()) ?? 0;
@@ -29,6 +29,6 @@ class XivApiRepository {
 
     String fileName = hd ? "${icon}_hr1" : icon;
 
-    return "$XIVAPI_URL/i/$folderId/$fileName.png";
+    return "$XIVAPI_URL/asset?path=ui/icon/$folderId/$fileName.tex&format=png";
   }
 }
