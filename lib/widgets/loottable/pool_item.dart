@@ -3,6 +3,7 @@ import 'package:sapphire_editor/models/loottable/lootpool_model.dart';
 import 'package:sapphire_editor/models/loottable/loottable_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/loottable/entry_item.dart';
+import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
@@ -68,9 +69,10 @@ class _PoolItemState extends State<PoolItem> {
                   children: [
                     SizedBox(
                       width: 100,
-                      child: SimpleNumberField(
-                        initialValue: _calculateTotalWeight(),
-                        controller: _pickMinController,
+                      child: NumberButton(
+                        min: 0,
+                        max: 999,
+                        value: widget.lootPoolModel.pick.min,
                         label: "Min Picks",
                         enabled: true,
                         onChanged: (value) {
@@ -84,9 +86,10 @@ class _PoolItemState extends State<PoolItem> {
                     SizedBox(width: 8.0),
                     SizedBox(
                       width: 100,
-                      child: SimpleNumberField(
-                        initialValue: _calculateTotalWeight(),
-                        controller: _pickMaxController,
+                      child: NumberButton(
+                        min: 0,
+                        max: 999,
+                        value: widget.lootPoolModel.pick.max,
                         label: "Max Picks",
                         enabled: true,
                         onChanged: (value) {

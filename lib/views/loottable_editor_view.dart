@@ -118,7 +118,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
     }
 
     if(!hasLootTable) {
-      _lootTable = LootTableModel(lootTable: "New LootTable", pools: [], type: LootTableType.bNPC);
+      _lootTable = LootTableModel(lootTable: "NewLootTable", pools: [], type: LootTableType.bNPC);
     }
 
     return true;
@@ -133,7 +133,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
         mainAxisSize: MainAxisSize.max,
         children: [
           PageHeaderWidget(
-            title: "LootTable Editor",
+            title: "Loot Table Editor",
             subtitle: "Outputs loot table data in JSON",
             heading: Image.asset("assets/images/icon_loottables_rounded.png"),
           ),
