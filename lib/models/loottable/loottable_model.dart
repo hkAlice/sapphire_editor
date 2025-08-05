@@ -12,10 +12,23 @@ class LootTableModel {
   });
 
   String lootTable;
-  String type;
+  LootTableType type;
   List<LootPoolModel> pools;
 
   factory LootTableModel.fromJson(Map<String, dynamic> json) => _$LootTableModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LootTableModelToJson(this);
+}
+
+enum LootTableType {
+  @JsonValue("bNPC")
+  bNPC,
+  @JsonValue("chest")
+  chest,
+  @JsonValue("fishing")
+  fishing,
+  @JsonValue("instance")
+  instance,
+  @JsonValue("other")
+  other,
 }

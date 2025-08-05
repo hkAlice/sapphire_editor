@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/loottable/loottable_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/widgets/loottable/tab_views/loottable_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/schedule_tab_view.dart';
@@ -17,17 +18,6 @@ class LootTableList extends StatefulWidget {
 }
 
 class _LootTableListState extends State<LootTableList> {
-  late TextEditingController _nameTextEditingController;
-  int _selectedActor = 0;
-
-  @override
-  void initState() {
-    _nameTextEditingController = TextEditingController(text: widget.lootTableModel.lootTable);
-
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return TabContainer(
@@ -57,14 +47,19 @@ class _LootTableListState extends State<LootTableList> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cruelty_free_outlined, size: 22.0,),
+            Icon(Icons.diamond_rounded, size: 22.0,),
             SizedBox(width: 8.0,),
             Text("Loot Table")
           ],
         )
       ],
       children: <Widget>[ 
-        
+        LootTableTabView(
+          lootTableModel: widget.lootTableModel,
+          onUpdate: (newModel) {
+            widget.onUpdate(newModel);
+          }
+        )
       ]
     );
   }

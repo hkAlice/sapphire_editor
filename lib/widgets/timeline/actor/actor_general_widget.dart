@@ -28,6 +28,15 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
     _hpEditingController = TextEditingController(text: widget.actorModel.hp.toString());
     super.initState();
   }
+
+  @override
+  void dispose() {
+    _localIdEditingController.dispose();
+    _layoutIdEditingController.dispose();
+    _hpEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // todo: fix this state issue in a proper manner

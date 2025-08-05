@@ -46,5 +46,6 @@ class StorageHelper {
 // add your precious tables here
 enum StorageTable {
   autosaveTimeline,
+  autosaveLootTable,
   settings
 }

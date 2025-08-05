@@ -5,13 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/loottable/loottable_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/loottable/loottable_list.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
-import 'package:sapphire_editor/widgets/sanity/sanity_call_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_list.dart';
 import 'package:toastification/toastification.dart';
 
 class LootTableEditorView extends StatefulWidget {
@@ -32,7 +29,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
   bool get wantKeepAlive => true;
 
   void _autosave(String json) async {
-    var autosaveBox = StorageHelper().getTable(StorageTable.autosaveTimeline);
+    var autosaveBox = StorageHelper().getTable(StorageTable.autosaveLootTable);
     var autosaveKeys = await autosaveBox.getAllKeys();
 
     if(autosaveKeys.isNotEmpty) {
@@ -107,7 +104,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
     }
     
     try {
-      var autosave = StorageHelper().getTable(StorageTable.autosaveTimeline);
+      var autosave = StorageHelper().getTable(StorageTable.autosaveLootTable);
       var autosaveKeys = await autosave.getAllKeys();
       
       if(autosaveKeys.isNotEmpty) {
@@ -121,7 +118,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
     }
 
     if(!hasLootTable) {
-      _lootTable = LootTableModel(lootTable: "New LootTable", pools: [], type: "BNPC");
+      _lootTable = LootTableModel(lootTable: "New LootTable", pools: [], type: LootTableType.bNPC);
     }
 
     return true;

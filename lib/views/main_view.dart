@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/views/loottable_editor_view.dart';
 import 'package:sapphire_editor/views/settings_view.dart';
 import 'package:sapphire_editor/views/timeline_editor_view.dart';
 
@@ -14,6 +15,7 @@ class _MainViewState extends State<MainView> {
 
   final List<Widget> _navChildren = [
     const TimelineEditorView(),
+    const LootTableEditorView(),
     const SettingsView()
   ];
 

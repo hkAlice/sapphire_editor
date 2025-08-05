@@ -108,7 +108,6 @@ class _ConditionItemState extends State<ConditionItem> {
                 widget.onUpdate(widget.conditionModel);
               },
             ),
-            
           ],
         ),
         children: [

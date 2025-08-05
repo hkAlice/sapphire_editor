@@ -8,6 +8,7 @@ class SimpleNumberField extends StatefulWidget {
   final TextEditingController? controller;
   final Function(int) onChanged;
   final bool enabled;
+  final bool readOnly;
 
   const SimpleNumberField({
     super.key,
@@ -16,7 +17,8 @@ class SimpleNumberField extends StatefulWidget {
     this.enabled = true,
     this.initialValue,
     this.controller,
-    this.isHex = false
+    this.isHex = false,
+    this.readOnly = false
   });
 
   @override
@@ -25,6 +27,7 @@ class SimpleNumberField extends StatefulWidget {
 
 class _SimpleNumberFieldState extends State<SimpleNumberField> {
   late TextEditingController _controller;
+  
   @override
   void initState() {
     super.initState();
@@ -48,6 +51,7 @@ class _SimpleNumberFieldState extends State<SimpleNumberField> {
         FilteringTextInputFormatter.digitsOnly
       ],
       controller: _controller,
+      readOnly: widget.readOnly,
       decoration: InputDecoration(
         filled: false,
         border: OutlineInputBorder(), //InputBorder.none,

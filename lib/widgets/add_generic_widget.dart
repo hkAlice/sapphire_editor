@@ -21,3 +21,56 @@ class AddGenericWidget extends StatelessWidget {
     );
   }
 }
+
+class SmallAddGenericWidget extends StatelessWidget {
+  final Function()? onTap;
+  final String? text;
+
+  const SmallAddGenericWidget({super.key, required this.onTap, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade800.withAlpha(150), width: 1.0),
+          )
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              IntrinsicHeight(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add, size: 14,),
+                              SizedBox(width: 4.0, height: 24.0,),
+                              Text(text ?? "Add new", style: Theme.of(context).textTheme.bodySmall,),
+                            ],
+                          ),
+                        )
+                      )
+                    ),
+                    const SizedBox(width: 4.0,),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+      ),
+    );
+  }
+}

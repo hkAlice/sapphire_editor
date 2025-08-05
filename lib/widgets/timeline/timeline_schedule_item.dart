@@ -3,6 +3,7 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
+import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
 
@@ -157,48 +158,10 @@ class _TimelineScheduleItemState extends State<TimelineScheduleItem> {
               );
             }
           ),
-          InkWell(
+          SmallAddGenericWidget(
             onTap: () => _addNewTimepoint(),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                border: Border(
-                  top: BorderSide(color: Colors.grey.shade800.withAlpha(150), width: 1.0),
-                )
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Opacity(
-                                opacity: 0.8,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.add, size: 14,),
-                                    SizedBox(width: 4.0, height: 24.0,),
-                                    Text("Add Timepoint", style: Theme.of(context).textTheme.bodySmall,),
-                                  ],
-                                ),
-                              )
-                            )
-                          ),
-                          const SizedBox(width: 4.0,),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ),
-          ),
+            text: "Add new timepoint",
+          )
         ],
       ),
     );
