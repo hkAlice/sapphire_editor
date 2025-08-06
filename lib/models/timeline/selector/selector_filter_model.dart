@@ -6,11 +6,13 @@ part 'selector_filter_model.g.dart';
 class SelectorFilterModel {
   SelectorFilterType type;
   bool negate;
+  bool enforceOnRandom;
   dynamic param;
 
   SelectorFilterModel({
     this.type = SelectorFilterType.player,
     this.negate = false,
+    this.enforceOnRandom = false,
     this.param,
   });
 

@@ -176,6 +176,16 @@ class _SelectorItemState extends State<SelectorItem> {
                                       widget.onUpdate(widget.selectorModel);
                                     },
                                   ),
+                                  SwitchIconWidget(
+                                    enabled: filter.enforceOnRandom,
+                                    icon: Icons.gavel_rounded,
+                                    onPressed: () {
+                                      setState(() {
+                                        filter.enforceOnRandom = !filter.enforceOnRandom;
+                                      });
+                                      widget.onUpdate(widget.selectorModel);
+                                    },
+                                  ),
                                   SizedBox(
                                     width: 180,
                                     child: GenericItemPickerWidget<SelectorFilterType>(
