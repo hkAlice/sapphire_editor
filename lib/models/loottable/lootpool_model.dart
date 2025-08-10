@@ -6,14 +6,16 @@ part 'lootpool_model.g.dart';
 class LootPoolModel {
   LootPoolModel({
     required this.name,
-    required this.pick,
+    required this.pickMin,
+    required this.pickMax,
     required this.entries,
     required this.enabled,
     required this.duplicates
   });
 
   String name;
-  LootPickModel pick;
+  int pickMin;
+  int pickMax;
   List<LootEntryModel> entries;
   bool enabled;
   bool duplicates;
@@ -21,21 +23,6 @@ class LootPoolModel {
   factory LootPoolModel.fromJson(Map<String, dynamic> json) => _$LootPoolModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LootPoolModelToJson(this);
-}
-
-@JsonSerializable()
-class LootPickModel {
-  LootPickModel({
-    required this.min,
-    required this.max,
-  });
-
-  int min;
-  int max;
-
-  factory LootPickModel.fromJson(Map<String, dynamic> json) => _$LootPickModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LootPickModelToJson(this);
 }
 
 @JsonSerializable()

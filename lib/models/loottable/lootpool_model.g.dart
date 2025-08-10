@@ -9,7 +9,8 @@ part of 'lootpool_model.dart';
 LootPoolModel _$LootPoolModelFromJson(Map<String, dynamic> json) =>
     LootPoolModel(
       name: json['name'] as String,
-      pick: LootPickModel.fromJson(json['pick'] as Map<String, dynamic>),
+      pickMin: (json['pickMin'] as num).toInt(),
+      pickMax: (json['pickMax'] as num).toInt(),
       entries: (json['entries'] as List<dynamic>)
           .map((e) => LootEntryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -20,22 +21,11 @@ LootPoolModel _$LootPoolModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$LootPoolModelToJson(LootPoolModel instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'pick': instance.pick,
+      'pickMin': instance.pickMin,
+      'pickMax': instance.pickMax,
       'entries': instance.entries,
       'enabled': instance.enabled,
       'duplicates': instance.duplicates,
-    };
-
-LootPickModel _$LootPickModelFromJson(Map<String, dynamic> json) =>
-    LootPickModel(
-      min: (json['min'] as num).toInt(),
-      max: (json['max'] as num).toInt(),
-    );
-
-Map<String, dynamic> _$LootPickModelToJson(LootPickModel instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
     };
 
 LootEntryModel _$LootEntryModelFromJson(Map<String, dynamic> json) =>

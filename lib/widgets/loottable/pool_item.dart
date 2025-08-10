@@ -35,8 +35,8 @@ class _PoolItemState extends State<PoolItem> {
   void initState() {
     _totalWeight = _calculateTotalWeight();
     _weightController = TextEditingController(text: _totalWeight.toString());
-    _pickMinController = TextEditingController(text: widget.lootPoolModel.pick.min.toString());
-    _pickMaxController = TextEditingController(text: widget.lootPoolModel.pick.max.toString());
+    _pickMinController = TextEditingController(text: widget.lootPoolModel.pickMin.toString());
+    _pickMaxController = TextEditingController(text: widget.lootPoolModel.pickMax.toString());
     super.initState();
   }
   @override
@@ -72,11 +72,11 @@ class _PoolItemState extends State<PoolItem> {
                       child: NumberButton(
                         min: 0,
                         max: 999,
-                        value: widget.lootPoolModel.pick.min,
+                        value: widget.lootPoolModel.pickMin,
                         label: "Min Picks",
                         enabled: true,
                         onChanged: (value) {
-                          widget.lootPoolModel.pick.min = value;
+                          widget.lootPoolModel.pickMin = value;
                           widget.onUpdate(widget.lootPoolModel);
                         },
                       ),
@@ -89,11 +89,11 @@ class _PoolItemState extends State<PoolItem> {
                       child: NumberButton(
                         min: 0,
                         max: 999,
-                        value: widget.lootPoolModel.pick.max,
+                        value: widget.lootPoolModel.pickMax,
                         label: "Max Picks",
                         enabled: true,
                         onChanged: (value) {
-                          widget.lootPoolModel.pick.max = value;
+                          widget.lootPoolModel.pickMax = value;
                           widget.onUpdate(widget.lootPoolModel);
                         },
                       ),
@@ -219,8 +219,8 @@ class _PoolItemModernState extends State<PoolItemModern> {
   void initState() {
     _totalWeight = _calculateTotalWeight();
     _weightController = TextEditingController(text: _totalWeight.toString());
-    _pickMinController = TextEditingController(text: widget.lootPoolModel.pick.min.toString());
-    _pickMaxController = TextEditingController(text: widget.lootPoolModel.pick.max.toString());
+    _pickMinController = TextEditingController(text: widget.lootPoolModel.pickMin.toString());
+    _pickMaxController = TextEditingController(text: widget.lootPoolModel.pickMax.toString());
     super.initState();
   }
   @override
@@ -260,7 +260,7 @@ class _PoolItemModernState extends State<PoolItemModern> {
                         label: "Min Picks",
                         enabled: true,
                         onChanged: (value) {
-                          widget.lootPoolModel.pick.min = value;
+                          widget.lootPoolModel.pickMin = value;
                           widget.onUpdate(widget.lootPoolModel);
                         },
                       ),
@@ -276,7 +276,7 @@ class _PoolItemModernState extends State<PoolItemModern> {
                         label: "Max Picks",
                         enabled: true,
                         onChanged: (value) {
-                          widget.lootPoolModel.pick.max = value;
+                          widget.lootPoolModel.pickMax = value;
                           widget.onUpdate(widget.lootPoolModel);
                         },
                       ),
