@@ -178,7 +178,7 @@ class _PoolItemState extends State<PoolItem> {
             ),
             SmallAddGenericWidget(
               onTap: () {
-                widget.lootPoolModel.items.add(LootEntryModel(id: 0, weight: 1, isHq: false));
+                widget.lootPoolModel.items.add(LootItemModel(id: 0, weight: 1, isHq: false));
                 widget.onUpdate(widget.lootPoolModel);
                 setState(() {
                   
@@ -338,7 +338,7 @@ class _PoolItemModernState extends State<PoolItemModern> {
             ),
             SmallAddGenericWidget(
               onTap: () {
-                widget.lootPoolModel.items.add(LootEntryModel(id: 0, weight: 1, isHq: false));
+                widget.lootPoolModel.items.add(LootItemModel(id: 0, weight: 1, isHq: false));
                 widget.onUpdate(widget.lootPoolModel);
                 setState(() {
                   

@@ -16,7 +16,7 @@ class LootPoolModel {
   String name;
   int pickMin;
   int pickMax;
-  List<LootEntryModel> items;
+  List<LootItemModel> items;
   bool enabled;
   bool duplicates;
 
@@ -26,8 +26,8 @@ class LootPoolModel {
 }
 
 @JsonSerializable()
-class LootEntryModel {
-  LootEntryModel({
+class LootItemModel {
+  LootItemModel({
     required this.id,
     required this.weight,
     required this.isHq
@@ -37,7 +37,7 @@ class LootEntryModel {
   int weight;
   bool isHq;
 
-  factory LootEntryModel.fromJson(Map<String, dynamic> json) => _$LootEntryModelFromJson(json);
+  factory LootItemModel.fromJson(Map<String, dynamic> json) => _$LootItemModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$LootEntryModelToJson(this);
+  Map<String, dynamic> toJson() => _$LootItemModelToJson(this);
 }

@@ -9,9 +9,9 @@ import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 
 class EntryItem extends StatefulWidget {
-  final LootEntryModel lootEntryModel;
+  final LootItemModel lootEntryModel;
   final LootPoolModel lootPoolModel;
-  final Function(LootEntryModel) onUpdate;
+  final Function(LootItemModel) onUpdate;
 
   const EntryItem({super.key, required this.lootEntryModel, required this.lootPoolModel, required this.onUpdate});
 
@@ -49,17 +49,6 @@ class _EntryItemState extends State<EntryItem> {
             children: [
               Row(
                 children: [
-                  SwitchIconWidget(
-                    enabled: widget.lootEntryModel.isHq,
-                    onPressed: () {
-                      widget.lootEntryModel.isHq = !widget.lootEntryModel.isHq;
-                      widget.onUpdate(widget.lootEntryModel);
-                      setState(() {
-                        
-                      });
-                    },
-                    icon: Icons.high_quality_rounded
-                  ),
                   SizedBox(
                     width: 48,
                     height: 48,
@@ -87,48 +76,6 @@ class _EntryItemState extends State<EntryItem> {
                       },
                     ),
                   ),
-
-                  /*SizedBox(
-                    width: 300,
-                    height: 60,
-                    child: GenericSearchPickerWidget<ItemMinimal>(
-                      initialValue: LocalRepository().getItemMinimal(widget.lootEntryModel.item),
-                      items: LocalRepository().getAllItemMinimal(),
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.search),
-                          ),
-                          Image.asset("assets/images/icon_trials_rounded.png", width: 24.0,),
-                          const SizedBox(width: 8.0),
-                        ],
-                      ),
-                      onChanged: (value) {
-                        if(value == null) {
-                          return;
-                        }
-                    
-                        //widget.lootEntryModel.item = value;
-                        widget.onUpdate(widget.lootEntryModel);
-                      },
-                      itemBuilder: (item) {
-                        return DropdownMenuEntry<ItemMinimal>(
-                          label: item.name,
-                          value: item,
-                          leadingIcon: Image.asset("assets/images/icon_trials_rounded.png", width: 24.0,),
-                          labelWidget: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(item.name),
-                              Text("iLvl ${item.iLvl}")
-                            ],
-                          )
-                        );
-                      }
-                    ),
-                  ),*/
                   SizedBox(width: 18.0,),
                   SizedBox(
                     width: 100,
@@ -168,6 +115,17 @@ class _EntryItemState extends State<EntryItem> {
                   )
                 ],
               ),
+              SwitchIconWidget(
+                    enabled: widget.lootEntryModel.isHq,
+                    onPressed: () {
+                      widget.lootEntryModel.isHq = !widget.lootEntryModel.isHq;
+                      widget.onUpdate(widget.lootEntryModel);
+                      setState(() {
+                        
+                      });
+                    },
+                    icon: Icons.high_quality_rounded
+                  ),
               IconButton(
                 icon: const Icon(Icons.clear_rounded),
                 onPressed: () {
