@@ -89,9 +89,8 @@ class _LootTableTabViewState extends State<LootTableTabView> {
                   int poolNumber = widget.lootTableModel.pools.length + 1;
                   var newPool = LootPoolModel(
                     name: "Pool #$poolNumber",
-                    pickMin: 1,
-                    pickMax: 1,
-                    items: [LootItemModel(id: 0, weight: 1, isHq: false)],
+                    pick: LootRangeModel(min: 1, max: 1),
+                    items: [LootItemModel(id: 0, weight: 1, isHq: false, quantity: LootRangeModel(min: 1, max: 1))],
                     enabled: true,
                     duplicates: true
                   );

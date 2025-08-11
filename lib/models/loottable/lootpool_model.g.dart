@@ -9,8 +9,7 @@ part of 'lootpool_model.dart';
 LootPoolModel _$LootPoolModelFromJson(Map<String, dynamic> json) =>
     LootPoolModel(
       name: json['name'] as String,
-      pickMin: (json['pickMin'] as num).toInt(),
-      pickMax: (json['pickMax'] as num).toInt(),
+      pick: LootRangeModel.fromJson(json['pick'] as Map<String, dynamic>),
       items: (json['items'] as List<dynamic>)
           .map((e) => LootItemModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -21,8 +20,7 @@ LootPoolModel _$LootPoolModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$LootPoolModelToJson(LootPoolModel instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'pickMin': instance.pickMin,
-      'pickMax': instance.pickMax,
+      'pick': instance.pick,
       'items': instance.items,
       'enabled': instance.enabled,
       'duplicates': instance.duplicates,
@@ -33,6 +31,8 @@ LootItemModel _$LootItemModelFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       weight: (json['weight'] as num).toInt(),
       isHq: json['isHq'] as bool,
+      quantity:
+          LootRangeModel.fromJson(json['quantity'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LootItemModelToJson(LootItemModel instance) =>
@@ -40,4 +40,17 @@ Map<String, dynamic> _$LootItemModelToJson(LootItemModel instance) =>
       'id': instance.id,
       'weight': instance.weight,
       'isHq': instance.isHq,
+      'quantity': instance.quantity,
+    };
+
+LootRangeModel _$LootRangeModelFromJson(Map<String, dynamic> json) =>
+    LootRangeModel(
+      min: (json['min'] as num).toInt(),
+      max: (json['max'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$LootRangeModelToJson(LootRangeModel instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
     };

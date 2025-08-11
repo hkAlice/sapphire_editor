@@ -124,9 +124,8 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
         pools: [
           LootPoolModel(
             name: "Loot #1",
-            pickMin: 1,
-            pickMax: 1,
-            items: [LootItemModel(id: 0, weight: 1, isHq: false)],
+            pick: LootRangeModel(min: 1, max: 1),
+            items: [LootItemModel(id: 0, weight: 1, isHq: false, quantity: LootRangeModel(min: 1, max: 1))],
             enabled: true,
             duplicates: true
           )

@@ -21,6 +21,8 @@ class EntryItem extends StatefulWidget {
 
 class _EntryItemState extends State<EntryItem> {
   late TextEditingController _itemIdController;
+  late TextEditingController _qtyMinController;
+  late TextEditingController _qtyMaxController;
 
   double calculateChance() {
     final totalWeight = widget.lootPoolModel.items.fold(0, (sum, e) => sum + e.weight);
@@ -31,6 +33,9 @@ class _EntryItemState extends State<EntryItem> {
   @override
   void initState() {
     _itemIdController = TextEditingController(text: widget.lootEntryModel.id.toString());
+    
+    _qtyMinController = TextEditingController(text: widget.lootEntryModel.quantity.min.toString());
+    _qtyMaxController = TextEditingController(text: widget.lootEntryModel.quantity.max.toString());
     super.initState();
   }
 
@@ -56,7 +61,7 @@ class _EntryItemState extends State<EntryItem> {
                   ),
                   VerticalDivider(),
                   SizedBox(
-                    width: 300,
+                    width: 245,
                     child: GenericSearchPickerWidget<ItemMinimal>(
                       items: LocalRepository().getAllItemMinimal(),
                       value: itemMinimal,
@@ -76,9 +81,9 @@ class _EntryItemState extends State<EntryItem> {
                       },
                     ),
                   ),
-                  SizedBox(width: 18.0,),
+                  SizedBox(width: 12.0,),
                   SizedBox(
-                    width: 100,
+                    width: 72,
                     child: SimpleNumberField(
                       initialValue: widget.lootEntryModel.id,
                       controller: _itemIdController,
@@ -92,9 +97,39 @@ class _EntryItemState extends State<EntryItem> {
                       }
                     ),
                   ),
-                  SizedBox(width: 18.0,),
+                  SizedBox(width: 12.0,),
                   SizedBox(
-                    width: 100,
+                    width: 53,
+                    child: SimpleNumberField(
+                      initialValue: widget.lootEntryModel.quantity.min,
+                      controller: _qtyMinController,
+                      label: "Qty",
+                      enabled: true,
+                      onChanged: (value) {
+                        widget.lootEntryModel.quantity.min = value;
+                        widget.onUpdate(widget.lootEntryModel);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    child: Opacity(opacity: 0.5, child: Text("→", style: Theme.of(context).textTheme.labelMedium))
+                  ),
+                  SizedBox(
+                    width: 53,
+                    child: SimpleNumberField(
+                      initialValue: widget.lootEntryModel.quantity.max,
+                      controller: _qtyMaxController,
+                      label: "",
+                      enabled: true,
+                      onChanged: (value) {
+                        widget.lootEntryModel.quantity.max = value;
+                        widget.onUpdate(widget.lootEntryModel);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 12.0,),
+                  SizedBox(
+                    width: 72,
                     child: SimpleNumberField(
                       initialValue: widget.lootEntryModel.weight,
                       label: "Weight",
@@ -106,32 +141,44 @@ class _EntryItemState extends State<EntryItem> {
                       }
                     ),
                   ),
-                  SizedBox(width: 8.0,),
+                  SizedBox(width: 4.0,),
                   Card.filled(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("~${calculateChance().toStringAsFixed(2)}%", style: Theme.of(context).textTheme.bodySmall,),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Text("~${calculateChance().toStringAsFixed(2)}%", style: Theme.of(context).textTheme.labelSmall,),
                     )
                   )
                 ],
               ),
-              SwitchIconWidget(
-                    enabled: widget.lootEntryModel.isHq,
-                    onPressed: () {
-                      widget.lootEntryModel.isHq = !widget.lootEntryModel.isHq;
-                      widget.onUpdate(widget.lootEntryModel);
-                      setState(() {
-                        
-                      });
-                    },
-                    icon: Icons.high_quality_rounded
+              
+              Row(
+                children: [
+                  SizedBox(
+                    width: 40.0,
+                    child: SwitchIconWidget(
+                      enabled: widget.lootEntryModel.isHq,
+                      onPressed: () {
+                        widget.lootEntryModel.isHq = !widget.lootEntryModel.isHq;
+                        widget.onUpdate(widget.lootEntryModel);
+                        setState(() {
+                          
+                        });
+                      },
+                      icon: Icons.high_quality_rounded
+                    ),
                   ),
-              IconButton(
-                icon: const Icon(Icons.clear_rounded),
-                onPressed: () {
-                  widget.lootPoolModel.items.remove(widget.lootEntryModel);
-                  widget.onUpdate(widget.lootEntryModel);
-                },
+                  SizedBox(width: 4.0,),
+                  SizedBox(
+                    width: 40.0,
+                    child: IconButton(
+                      icon: const Icon(Icons.clear_rounded),
+                      onPressed: () {
+                        widget.lootPoolModel.items.remove(widget.lootEntryModel);
+                        widget.onUpdate(widget.lootEntryModel);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
