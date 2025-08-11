@@ -30,10 +30,12 @@ class LootEntryModel {
   LootEntryModel({
     required this.item,
     required this.weight,
+    required this.isHq
   });
 
   int item;
   int weight;
+  bool isHq;
 
   factory LootEntryModel.fromJson(Map<String, dynamic> json) => _$LootEntryModelFromJson(json);
 

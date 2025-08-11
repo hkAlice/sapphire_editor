@@ -126,7 +126,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
             name: "Loot #1",
             pickMin: 1,
             pickMax: 1,
-            entries: [LootEntryModel(item: 0, weight: 1)],
+            entries: [LootEntryModel(item: 0, weight: 1, isHq: false)],
             enabled: true,
             duplicates: true
           )

@@ -6,6 +6,7 @@ import 'package:sapphire_editor/repositories/local_repository.dart';
 import 'package:sapphire_editor/repositories/xivapi_repository.dart';
 import 'package:sapphire_editor/widgets/generic_search_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 
 class EntryItem extends StatefulWidget {
   final LootEntryModel lootEntryModel;
@@ -48,6 +49,17 @@ class _EntryItemState extends State<EntryItem> {
             children: [
               Row(
                 children: [
+                  SwitchIconWidget(
+                    enabled: widget.lootEntryModel.isHq,
+                    onPressed: () {
+                      widget.lootEntryModel.isHq = !widget.lootEntryModel.isHq;
+                      widget.onUpdate(widget.lootEntryModel);
+                      setState(() {
+                        
+                      });
+                    },
+                    icon: Icons.high_quality_rounded
+                  ),
                   SizedBox(
                     width: 48,
                     height: 48,

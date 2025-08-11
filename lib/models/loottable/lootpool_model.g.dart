@@ -32,10 +32,12 @@ LootEntryModel _$LootEntryModelFromJson(Map<String, dynamic> json) =>
     LootEntryModel(
       item: (json['item'] as num).toInt(),
       weight: (json['weight'] as num).toInt(),
+      isHq: json['isHq'] as bool,
     );
 
 Map<String, dynamic> _$LootEntryModelToJson(LootEntryModel instance) =>
     <String, dynamic>{
       'item': instance.item,
       'weight': instance.weight,
+      'isHq': instance.isHq,
     };
