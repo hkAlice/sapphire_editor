@@ -8,7 +8,7 @@ class LootPoolModel {
     required this.name,
     required this.pickMin,
     required this.pickMax,
-    required this.entries,
+    required this.items,
     required this.enabled,
     required this.duplicates
   });
@@ -16,7 +16,7 @@ class LootPoolModel {
   String name;
   int pickMin;
   int pickMax;
-  List<LootEntryModel> entries;
+  List<LootEntryModel> items;
   bool enabled;
   bool duplicates;
 
@@ -28,12 +28,12 @@ class LootPoolModel {
 @JsonSerializable()
 class LootEntryModel {
   LootEntryModel({
-    required this.item,
+    required this.id,
     required this.weight,
     required this.isHq
   });
 
-  int item;
+  int id;
   int weight;
   bool isHq;
 

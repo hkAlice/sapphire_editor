@@ -23,20 +23,20 @@ class _EntryItemState extends State<EntryItem> {
   late TextEditingController _itemIdController;
 
   double calculateChance() {
-    final totalWeight = widget.lootPoolModel.entries.fold(0, (sum, e) => sum + e.weight);
+    final totalWeight = widget.lootPoolModel.items.fold(0, (sum, e) => sum + e.weight);
 
     return (widget.lootEntryModel.weight / totalWeight) * 100;
   }
 
   @override
   void initState() {
-    _itemIdController = TextEditingController(text: widget.lootEntryModel.item.toString());
+    _itemIdController = TextEditingController(text: widget.lootEntryModel.id.toString());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var itemMinimal = LocalRepository().getItemMinimal(widget.lootEntryModel.item);
+    var itemMinimal = LocalRepository().getItemMinimal(widget.lootEntryModel.id);
     var iconId = itemMinimal?.icon;
     
     return Padding(
@@ -78,7 +78,7 @@ class _EntryItemState extends State<EntryItem> {
                         label: item.name,
                       ),
                       onChanged: (item) {
-                        widget.lootEntryModel.item = item.id;
+                        widget.lootEntryModel.id = item.id;
                         _itemIdController.text = item.id.toString();
                         widget.onUpdate(widget.lootEntryModel);
                         setState(() {
@@ -133,11 +133,11 @@ class _EntryItemState extends State<EntryItem> {
                   SizedBox(
                     width: 100,
                     child: SimpleNumberField(
-                      initialValue: widget.lootEntryModel.item,
+                      initialValue: widget.lootEntryModel.id,
                       controller: _itemIdController,
                       label: "Item ID",
                       onChanged: (value) {
-                        widget.lootEntryModel.item = value;
+                        widget.lootEntryModel.id = value;
                         widget.onUpdate(widget.lootEntryModel);
                         setState(() {
                           
@@ -171,7 +171,7 @@ class _EntryItemState extends State<EntryItem> {
               IconButton(
                 icon: const Icon(Icons.clear_rounded),
                 onPressed: () {
-                  widget.lootPoolModel.entries.remove(widget.lootEntryModel);
+                  widget.lootPoolModel.items.remove(widget.lootEntryModel);
                   widget.onUpdate(widget.lootEntryModel);
                 },
               ),

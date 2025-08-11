@@ -28,7 +28,7 @@ class _PoolItemState extends State<PoolItem> {
   late TextEditingController _pickMaxController;
 
   int _calculateTotalWeight() {
-    return widget.lootPoolModel.entries.fold(0, (sum, e) => sum + e.weight);
+    return widget.lootPoolModel.items.fold(0, (sum, e) => sum + e.weight);
   }
 
   @override
@@ -157,11 +157,11 @@ class _PoolItemState extends State<PoolItem> {
             Text("Entries", style: Theme.of(context).textTheme.bodyLarge,),
             SizedBox(height: 12.0,),
             ListView.builder(
-              itemCount: widget.lootPoolModel.entries.length,
+              itemCount: widget.lootPoolModel.items.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                var entry = widget.lootPoolModel.entries[i];
+                var entry = widget.lootPoolModel.items[i];
             
                 return EntryItem(
                   key: Key(entry.hashCode.toString()),
@@ -178,7 +178,7 @@ class _PoolItemState extends State<PoolItem> {
             ),
             SmallAddGenericWidget(
               onTap: () {
-                widget.lootPoolModel.entries.add(LootEntryModel(item: 0, weight: 1, isHq: false));
+                widget.lootPoolModel.items.add(LootEntryModel(id: 0, weight: 1, isHq: false));
                 widget.onUpdate(widget.lootPoolModel);
                 setState(() {
                   
@@ -212,7 +212,7 @@ class _PoolItemModernState extends State<PoolItemModern> {
   late TextEditingController _pickMaxController;
 
   int _calculateTotalWeight() {
-    return widget.lootPoolModel.entries.fold(0, (sum, e) => sum + e.weight);
+    return widget.lootPoolModel.items.fold(0, (sum, e) => sum + e.weight);
   }
 
   @override
@@ -317,11 +317,11 @@ class _PoolItemModernState extends State<PoolItemModern> {
             Text("Entries", style: Theme.of(context).textTheme.bodyLarge,),
             SizedBox(height: 12.0,),
             ListView.builder(
-              itemCount: widget.lootPoolModel.entries.length,
+              itemCount: widget.lootPoolModel.items.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                var entry = widget.lootPoolModel.entries[i];
+                var entry = widget.lootPoolModel.items[i];
             
                 return EntryItem(
                   key: Key(entry.hashCode.toString()),
@@ -338,7 +338,7 @@ class _PoolItemModernState extends State<PoolItemModern> {
             ),
             SmallAddGenericWidget(
               onTap: () {
-                widget.lootPoolModel.entries.add(LootEntryModel(item: 0, weight: 1, isHq: false));
+                widget.lootPoolModel.items.add(LootEntryModel(id: 0, weight: 1, isHq: false));
                 widget.onUpdate(widget.lootPoolModel);
                 setState(() {
                   

@@ -91,7 +91,7 @@ class _LootTableTabViewState extends State<LootTableTabView> {
                     name: "Pool #$poolNumber",
                     pickMin: 1,
                     pickMax: 1,
-                    entries: [LootEntryModel(item: 0, weight: 1, isHq: false)],
+                    items: [LootEntryModel(id: 0, weight: 1, isHq: false)],
                     enabled: true,
                     duplicates: true
                   );
