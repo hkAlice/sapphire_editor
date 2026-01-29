@@ -10,6 +10,7 @@ import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/interruptedaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/scheduleactive_condition_widget.dart';
 
 class ConditionItem extends StatefulWidget {
@@ -43,6 +44,8 @@ class _ConditionItemState extends State<ConditionItem> {
       return HPMinMaxConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else if(widget.conditionModel.condition == ConditionType.scheduleActive) {
       return ScheduleActiveConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
+    } else if(widget.conditionModel.condition == ConditionType.interruptedAction) {
+      return InterruptedActionConditionWidget(timelineModel: widget.timelineModel, paramData:  widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else {
       return Text("Unimplemented condition type $widget.conditionModel.condition");
     }

@@ -19,6 +19,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/directorflags_point_w
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorseq_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorvar_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/interruptaction_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setpos_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
@@ -227,6 +228,8 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
         return SetPosPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       case TimepointType.snapshot:
         return SnapshotPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
+      case TimepointType.interruptAction:
+        return InterruptActionPointWidget(timelineModel: timelineModel, timepointModel: timepointModel, selectedActor: selectedActor, onUpdate: onUpdate);
       default:
         return Text("Unimplemented timepoint type ${widget.timepointModel.type}");
     }

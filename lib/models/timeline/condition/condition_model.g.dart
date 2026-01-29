@@ -38,4 +38,5 @@ const _$ConditionTypeEnumMap = {
   ConditionType.hpPctBetween: 'hpPctBetween',
   ConditionType.hpPctLessThan: 'hpPctLessThan',
   ConditionType.scheduleActive: 'scheduleActive',
+  ConditionType.interruptedAction: 'interruptedAction',
 };

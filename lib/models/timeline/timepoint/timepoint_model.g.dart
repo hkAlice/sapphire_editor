@@ -38,4 +38,5 @@ const _$TimepointTypeEnumMap = {
   TimepointType.setCondition: 'setCondition',
   TimepointType.setPos: 'setPos',
   TimepointType.snapshot: 'snapshot',
+  TimepointType.interruptAction: 'interruptAction',
 };

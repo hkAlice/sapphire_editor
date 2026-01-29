@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
@@ -58,6 +59,8 @@ class ConditionModel {
         paramData = CombatStateConditionModel.fromJson(paramData);
       } else if(type == ConditionType.scheduleActive) {
         paramData = ScheduleActiveConditionModel.fromJson(paramData);
+      } else if(type == ConditionType.interruptedAction) {
+        paramData = InterruptedActionConditionModel.fromJson(paramData);
       } else {
         // keep as is, break shit
       }
@@ -80,6 +83,9 @@ class ConditionModel {
     } else if (condition == ConditionType.scheduleActive) {
       var param = paramData as ScheduleActiveConditionModel;
       summary += "${param.sourceActor}->${param.scheduleName} is active";
+    } else if (condition == ConditionType.interruptedAction) {
+      var param = paramData as InterruptedActionConditionModel;
+      summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
@@ -148,7 +154,9 @@ enum ConditionType {
   @JsonValue("hpPctLessThan")
   hpPctLessThan,
   @JsonValue("scheduleActive")
-  scheduleActive
+  scheduleActive,
+  @JsonValue("interruptedAction")
+  interruptedAction
 }
 
 /*

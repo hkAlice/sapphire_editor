@@ -9,6 +9,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/directorflags_po
 import 'package:sapphire_editor/models/timeline/timepoint/types/directorseq_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/directorvar_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
@@ -77,6 +78,8 @@ class TimepointModel {
         data = SnapshotPointModel.fromJson(data);
       } else if(type == TimepointType.actionTimeline) {
         data = ActionTimelinePointModel.fromJson(data);
+      } else if(type == TimepointType.interruptAction) {
+        data = InterruptActionPointModel.fromJson(data);
       }
       else {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
@@ -144,5 +147,7 @@ enum TimepointType {
   @JsonValue("setPos")
   setPos,
   @JsonValue("snapshot")
-  snapshot
+  snapshot,
+  @JsonValue("interruptAction")
+  interruptAction
 }
