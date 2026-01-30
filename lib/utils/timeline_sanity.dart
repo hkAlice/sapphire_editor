@@ -76,7 +76,7 @@ class TimelineSanitySvc {
             _info("Nice", "Schedule ${actor.name}->${schedule.name} has CastAction ActionID 69. Nice", items);
           }
 
-          if(pointData.targetType == ActorTargetType.selector) {
+          if(pointData.targetType == ActorTargetType.selectorPos || pointData.targetType == ActorTargetType.selectorTarget) {
             if(!timeline.selectors.any((e) => e.name == pointData.selectorName)) {
               _err("InvalidSelectorRef", "Schedule ${actor.name}->${schedule.name} has CastAction with invalid selector ${pointData.selectorName}.", items);
             }

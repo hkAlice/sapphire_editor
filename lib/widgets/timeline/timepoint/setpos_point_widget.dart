@@ -100,7 +100,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
               ),
             ),
             const SizedBox(width: 18.0,),
-            if(pointData.targetType case ActorTargetType.selector)
+            if(pointData.targetType == ActorTargetType.selectorPos || pointData.targetType == ActorTargetType.selectorTarget)
               Row(
                 children: [
                   SizedBox(
@@ -109,7 +109,8 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
                       label: "Target Selector",
                       items: widget.timelineModel.selectors.map((e) => e.name).toList(),
                       initialValue: pointData.selectorName,
-                      enabled: pointData.targetType == ActorTargetType.selector,
+                      enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                               pointData.targetType == ActorTargetType.selectorTarget,
                       onChanged: (newValue) {
                         pointData.selectorName = newValue;
                         widget.onUpdate();
@@ -125,7 +126,8 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
                       label: "#",
                       items: List.generate(selectorCount, (e) => (e + 1).toString()),
                       initialValue: (pointData.selectorIndex + 1).toString(),
-                      enabled: pointData.targetType == ActorTargetType.selector,
+                      enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                               pointData.targetType == ActorTargetType.selectorTarget,
                       onChanged: (newValue) {
                         setState(() {
                           pointData.selectorIndex = int.parse(newValue) - 1;

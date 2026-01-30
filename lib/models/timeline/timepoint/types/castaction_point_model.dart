@@ -31,7 +31,7 @@ class CastActionPointModel {
   String toString() {
     var sum = "Cast Action $actionId from $sourceActor to ${treatEnumName(targetType)}";
     
-    if(targetType == ActorTargetType.selector) {
+    if(targetType == ActorTargetType.selectorTarget || targetType == ActorTargetType.selectorPos) {
       sum += " $selectorName#${selectorIndex + 1}";
     }
 
@@ -48,8 +48,10 @@ enum ActorTargetType {
   self,
   @JsonValue("target")
   target,
-  @JsonValue("selector")
-  selector,
+  @JsonValue("selectorPos")
+  selectorPos,
+  @JsonValue("selectorTarget")
+  selectorTarget,
   @JsonValue("none")
   none
 }

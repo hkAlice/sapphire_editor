@@ -35,6 +35,7 @@ Map<String, dynamic> _$CastActionPointModelToJson(
 const _$ActorTargetTypeEnumMap = {
   ActorTargetType.self: 'self',
   ActorTargetType.target: 'target',
-  ActorTargetType.selector: 'selector',
+  ActorTargetType.selectorPos: 'selectorPos',
+  ActorTargetType.selectorTarget: 'selectorTarget',
   ActorTargetType.none: 'none',
 };

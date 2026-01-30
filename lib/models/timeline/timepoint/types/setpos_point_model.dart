@@ -41,7 +41,8 @@ class SetPosPointModel {
         case ActorTargetType.target:
           sumStr += "actor $targetActor";
           break;
-        case ActorTargetType.selector:
+        case ActorTargetType.selectorPos:
+        case ActorTargetType.selectorTarget:
           sumStr += "selector $selectorName#$selectorIndex";
           break;
         default:
@@ -61,7 +62,8 @@ class SetPosPointModel {
         case ActorTargetType.target:
           sumStr += "actor $targetActor";
           break;
-        case ActorTargetType.selector:
+        case ActorTargetType.selectorPos:
+        case ActorTargetType.selectorTarget:
           sumStr += "selector $selectorName#$selectorIndex";
         default:
           sumStr += "<unknown>";

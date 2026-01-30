@@ -88,7 +88,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
             label: "Target Selector",
             items: widget.timelineModel.selectors.map((e) => e.name).toList(),
             initialValue: pointData.selectorName,
-            enabled: pointData.targetType == ActorTargetType.selector,
+            enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                     pointData.targetType == ActorTargetType.selectorTarget,
             onChanged: (newValue) {
               pointData.selectorName = newValue;
               widget.onUpdate();
@@ -104,7 +105,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
             label: "#",
             items: List.generate(selectorCount, (e) => (e + 1).toString()),
             initialValue: (pointData.selectorIndex + 1).toString(),
-            enabled: pointData.targetType == ActorTargetType.selector,
+            enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                     pointData.targetType == ActorTargetType.selectorTarget,
             onChanged: (newValue) {
               setState(() {
                 pointData.selectorIndex = int.parse(newValue) - 1;
