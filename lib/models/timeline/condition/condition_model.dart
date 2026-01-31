@@ -3,6 +3,7 @@ import 'package:sapphire_editor/models/timeline/condition/types/combatstate_cond
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/rngequals_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
@@ -61,6 +62,8 @@ class ConditionModel {
         paramData = ScheduleActiveConditionModel.fromJson(paramData);
       } else if(type == ConditionType.interruptedAction) {
         paramData = InterruptedActionConditionModel.fromJson(paramData);
+      } else if(type == ConditionType.rngEquals) {
+        paramData = RNGEqualsConditionModel.fromJson(paramData);
       } else {
         // keep as is, break shit
       }
@@ -86,6 +89,9 @@ class ConditionModel {
     } else if (condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
+    } else if (condition == ConditionType.rngEquals) {
+      var param = paramData as RNGEqualsConditionModel;
+      summary += "Pack RNG Value is #${param.val}";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
@@ -156,7 +162,9 @@ enum ConditionType {
   @JsonValue("scheduleActive")
   scheduleActive,
   @JsonValue("interruptedAction")
-  interruptedAction
+  interruptedAction,
+  @JsonValue("rngEquals")
+  rngEquals
 }
 
 /*

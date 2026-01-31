@@ -39,4 +39,5 @@ const _$TimepointTypeEnumMap = {
   TimepointType.setPos: 'setPos',
   TimepointType.snapshot: 'snapshot',
   TimepointType.interruptAction: 'interruptAction',
+  TimepointType.rollRNG: 'rollRNG',
 };

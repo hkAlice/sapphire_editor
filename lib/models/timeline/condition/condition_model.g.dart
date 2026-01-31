@@ -39,4 +39,5 @@ const _$ConditionTypeEnumMap = {
   ConditionType.hpPctLessThan: 'hpPctLessThan',
   ConditionType.scheduleActive: 'scheduleActive',
   ConditionType.interruptedAction: 'interruptedAction',
+  ConditionType.rngEquals: 'rngEquals',
 };

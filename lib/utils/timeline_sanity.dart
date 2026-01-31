@@ -7,6 +7,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 
 class TimelineSanitySvc {
@@ -104,6 +105,13 @@ class TimelineSanitySvc {
           }
           if(!actorRefNameList.contains(pointData.sourceActor)) {
             _err("InvalidActorRef", "Schedule ${actor.name}->${schedule.name} has Snapshot with invalid local actor ${pointData.sourceActor}.", items);
+          }
+        }
+
+        if(timepoint.type == TimepointType.rollRNG) {
+          var pointData = timepoint.data as RollRNGPointModel;
+          if(pointData.min > pointData.max) {
+            _err("InvalidMinMax", "Schedule ${actor.name}->${schedule.name} has RollRNG with invalid min value ${pointData.min}.", items);
           }
         }
       }

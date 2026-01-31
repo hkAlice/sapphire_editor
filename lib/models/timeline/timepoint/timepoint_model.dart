@@ -11,6 +11,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/directorvar_poin
 import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
@@ -80,8 +81,9 @@ class TimepointModel {
         data = ActionTimelinePointModel.fromJson(data);
       } else if(type == TimepointType.interruptAction) {
         data = InterruptActionPointModel.fromJson(data);
-      }
-      else {
+      } else if(type == TimepointType.rollRNG) {
+        data = RollRNGPointModel.fromJson(data);
+      } else {
         throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
       }
     }
@@ -149,5 +151,7 @@ enum TimepointType {
   @JsonValue("snapshot")
   snapshot,
   @JsonValue("interruptAction")
-  interruptAction
+  interruptAction,
+  @JsonValue("rollRNG")
+  rollRNG
 }
