@@ -11,8 +11,8 @@ import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/interruptedaction_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/rngequals_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/scheduleactive_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/varequals_condition_widget.dart';
 
 class ConditionItem extends StatefulWidget {
   final TimelineModel timelineModel;
@@ -47,8 +47,8 @@ class _ConditionItemState extends State<ConditionItem> {
       return ScheduleActiveConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
     } else if(widget.conditionModel.condition == ConditionType.interruptedAction) {
       return InterruptedActionConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate: (_) { genericCallback(); });
-    } else if(widget.conditionModel.condition == ConditionType.rngEquals) {
-      return RNGEqualsConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate:(_) { genericCallback(); });
+    } else if(widget.conditionModel.condition == ConditionType.varEquals) {
+      return VarEqualsConditionWidget(timelineModel: widget.timelineModel, paramData: widget.conditionModel.paramData, onUpdate:(_) { genericCallback(); });
     } else {
       return Text("Unimplemented condition type $widget.conditionModel.condition");
     }

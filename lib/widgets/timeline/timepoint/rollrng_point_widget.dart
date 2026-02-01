@@ -4,6 +4,8 @@ import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
+import 'package:sapphire_editor/utils/text_utils.dart';
+import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 
 class RollRNGPointWidget extends StatefulWidget {
@@ -54,6 +56,35 @@ class _RollRNGPointWidgetState extends State<RollRNGPointWidget> {
                 initialValue: pointData.max,
                 onChanged: (value) {
                   pointData.max = value;
+                  widget.onUpdate();
+                }
+              ),
+            ),
+            const SizedBox(width: 18.0),
+            SizedBox(
+              width: 180,
+              child: GenericItemPickerWidget<RNGVarType>(
+                label: "Var Type",
+                initialValue: RNGVarType.custom,
+                items: RNGVarType.values,
+                propertyBuilder: (value) => treatEnumName(value),
+                onChanged: (newValue) {
+                  pointData.type = newValue;
+                  setState(() {
+                    
+                  });
+                  widget.onUpdate();
+                },
+              ),
+            ),
+            const SizedBox(width: 18.0),
+            SizedBox(
+              width: 180,
+              child: SimpleNumberField(
+                label: "Index",
+                initialValue: pointData.index,
+                onChanged: (value) {
+                  pointData.index = value;
                   widget.onUpdate();
                 }
               ),
