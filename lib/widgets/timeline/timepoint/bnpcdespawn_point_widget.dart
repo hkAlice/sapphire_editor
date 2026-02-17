@@ -2,17 +2,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
+import 'package:signals/signals_flutter.dart';
 
 class BNpcDespawnPointWidget extends StatefulWidget {
-  final TimelineModel timelineModel;
   final TimepointModel timepointModel;
-  final Function() onUpdate;
 
-  const BNpcDespawnPointWidget({super.key, required this.timelineModel, required this.timepointModel, required this.onUpdate});
+  const BNpcDespawnPointWidget({super.key, required this.timepointModel});
 
   @override
   State<BNpcDespawnPointWidget> createState() => _BNpcDespawnPointWidgetState();
@@ -23,29 +24,43 @@ class _BNpcDespawnPointWidgetState extends State<BNpcDespawnPointWidget> {
   
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 180,
-              child: GenericItemPickerWidget<ActorModel>(
-                label: "Actor",
-                items: widget.timelineModel.actors,
-                initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == pointData.despawnActor),
-                onChanged: (newValue) {
-                  pointData.despawnActor = newValue.name;
-                  widget.onUpdate();
-                  setState(() {
-                    
-                  });
-                },
-              ),
-            )
-          ],
-        ),
-      ],
+    final signals = SignalsProvider.of(context);
+    return Watch((context) {
+      final actor = signals.selectedActor.value;
+      final schedule = signals.selectedSchedule.value;
+      final timeline = signals.timeline.value;
+
+      return Row(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 180,
+                child: GenericItemPickerWidget<ActorModel>(
+                  label: "Actor",
+                  items: timeline.actors,
+                  initialValue: timeline.actors.firstWhereOrNull((e) => e.name == pointData.despawnActor),
+                  onChanged: (newValue) {
+                    pointData.despawnActor = newValue.name;
+                    _updateTimepoint(signals, actor, schedule);
+                    },
+                ),
+              )
+            ],
+          ),
+        ],
+      );
+    });
+  }
+
+  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
+    final oldTimepoint = schedule.timepoints.firstWhere((t) => t == widget.timepointModel);
+    final newTimepoint = TimepointModel(
+      type: oldTimepoint.type,
+      startTime: oldTimepoint.startTime,
+      data: pointData,
     );
+    signals.updateTimepoint(actor, schedule, oldTimepoint, newTimepoint);
   }
 }

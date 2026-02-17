@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:signals/signals_flutter.dart';
 
 class LogMessagePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
-  final Function() onUpdate;
 
-  const LogMessagePointWidget({super.key, required this.timepointModel, required this.onUpdate});
+  const LogMessagePointWidget({super.key, required this.timepointModel});
 
   @override
   State<LogMessagePointWidget> createState() => _LogMessagePointWidgetState();
@@ -52,38 +56,51 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
   
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 110,
-          child: SimpleNumberField(
-            label: "Message ID",
-            initialValue: pointData.messageId,
-            onChanged: (value) {
-              pointData.messageId = value;
-              widget.onUpdate();
-            }
-          ),
-        ),
-        const SizedBox(width: 18.0,),
-        _generateStrSplitInput(
-          textEditingController: _paramsTextEditingController,
-          label: "Params (split by ,)",
-          onChanged: (value) {
-            try {
-              var listParams = value.split(",").map((e) => int.parse(e)).toList();
-              pointData.params = listParams;
-              widget.onUpdate();
-            }
-            catch(_) { }
+    final signals = SignalsProvider.of(context);
+    return Watch((context) {
+      final actor = signals.selectedActor.value;
+      final schedule = signals.selectedSchedule.value;
 
-            setState(() {
-              
-            });
-          }
-        ),
-      ],
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: SimpleNumberField(
+              label: "Message ID",
+              initialValue: pointData.messageId,
+              onChanged: (value) {
+                pointData.messageId = value;
+                _updateTimepoint(signals, actor, schedule);
+              }
+            ),
+          ),
+          const SizedBox(width: 18.0,),
+          _generateStrSplitInput(
+            textEditingController: _paramsTextEditingController,
+            label: "Params (split by ,)",
+            onChanged: (value) {
+              try {
+                var listParams = value.split(",").map((e) => int.parse(e)).toList();
+                pointData.params = listParams;
+                _updateTimepoint(signals, actor, schedule);
+              }
+              catch(_) { }
+
+              }
+          ),
+        ],
+      );
+    });
+  }
+
+  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
+    final oldTimepoint = schedule.timepoints.firstWhere((t) => t == widget.timepointModel);
+    final newTimepoint = TimepointModel(
+      type: oldTimepoint.type,
+      startTime: oldTimepoint.startTime,
+      data: pointData,
     );
+    signals.updateTimepoint(actor, schedule, oldTimepoint, newTimepoint);
   }
 }

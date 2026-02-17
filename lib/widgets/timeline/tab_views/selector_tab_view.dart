@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/selector/selector_item.dart';
+import 'package:signals/signals_flutter.dart';
 
 class SelectorTabView extends StatefulWidget {
-  final TimelineModel timelineModel;
-  final Function() onUpdate;
-
-  const SelectorTabView({super.key, required this.timelineModel, required this.onUpdate});
+  const SelectorTabView({super.key});
 
   @override
   State<SelectorTabView> createState() => _SelectorTabViewState();
@@ -17,63 +16,61 @@ class SelectorTabView extends StatefulWidget {
 class _SelectorTabViewState extends State<SelectorTabView> {
   @override
   Widget build(BuildContext context) {
-    int selectorCount = widget.timelineModel.selectors.length;
+    final signals = SignalsProvider.of(context);
     
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: SmallHeadingWidget(
-              title: "$selectorCount selector${selectorCount == 1 ? '' : 's'}",
+    return Watch((context) {
+      final timeline = signals.timeline.value;
+      int selectorCount = timeline.selectors.length;
+
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: SmallHeadingWidget(
+                title: "$selectorCount selector${selectorCount == 1 ? '' : 's'}",
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: ReorderableListView.builder(
-              buildDefaultDragHandles: false,
-              onReorder: (int oldindex, int newindex) {
-                setState(() {
-                  if(newindex > oldindex) {
-                    newindex -= 1;
-                  }
-                  final items = widget.timelineModel.selectors.removeAt(oldindex);
-                  widget.timelineModel.selectors.insert(newindex, items);
-                });
-                widget.onUpdate();
-              },
-              itemCount: widget.timelineModel.selectors.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, i) {
-                var selectorModel = widget.timelineModel.selectors[i];
-                return SelectorItem(
-                  key: Key("selector_${selectorModel.id}"),
-                  timelineModel: widget.timelineModel,
-                  index: i,
-                  selectorModel: selectorModel,
-                  onUpdate: (selectorModel) {
-                    widget.onUpdate();
-                  },
-                );
-              }
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: ReorderableListView.builder(
+                buildDefaultDragHandles: false,
+                onReorder: (int oldindex, int newindex) {
+                  setState(() {
+                    if(newindex > oldindex) {
+                      newindex -= 1;
+                    }
+                    final items = timeline.selectors.removeAt(oldindex);
+                    timeline.selectors.insert(newindex, items);
+                  });
+                },
+                itemCount: timeline.selectors.length,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, i) {
+                  var selectorModel = timeline.selectors[i];
+                  return SelectorItem(
+                    key: Key("selector_${selectorModel.id}"),
+                    index: i,
+                    selectorModel: selectorModel,
+                  );
+                }
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: AddGenericWidget(
-              text: "New selector",
-              onTap: () {
-                setState(() {
-                  widget.timelineModel.addNewSelector();
-                });
-                
-                widget.onUpdate();
-              }
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: AddGenericWidget(
+                text: "New selector",
+                onTap: () {
+                  setState(() {
+                    timeline.addNewSelector();
+                  });
+                }
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }

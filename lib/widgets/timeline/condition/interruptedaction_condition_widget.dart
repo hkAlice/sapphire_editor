@@ -6,13 +6,14 @@ import 'package:sapphire_editor/models/timeline/condition/types/interruptedactio
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
+import 'package:signals/signals_flutter.dart';
 
 class InterruptedActionConditionWidget extends StatefulWidget {
-  final TimelineModel timelineModel;
   final InterruptedActionConditionModel paramData;
-  final Function(InterruptedActionConditionModel) onUpdate;
   
-  const InterruptedActionConditionWidget({super.key, required this.timelineModel, required this.paramData, required this.onUpdate});
+  const InterruptedActionConditionWidget({super.key, required this.paramData});
 
   @override
   State<InterruptedActionConditionWidget> createState() => _InterruptedActionConditionWidgetState();
@@ -23,41 +24,39 @@ class _InterruptedActionConditionWidgetState extends State<InterruptedActionCond
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 180,
-          child: GenericItemPickerWidget<ActorModel>(
-            label: "Source Actor",
-            items: widget.timelineModel.actors,
-            initialValue: widget.timelineModel.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor),
-            onChanged: (newValue) {
-              widget.paramData.sourceActor = newValue.name;
-              widget.onUpdate(widget.paramData);
-              setState(() {
-                
-              });
-            },
-          )
-        ),
-        const SizedBox(width: 18.0,),
-        SizedBox(
-          width: 150,
-          child: SimpleNumberField(
-            label: "Action ID",
-            initialValue: widget.paramData.actionId,
-            onChanged: (newValue) {
-              widget.paramData.actionId = newValue;
-              widget.onUpdate(widget.paramData);
-              setState(() {
-                
-              });
-            },
-          )
-        ),
-      ],
-    );
+    final signals = SignalsProvider.of(context);
+
+    return Watch((context) {
+      final timeline = signals.timeline.value;
+      return Row(
+        children: [
+          SizedBox(
+            width: 180,
+            child: GenericItemPickerWidget<ActorModel>(
+              label: "Source Actor",
+              items: timeline.actors,
+              initialValue: timeline.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor),
+              onChanged: (newValue) {
+                widget.paramData.sourceActor = newValue.name;
+              },
+            )
+          ),
+          const SizedBox(width: 18.0,),
+          SizedBox(
+            width: 150,
+            child: SimpleNumberField(
+              label: "Action ID",
+              initialValue: widget.paramData.actionId,
+              onChanged: (newValue) {
+                widget.paramData.actionId = newValue;
+              },
+            )
+          ),
+        ],
+      );
+    });
   }
 }

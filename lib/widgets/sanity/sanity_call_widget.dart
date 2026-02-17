@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/utils/timeline_sanity.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
 class SanityCallWidget extends StatefulWidget {
-  final TimelineModel? timelineModel;
-  const SanityCallWidget({super.key, required this.timelineModel});
+  const SanityCallWidget({super.key});
 
   @override
   State<SanityCallWidget> createState() => _SanityCallWidgetState();
@@ -23,15 +23,14 @@ class _SanityCallWidgetState extends State<SanityCallWidget> {
 
     _sanityTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       if(mounted) {
-        if(widget.timelineModel != null) {
-          items = TimelineSanitySvc.run(widget.timelineModel!);
-          setState(() {
-            timelineHash = widget.timelineModel.hashCode;
-          });
-        }
+        final signals = SignalsProvider.of(context);
+        final timelineModel = signals.timeline.value;
+        
+        items = TimelineSanitySvc.run(timelineModel);
+        setState(() {
+          timelineHash = timelineModel.hashCode;
+        });
       }
-
-      
     });
   }
 

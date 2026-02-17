@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
+import 'package:signals/signals_flutter.dart';
 
 class SelectorItem extends StatefulWidget {
-  final TimelineModel timelineModel;
   final SelectorModel selectorModel;
   final int index;
-  final Function(SelectorModel) onUpdate;
 
-  const SelectorItem({super.key, required this.timelineModel, required this.selectorModel, required this.index, required this.onUpdate});
+  const SelectorItem({super.key, required this.selectorModel, required this.index});
 
   @override
   State<SelectorItem> createState() => _SelectorItemState();
@@ -25,8 +25,13 @@ class SelectorItem extends StatefulWidget {
 
 class _SelectorItemState extends State<SelectorItem> {
   
-  @override
-  Widget build(BuildContext context) {
+@override
+Widget build(BuildContext context) {
+  final signals = SignalsProvider.of(context);
+  
+  return Watch((context) {
+    final timeline = signals.timeline.value;
+    
     return Card(
       borderOnForeground: false,
       //shadowColor: Colors.transparent,
@@ -53,10 +58,7 @@ class _SelectorItemState extends State<SelectorItem> {
               minLines: 1,
               maxLines: 1,
               onChanged: (value) {
-                setState(() {
-                  widget.selectorModel.name = value;
-                });
-                widget.onUpdate(widget.selectorModel);
+                widget.selectorModel.name = value;
               }
             ),
             SizedBox(
@@ -67,11 +69,7 @@ class _SelectorItemState extends State<SelectorItem> {
                 splashRadius: 24.0,
                 padding: const EdgeInsets.all(2.0),
                 onPressed: () {
-                  widget.timelineModel.selectors.removeAt(widget.index);
-                  setState(() {
-                    
-                  });
-                  widget.onUpdate(widget.selectorModel);
+                  timeline.selectors.removeAt(widget.index);
                 },
               ),
             ),
@@ -99,18 +97,14 @@ class _SelectorItemState extends State<SelectorItem> {
                         label: "Count",
                         value: widget.selectorModel.count,
                         onChanged: (value) {
-                          setState(() {
-                            widget.selectorModel.count = value;
-                          });
-                          
-                          widget.onUpdate(widget.selectorModel);
+                          widget.selectorModel.count = value;
                         }
                       ),
                       const SizedBox(height: 8.0,),
                       
                       GenericItemPickerWidget<String>(
                         label: "Exclude selector result",
-                        items: widget.timelineModel.selectors.map((e) => e.name).toList()
+                        items: timeline.selectors.map((e) => e.name).toList()
                           ..remove(widget.selectorModel.name)
                           ..insert(0, "<none>"),
                         initialValue: widget.selectorModel.excludeSelectorName == "" ? "<none>" : widget.selectorModel.excludeSelectorName,
@@ -118,9 +112,8 @@ class _SelectorItemState extends State<SelectorItem> {
                           if(value == "<none>") {
                             value = "";
                           }
-      
+                          
                           widget.selectorModel.excludeSelectorName = value;
-                          widget.onUpdate(widget.selectorModel);
                         },
                       )
                     ],
@@ -138,116 +131,93 @@ class _SelectorItemState extends State<SelectorItem> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: SizedBox(
-                          width: 200,
-                          child: SwitchTextWidget(
-                            enabled: widget.selectorModel.fillRandomEntries,
-                            leading: const Text("Fill random entries"),
-                            onPressed: () {
-                              setState(() {
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: SizedBox(
+                            width: 200,
+                            child: SwitchTextWidget(
+                              enabled: widget.selectorModel.fillRandomEntries,
+                              leading: const Text("Fill random entries"),
+                              onPressed: () {
                                 widget.selectorModel.fillRandomEntries = !widget.selectorModel.fillRandomEntries;
-                              });
-                              
-                              widget.onUpdate(widget.selectorModel);
-                            }
+                              }
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8.0,),
-                        for(var filter in widget.selectorModel.filters)
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  SmallFilterLogicWidget(
-                                    first: widget.selectorModel.filters.indexOf(filter) == 0,
-                                    logic: "And",
-                                    negate: filter.negate,
-                                  ),
-                                  SwitchIconWidget(
-                                    enabled: filter.negate,
-                                    icon: Icons.not_interested,
-                                    onPressed: () {
-                                      setState(() {
-                                        filter.negate = !filter.negate;
-                                      });
-                                      widget.onUpdate(widget.selectorModel);
-                                    },
-                                  ),
-                                  SwitchIconWidget(
-                                    enabled: filter.enforceOnRandom,
-                                    icon: Icons.gavel_rounded,
-                                    onPressed: () {
-                                      setState(() {
-                                        filter.enforceOnRandom = !filter.enforceOnRandom;
-                                      });
-                                      widget.onUpdate(widget.selectorModel);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: 180,
-                                    child: GenericItemPickerWidget<SelectorFilterType>(
-                                      label: "Filter",
-                                      items: SelectorFilterType.values,
-                                      initialValue: filter.type,
-                                      propertyBuilder: (value) {
-                                        return treatEnumName(value);
-                                      },
-                                      onChanged: (newValue) {
-                                        filter.type = newValue;
-                                        widget.onUpdate(widget.selectorModel);
-                                        setState(() {
-                                          
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 9.0,),
-                                  
-                                  Flexible(
-                                    child: SimpleNumberField(
-                                      label: "Param",
-                                      initialValue: filter.param == null ? 0 : filter.param as int,
-                                      onChanged: (value) {
-                                        filter.param = value as dynamic;
-                                        widget.onUpdate(widget.selectorModel);
-                                      }
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4.0,),
-                                  SizedBox(
-                                    width: 32.0,
-                                    height: 32.0,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.clear_rounded),
-                                      splashRadius: 24.0,
-                                      padding: const EdgeInsets.all(2.0),
-                                      onPressed: () {
-                                        widget.selectorModel.filters.remove(filter);
-                                        widget.onUpdate(widget.selectorModel);
-                                        setState(() {
-                                          
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 9.0,),
-                            ],
-                          ),
-                        AddGenericWidget(
-                          text: "Add new filter",
-                          onTap: () {
-                            widget.selectorModel.filters.add(SelectorFilterModel());
-                            setState(() {
-                              
-                            });
-                            widget.onUpdate(widget.selectorModel);
-                          }
-                        )
+        const SizedBox(height: 8.0,),
+        for(var filter in widget.selectorModel.filters) ...[
+          Column(
+            children: [
+              Row(
+                children: [
+                  SmallFilterLogicWidget(
+                    first: widget.selectorModel.filters.indexOf(filter) == 0,
+                    logic: "And",
+                    negate: filter.negate,
+                  ),
+                  SwitchIconWidget(
+                    enabled: filter.negate,
+                    icon: Icons.not_interested,
+                    onPressed: () {
+                      filter.negate = !filter.negate;
+                    },
+                  ),
+                  SwitchIconWidget(
+                    enabled: filter.enforceOnRandom,
+                    icon: Icons.gavel_rounded,
+                    onPressed: () {
+                      filter.enforceOnRandom = !filter.enforceOnRandom;
+                    },
+                  ),
+                  SizedBox(
+                    width: 180,
+                    child: GenericItemPickerWidget<SelectorFilterType>(
+                      label: "Filter",
+                      items: SelectorFilterType.values,
+                      initialValue: filter.type,
+                      propertyBuilder: (value) {
+                        return treatEnumName(value);
+                      },
+                      onChanged: (newValue) {
+                        filter.type = newValue;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 9.0,),
+                  Flexible(
+                    child: SimpleNumberField(
+                      label: "Param",
+                      initialValue: filter.param == null ? 0 : filter.param as int,
+                      onChanged: (value) {
+                        filter.param = value as dynamic;
+                      }
+                    ),
+                  ),
+                  const SizedBox(width: 4.0,),
+                  SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: IconButton(
+                      icon: const Icon(Icons.clear_rounded),
+                      splashRadius: 24.0,
+                      padding: const EdgeInsets.all(2.0),
+                      onPressed: () {
+                        widget.selectorModel.filters.remove(filter);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 9.0,),
+            ],
+          ),
+        ],
+        AddGenericWidget(
+          text: "Add new filter",
+          onTap: () {
+            widget.selectorModel.filters.add(SelectorFilterModel());
+          }
+        )
                       ],
                     ),
                   ),
@@ -259,7 +229,8 @@ class _SelectorItemState extends State<SelectorItem> {
         ]
       ),
     );
-  }
+  });
+}
 }
 
 class SmallFilterLogicWidget extends StatelessWidget {

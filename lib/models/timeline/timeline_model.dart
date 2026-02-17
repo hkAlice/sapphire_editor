@@ -32,6 +32,22 @@ class TimelineModel {
 
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
 
+  TimelineModel copyWith({
+    String? name,
+    int? version,
+    List<ActorModel>? actors,
+    List<ConditionModel>? conditions,
+    List<SelectorModel>? selectors,
+  }) {
+    return TimelineModel(
+      name: name ?? this.name,
+      version: version ?? this.version,
+      actorList: actors ?? this.actors,
+      conditionList: conditions ?? this.conditions,
+      selectorList: selectors ?? this.selectors,
+    );
+  }
+
   // todo: move this to timelinesvc ideally
   ActorModel addNewActor({String bnpcName = "Unknown", int layoutId = 0, int hp = 0xFF14}) {
     var actorModel = ActorModel(

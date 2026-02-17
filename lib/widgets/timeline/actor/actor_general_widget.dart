@@ -20,12 +20,18 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
   late TextEditingController _localIdEditingController;
   late TextEditingController _layoutIdEditingController;
   late TextEditingController _hpEditingController;
+  int? _lastId;
+  int? _lastLayoutId;
+  int? _lastHp;
 
   @override
   void initState() {
     _localIdEditingController = TextEditingController(text: widget.actorModel.id.toString());
     _layoutIdEditingController = TextEditingController(text: widget.actorModel.layoutId.toString());
     _hpEditingController = TextEditingController(text: widget.actorModel.hp.toString());
+    _lastId = widget.actorModel.id;
+    _lastLayoutId = widget.actorModel.layoutId;
+    _lastHp = widget.actorModel.hp;
     super.initState();
   }
 
@@ -37,15 +43,24 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
     super.dispose();
   }
 
+  void _updateControllerIfNeeded() {
+    if (_lastId != widget.actorModel.id) {
+      _localIdEditingController.value = TextEditingValue(text: widget.actorModel.id.toString());
+      _lastId = widget.actorModel.id;
+    }
+    if (_lastLayoutId != widget.actorModel.layoutId) {
+      _layoutIdEditingController.value = TextEditingValue(text: widget.actorModel.layoutId.toString());
+      _lastLayoutId = widget.actorModel.layoutId;
+    }
+    if (_lastHp != widget.actorModel.hp) {
+      _hpEditingController.value = TextEditingValue(text: widget.actorModel.hp.toString());
+      _lastHp = widget.actorModel.hp;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // todo: fix this state issue in a proper manner
-    _localIdEditingController.value = TextEditingValue(text: widget.actorModel.id.toString());
-    _layoutIdEditingController.value = TextEditingValue(text: widget.actorModel.layoutId.toString());
-    _hpEditingController.value = TextEditingValue(text: widget.actorModel.hp.toString());
-    _localIdEditingController.selection = TextSelection.collapsed(offset: _localIdEditingController.text.length);
-    _layoutIdEditingController.selection = TextSelection.collapsed(offset: _layoutIdEditingController.text.length);
-    _hpEditingController.selection = TextSelection.collapsed(offset: _hpEditingController.text.length);
+    _updateControllerIfNeeded();
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12.0),

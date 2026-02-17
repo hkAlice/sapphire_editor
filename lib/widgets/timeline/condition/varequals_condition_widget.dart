@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/varequals_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:signals/signals_flutter.dart';
 
 class VarEqualsConditionWidget extends StatefulWidget {
-  final TimelineModel timelineModel;
   final VarEqualsConditionModel paramData;
-  final Function(VarEqualsConditionModel) onUpdate;
-  
-  const VarEqualsConditionWidget({super.key, required this.timelineModel, required this.paramData, required this.onUpdate});
+
+  const VarEqualsConditionWidget({super.key, required this.paramData});
 
   @override
   State<VarEqualsConditionWidget> createState() => _VarEqualsConditionWidgetState();
@@ -24,8 +24,11 @@ class _VarEqualsConditionWidgetState extends State<VarEqualsConditionWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
+    final signals = SignalsProvider.of(context);
+    
+    return Watch((context) {
+      return Row(
+        children: [
           SizedBox(
             width: 180,
             child: GenericItemPickerWidget<VarType>(
@@ -35,44 +38,36 @@ class _VarEqualsConditionWidgetState extends State<VarEqualsConditionWidget> {
               propertyBuilder: (value) => treatEnumName(value),
               onChanged: (newValue) {
                 widget.paramData.type = newValue;
-                widget.onUpdate(widget.paramData);
-                setState(() {
-                  
-                });
+                signals.timeline.value = signals.timeline.value;
               },
             ),
           ),
           SizedBox(width: 18.0),
           SizedBox(
-          width: 180,
-          child: SimpleNumberField(
-            label: "Index",
-            initialValue: widget.paramData.index,
-            onChanged: (newValue) {
-              widget.paramData.index = newValue;
-              widget.onUpdate(widget.paramData);
-              setState(() {
-                
-              });
-            },
-          )
-        ),
-        SizedBox(width: 18.0),
-        SizedBox(
-          width: 180,
-          child: SimpleNumberField(
-            label: "Value",
-            initialValue: widget.paramData.val,
-            onChanged: (newValue) {
-              widget.paramData.val = newValue;
-              widget.onUpdate(widget.paramData);
-              setState(() {
-                
-              });
-            },
-          )
-        ),
-      ],
-    );
+            width: 180,
+            child: SimpleNumberField(
+              label: "Index",
+              initialValue: widget.paramData.index,
+              onChanged: (newValue) {
+                widget.paramData.index = newValue;
+                signals.timeline.value = signals.timeline.value;
+              }
+            )
+          ),
+          SizedBox(width: 18.0),
+          SizedBox(
+            width: 180,
+            child: SimpleNumberField(
+              label: "Value",
+              initialValue: widget.paramData.val,
+              onChanged: (newValue) {
+                widget.paramData.val = newValue;
+                signals.timeline.value = signals.timeline.value;
+              }
+            )
+          ),
+        ],
+      );
+    });
   }
 }

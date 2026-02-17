@@ -38,6 +38,28 @@ class TimepointModel {
 
   Map<String, dynamic> toJson() => _$TimepointModelToJson(this);
 
+  TimepointModel copyWith({
+    TimepointType? type,
+    String? description,
+    int? startTime,
+    dynamic data,
+  }) {
+    final newTimepoint = TimepointModel(
+      type: type ?? this.type,
+      description: description ?? this.description,
+      startTime: startTime ?? this.startTime,
+      data: data ?? this.data,
+    );
+    
+    if (type != null && type != this.type) {
+      newTimepoint.changeType(type);
+    } else {
+      newTimepoint.data = data ?? this.data;
+    }
+    
+    return newTimepoint;
+  }
+
   // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
   void changeType(TimepointType pointType) {
     if(type != pointType) {

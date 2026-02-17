@@ -26,4 +26,24 @@ class ActorModel {
   factory ActorModel.fromJson(Map<String, dynamic> json) => _$ActorModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActorModelToJson(this);
+
+  ActorModel copyWith({
+    int? id,
+    String? name,
+    String? type,
+    int? layoutId,
+    int? hp,
+    List<TimelineScheduleModel>? schedules,
+    List<String>? subactors,
+  }) {
+    return ActorModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      layoutId: layoutId ?? this.layoutId,
+      hp: hp ?? this.hp,
+      scheduleList: schedules ?? this.schedules,
+      subactorsList: subactors ?? this.subactors,
+    );
+  }
 }
