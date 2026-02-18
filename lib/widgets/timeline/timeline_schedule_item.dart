@@ -31,6 +31,11 @@ class TimelineScheduleItem extends StatelessWidget {
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
 
+      double schedule_last_timepoint = 0.0;
+      if(schedule.timepoints.isNotEmpty) {
+        schedule_last_timepoint = schedule.timepoints.last.startTime / 1000.0;
+      }
+
       return Card(
         margin: const EdgeInsets.only(bottom: 12.0),
         borderOnForeground: false,
@@ -82,7 +87,7 @@ class TimelineScheduleItem extends StatelessWidget {
               SizedBox(
                 width: 48.0,
                 child: Text(
-                  cache.duration,
+                  "${schedule_last_timepoint.toStringAsFixed(1)}s",
                   style: Theme.of(context).textTheme.labelLarge,
                   textAlign: TextAlign.right
                 )
@@ -114,6 +119,7 @@ class TimelineScheduleItem extends StatelessWidget {
             ),
             SmallAddGenericWidget(
               onTap: () {
+                // todo: i don't think this is needed
                 Future.delayed(Duration.zero, () {
                   signals.addTimepoint(actor.id, schedule.id, TimepointModel(id: schedule.generateTimepointId(), type: TimepointType.idle));
                 });
