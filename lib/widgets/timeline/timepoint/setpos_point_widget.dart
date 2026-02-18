@@ -8,13 +8,13 @@ import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SetPosPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const SetPosPointWidget({super.key, required this.timepointModel});
+  const SetPosPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<SetPosPointWidget> createState() => _SetPosPointWidgetState();
@@ -41,7 +41,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
 
     return Watch((context) {
       final actor = signals.selectedActor.value;

@@ -35,14 +35,6 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _localIdEditingController.dispose();
-    _layoutIdEditingController.dispose();
-    _hpEditingController.dispose();
-  }
-
   void _updateControllerIfNeeded() {
     if(_lastId != widget.actorModel.id) {
       _localIdEditingController.value = TextEditingValue(text: widget.actorModel.id.toString());

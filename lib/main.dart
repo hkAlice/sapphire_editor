@@ -31,9 +31,7 @@ void main() async {
     print(details.stack);
   };
   
-  runApp(SignalsProvider(
-    signals: TimelineEditorSignal(),
-    child: SapphireEditorApp(themeService: themeService,))
+  runApp(SapphireEditorApp(themeService: themeService,)
   );
 }
 

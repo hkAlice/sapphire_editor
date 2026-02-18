@@ -37,7 +37,10 @@ class _ActorDetailedSelectState extends State<ActorDetailedSelect> {
         mainAxisSize: MainAxisSize.max,
         children: [
           GenericSearchPickerWidget(
-            value: widget.actors[actor.id],
+            value: widget.actors.firstWhere(
+              (a) => a.id == actor.id,
+              orElse: () => widget.actors.isNotEmpty ? widget.actors.first : throw StateError("No actors available"),
+            ),
             items: widget.actors,
             leading: Row(
               mainAxisSize: MainAxisSize.min,

@@ -6,13 +6,13 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_m
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SnapshotPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const SnapshotPointWidget({super.key, required this.timepointModel});
+  const SnapshotPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<SnapshotPointWidget> createState() => _SnapshotPointWidgetState();
@@ -23,7 +23,7 @@ class _SnapshotPointWidgetState extends State<SnapshotPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     
     return Watch((context) {
       final actor = signals.selectedActor.value;

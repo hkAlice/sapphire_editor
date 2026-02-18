@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
@@ -108,18 +109,29 @@ class TimelineEditorSignal {
   }
 
   void updateTimepoint(int actorId, int scheduleId, int timepointId, TimepointModel newTimepoint) {
+    // DEBUG: Log the update operation
+    debugPrint('[updateTimepoint] Called with actorId=$actorId, scheduleId=$scheduleId, timepointId=$timepointId, newTimepoint.id=${newTimepoint.id}');
+    
     batch(() {
       final actor = timeline.value.actors.where((a) => a.id == actorId).first;
       final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
+      
+      // DEBUG: Log found entities
+      debugPrint('[updateTimepoint] Found actor=${actor.id}, schedule=${schedule.id}');
+      debugPrint('[updateTimepoint] Schedule timepoints before: ${schedule.timepoints.map((t) => t.id).toList()}');
 
       final newActor = _replaceTimepoint(actor, schedule, timepointId, newTimepoint);
       final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actor.id);
-      
+
       if(actorIndex == -1)
         return;
 
       final newActors = [...timeline.value.actors];
       newActors[actorIndex] = newActor;
+      
+      // DEBUG: Log the new actor's schedule timepoints
+      final newSchedule = newActor.schedules.firstWhere((s) => s.id == scheduleId);
+      debugPrint('[updateTimepoint] Schedule timepoints after: ${newSchedule.timepoints.map((t) => t.id).toList()}');
 
       timeline.value = timeline.value.copyWith(actors: newActors);
     });

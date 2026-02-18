@@ -6,13 +6,13 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_p
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ActionTimelinePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const ActionTimelinePointWidget({super.key, required this.timepointModel});
+  const ActionTimelinePointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<ActionTimelinePointWidget> createState() => _ActionTimelinePointWidgetState();
@@ -23,9 +23,8 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
-    
     return Watch((context) {
+      final signals = widget.signals;
       var validActors = List<String>.from(signals.timeline.value.actors.map((e) => e.name));
 
       return Row(
@@ -35,15 +34,15 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
             children: [
               SizedBox(
                 width: 180,
-              child: GenericItemPickerWidget<String>(
-                label: "Actor",
-                items: validActors,
-                initialValue: validActors.firstWhereOrNull((e) => e == pointData.actorName),
-                onChanged: (newValue) {
-                  pointData.actorName = newValue;
-                  _updateTimepoint(signals);
-                },
-              ),
+                child: GenericItemPickerWidget<String>(
+                  label: "Actor",
+                  items: validActors,
+                  initialValue: validActors.firstWhereOrNull((e) => e == pointData.actorName),
+                  onChanged: (newValue) {
+                    pointData.actorName = newValue;
+                    _updateTimepoint(signals);
+                  },
+                ),
               ),
               const SizedBox(width: 18.0,),
               SizedBox(

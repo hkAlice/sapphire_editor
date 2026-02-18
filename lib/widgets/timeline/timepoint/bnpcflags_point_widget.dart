@@ -4,14 +4,14 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_toggle.dart';
 import 'package:signals/signals_flutter.dart';
 
 class BNpcFlagsPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const BNpcFlagsPointWidget({super.key, required this.timepointModel});
+  const BNpcFlagsPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<BNpcFlagsPointWidget> createState() => _BNpcFlagsPointWidgetState();
@@ -22,7 +22,7 @@ class _BNpcFlagsPointWidgetState extends State<BNpcFlagsPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     
     return Watch((context) {
       final actor = signals.selectedActor.value;

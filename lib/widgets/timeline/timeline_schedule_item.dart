@@ -24,6 +24,10 @@ class TimelineScheduleItem extends StatelessWidget {
     return Watch((context) {
       final actor = signals.selectedActor.value;
       final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
+      
+      // DEBUG: Log what the list view sees
+      debugPrint('[TimelineScheduleItem] scheduleId=$scheduleId, schedule.id=${schedule.id}, timepoints=${schedule.timepoints.map((t) => t.id).toList()}');
+      
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
 

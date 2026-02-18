@@ -4,14 +4,14 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SetBgmPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const SetBgmPointWidget({super.key, required this.timepointModel});
+  const SetBgmPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<SetBgmPointWidget> createState() => _SetBgmPointWidgetState();
@@ -37,7 +37,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     return Watch((context) {
       final actor = signals.selectedActor.value;
       final schedule = signals.selectedSchedule.value;

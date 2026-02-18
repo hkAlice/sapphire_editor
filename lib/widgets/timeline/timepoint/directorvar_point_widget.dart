@@ -8,14 +8,14 @@ import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:signals/signals_flutter.dart';
 
 class DirectorVarPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const DirectorVarPointWidget({super.key, required this.timepointModel});
+  const DirectorVarPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<DirectorVarPointWidget> createState() => _DirectorVarPointWidgetState();
@@ -26,7 +26,7 @@ class _DirectorVarPointWidgetState extends State<DirectorVarPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     return Watch((context) {
       final actor = signals.selectedActor.value;
       final schedule = signals.selectedSchedule.value;

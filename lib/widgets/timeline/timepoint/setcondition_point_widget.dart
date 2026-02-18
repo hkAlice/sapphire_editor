@@ -7,14 +7,14 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_poi
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SetConditionPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const SetConditionPointWidget({super.key, required this.timepointModel});
+  const SetConditionPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<SetConditionPointWidget> createState() => _SetConditionPointWidgetState();
@@ -25,7 +25,7 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     return Watch((context) {
       final actor = signals.selectedActor.value;
       final schedule = signals.selectedSchedule.value;

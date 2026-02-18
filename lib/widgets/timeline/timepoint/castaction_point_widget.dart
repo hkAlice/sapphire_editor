@@ -7,13 +7,13 @@ import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class CastActionPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
-  const CastActionPointWidget({super.key, required this.timepointModel});
+  const CastActionPointWidget({super.key, required this.timepointModel, required this.signals});
 
   @override
   State<CastActionPointWidget> createState() => _CastActionPointWidgetState();
@@ -24,7 +24,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     
     return Watch((context) {
       final actor = signals.selectedActor.value;

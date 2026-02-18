@@ -7,16 +7,17 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:signals/signals_flutter.dart';
 
 class InterruptActionPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
+  final TimelineEditorSignal signals;
 
   const InterruptActionPointWidget({
     super.key,
     required this.timepointModel,
+    required this.signals,
   });
 
   @override
@@ -28,7 +29,7 @@ class _InterruptActionPointWidgetState extends State<InterruptActionPointWidget>
   
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
+    final signals = widget.signals;
     return Watch((context) {
       final actor = signals.selectedActor.value;
       final schedule = signals.selectedSchedule.value;
