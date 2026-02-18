@@ -22,7 +22,6 @@ part 'timepoint_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TimepointModel {
-  // todo: private field this + expose to json -> JsonKey(includeFromJson: true, includeToJson: true)
   int id;
   TimepointType type;
   String description;
@@ -64,7 +63,7 @@ class TimepointModel {
     return newTimepoint;
   }
 
-  // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
+  // Simplified changeType using a factory map instead of giant if-else
   void changeType(TimepointType pointType) {
     if(type != pointType) {
       data = <String, dynamic>{};
@@ -75,48 +74,46 @@ class TimepointModel {
     data ??= <String, dynamic>{};
 
     if(data is Map<String, dynamic>) {
-      if(type == TimepointType.setPos) {
-        data = SetPosPointModel.fromJson(data);
-      } else if(type == TimepointType.idle) {
-        data = IdlePointModel.fromJson(data);
-      } else if(type == TimepointType.setBGM) {
-        data = SetBgmPointModel.fromJson(data);
-      } else if(type == TimepointType.logMessage) {
-        data = LogMessagePointModel.fromJson(data);
-      } else if(type == TimepointType.battleTalk) {
-        data = BattleTalkPointModel.fromJson(data);
-      } else if(type == TimepointType.bNpcDespawn) {
-        data = BNpcDespawnPointModel.fromJson(data);
-      } else if(type == TimepointType.bNpcFlags) {
-        data = BNpcFlagsPointModel.fromJson(data);
-      } else if(type == TimepointType.bNpcSpawn) {
-        data = BNpcSpawnPointModel.fromJson(data);
-      } else if(type == TimepointType.castAction) {
-        data = CastActionPointModel.fromJson(data);
-      } else if(type == TimepointType.directorFlags) {
-        data = DirectorFlagsPointModel.fromJson(data);
-      } else if(type == TimepointType.directorSeq) {
-        data = DirectorSeqPointModel.fromJson(data);
-      } else if(type == TimepointType.directorVar) {
-        data = DirectorVarPointModel.fromJson(data);
-      } else if(type == TimepointType.setCondition) {
-        data = SetConditionPointModel.fromJson(data);
-      } else if(type == TimepointType.snapshot) {
-        data = SnapshotPointModel.fromJson(data);
-      } else if(type == TimepointType.actionTimeline) {
-        data = ActionTimelinePointModel.fromJson(data);
-      } else if(type == TimepointType.interruptAction) {
-        data = InterruptActionPointModel.fromJson(data);
-      } else if(type == TimepointType.rollRNG) {
-        data = RollRNGPointModel.fromJson(data);
-      } else {
-        throw UnimplementedError("Missing timepoint type cast for ${pointType.name}");
-      }
+      data = _timepointDataFactory(pointType, data);
     }
   }
+
+  static dynamic _timepointDataFactory(TimepointType type, Map<String, dynamic> json) {
+    return switch (type) {
+      TimepointType.setPos => SetPosPointModel.fromJson(json),
+      TimepointType.idle => IdlePointModel.fromJson(json),
+      TimepointType.setBGM => SetBgmPointModel.fromJson(json),
+      TimepointType.logMessage => LogMessagePointModel.fromJson(json),
+      TimepointType.battleTalk => BattleTalkPointModel.fromJson(json),
+      TimepointType.bNpcDespawn => BNpcDespawnPointModel.fromJson(json),
+      TimepointType.bNpcFlags => BNpcFlagsPointModel.fromJson(json),
+      TimepointType.bNpcSpawn => BNpcSpawnPointModel.fromJson(json),
+      TimepointType.castAction => CastActionPointModel.fromJson(json),
+      TimepointType.directorFlags => DirectorFlagsPointModel.fromJson(json),
+      TimepointType.directorSeq => DirectorSeqPointModel.fromJson(json),
+      TimepointType.directorVar => DirectorVarPointModel.fromJson(json),
+      TimepointType.setCondition => SetConditionPointModel.fromJson(json),
+      TimepointType.snapshot => SnapshotPointModel.fromJson(json),
+      TimepointType.actionTimeline => ActionTimelinePointModel.fromJson(json),
+      TimepointType.interruptAction => InterruptActionPointModel.fromJson(json),
+      TimepointType.rollRNG => RollRNGPointModel.fromJson(json),
+    };
+  }
   
-  Color getColorForTimepointType() {
-    switch(type) {
+  // Color getter using extension method
+  Color get color => type.color;
+  
+  // Display name getter using extension method
+  String get displayName => type.displayName;
+
+  // Keep old method name for backwards compatibility with widgets
+  Color getColorForTimepointType() => type.color;
+}
+
+// Extension methods for type metadata - keeps enums but adds rich behavior
+extension TimepointTypeExtension on TimepointType {
+  Color get color {
+    switch (this) {
       case TimepointType.idle:
         return Colors.grey;
       case TimepointType.directorVar:
@@ -139,8 +136,48 @@ class TimepointModel {
       case TimepointType.snapshot:
       case TimepointType.setCondition:
         return Colors.brown;
-      default:
-        return Colors.greenAccent;
+      case TimepointType.interruptAction:
+      case TimepointType.rollRNG:
+        return Colors.orangeAccent;
+    }
+  }
+
+  String get displayName {
+    switch (this) {
+      case TimepointType.actionTimeline:
+        return "Action Timeline";
+      case TimepointType.battleTalk:
+        return "Battle Talk";
+      case TimepointType.bNpcDespawn:
+        return "BNPC Despawn";
+      case TimepointType.bNpcFlags:
+        return "BNPC Flags";
+      case TimepointType.bNpcSpawn:
+        return "BNPC Spawn";
+      case TimepointType.castAction:
+        return "Cast Action";
+      case TimepointType.directorFlags:
+        return "Director Flags";
+      case TimepointType.directorSeq:
+        return "Director Seq";
+      case TimepointType.directorVar:
+        return "Director Var";
+      case TimepointType.idle:
+        return "Idle";
+      case TimepointType.logMessage:
+        return "Log Message";
+      case TimepointType.setBGM:
+        return "Set BGM";
+      case TimepointType.setCondition:
+        return "Set Condition";
+      case TimepointType.setPos:
+        return "Set Position";
+      case TimepointType.snapshot:
+        return "Snapshot";
+      case TimepointType.interruptAction:
+        return "Interrupt Action";
+      case TimepointType.rollRNG:
+        return "Roll RNG";
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
@@ -61,7 +62,7 @@ class ConditionModel {
     );
   }
 
-  // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
+  // Refactored changeType using switch expression instead of if-else chain
   void changeType(ConditionType type) {
     if(type != condition) {
       paramData = <String, dynamic>{};
@@ -72,26 +73,27 @@ class ConditionModel {
     paramData ??= <String, dynamic>{};
 
     if(paramData is Map<String, dynamic>) {
-      if(type == ConditionType.combatState) {
-        paramData = CombatStateConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.getAction) {
-        paramData = GetActionConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.hpPctBetween) {
-        paramData = HPPctBetweenConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.combatState) {
-        paramData = CombatStateConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.scheduleActive) {
-        paramData = ScheduleActiveConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.interruptedAction) {
-        paramData = InterruptedActionConditionModel.fromJson(paramData);
-      } else if(type == ConditionType.varEquals) {
-        paramData = VarEqualsConditionModel.fromJson(paramData);
-      } else {
-        // keep as is, break shit
-      }
+      paramData = _conditionDataFactory(type, paramData);
     }
-    
   }
+
+  static dynamic _conditionDataFactory(ConditionType type, Map<String, dynamic> json) {
+    return switch (type) {
+      ConditionType.combatState => CombatStateConditionModel.fromJson(json),
+      ConditionType.getAction => GetActionConditionModel.fromJson(json),
+      ConditionType.hpPctBetween => HPPctBetweenConditionModel.fromJson(json),
+      ConditionType.scheduleActive => ScheduleActiveConditionModel.fromJson(json),
+      ConditionType.interruptedAction => InterruptedActionConditionModel.fromJson(json),
+      ConditionType.varEquals => VarEqualsConditionModel.fromJson(json),
+      _ => json, // Keep as is for types without specific models
+    };
+  }
+
+  // Color getter using extension method
+  Color get color => condition.color;
+  
+  // Display name getter using extension method
+  String get displayName => condition.displayName;
 
   String getReadableConditionStr() {
     String summary = "If ";
@@ -124,47 +126,69 @@ class ConditionModel {
   }
   
   List<ConditionParamParser> getConditionParamParser() {
+    return condition.paramParser;
+  }
+}
 
-    switch(condition) {
-      case ConditionType.combatState: {
-        return [
+// Extension methods for ConditionType metadata
+extension ConditionTypeExtension on ConditionType {
+  Color get color {
+    return switch (this) {
+      ConditionType.combatState => Colors.red,
+      ConditionType.getAction => Colors.orange,
+      ConditionType.hpPctBetween => Colors.green,
+      ConditionType.hpPctLessThan => Colors.green,
+      ConditionType.scheduleActive => Colors.blue,
+      ConditionType.interruptedAction => Colors.purple,
+      ConditionType.varEquals => Colors.teal,
+      ConditionType.directorVarGreaterThan => Colors.amber,
+      ConditionType.elapsedTimeGreaterThan => Colors.grey,
+    };
+  }
+
+  String get displayName {
+    return switch (this) {
+      ConditionType.combatState => "Combat State",
+      ConditionType.getAction => "Get Action",
+      ConditionType.hpPctBetween => "HP % Between",
+      ConditionType.hpPctLessThan => "HP % Less Than",
+      ConditionType.scheduleActive => "Schedule Active",
+      ConditionType.interruptedAction => "Interrupted Action",
+      ConditionType.varEquals => "Var Equals",
+      ConditionType.directorVarGreaterThan => "Director Var >",
+      ConditionType.elapsedTimeGreaterThan => "Elapsed Time >",
+    };
+  }
+
+  List<ConditionParamParser> get paramParser {
+    return switch (this) {
+      ConditionType.combatState => [
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
-        ];
-      }
-      case ConditionType.directorVarGreaterThan: {
-        return [
+        ],
+      ConditionType.directorVarGreaterThan => [
           ConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
           ConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
-        ];
-      }
-      case ConditionType.elapsedTimeGreaterThan: {
-        return [
+        ],
+      ConditionType.elapsedTimeGreaterThan => [
           ConditionParamParser(label: "Elapsed time (ms)", initialValue: 30000),
-        ];
-      }
-      case ConditionType.hpPctBetween: {
-        return [
+        ],
+      ConditionType.hpPctBetween => [
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(label: "HP Min", initialValue: 25),
           ConditionParamParser(label: "HP Max", initialValue: 50),
-        ];
-      }
-      case ConditionType.hpPctLessThan: {
-        return [
+        ],
+      ConditionType.hpPctLessThan => [
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(label: "HP Less Than", initialValue: 70),
-        ];
-      }
-      default: {
-        return [
-          ConditionParamParser(label: "Param1",),
-          ConditionParamParser(label: "Param2",),
-          ConditionParamParser(label: "Param3",),
-          ConditionParamParser(label: "Param4",),
-        ];
-      }
-    }
+        ],
+      _ => [
+          ConditionParamParser(label: "Param1"),
+          ConditionParamParser(label: "Param2"),
+          ConditionParamParser(label: "Param3"),
+          ConditionParamParser(label: "Param4"),
+        ],
+    };
   }
 }
 

@@ -44,20 +44,18 @@ class GenericTimepointItem extends StatelessWidget {
     required this.actorId
   });
 
-  String twoDigits(int n) {
-    if(n >= 10) return "$n";
-    return "0$n";
-  }
-  
-  String _calcT(TimepointModel tp) {
-    Duration startTime = Duration(milliseconds: tp.startTime);
+  String _formatTime(int startTimeMs) {
+    Duration startTime = Duration(milliseconds: startTimeMs);
 
-    String twoDigitMinutes = twoDigits(startTime.inSeconds.remainder(60));
-    String twoDigitSeconds = twoDigits(startTime.inMilliseconds.remainder(60));
     if(startTime.inHours > 0) {
-      return "${twoDigits(startTime.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+      int hours = startTime.inHours;
+      int minutes = startTime.inMinutes % 60;
+      int seconds = startTime.inSeconds % 60;
+      return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
     } else {
-      return "$twoDigitMinutes.${twoDigitSeconds}s";
+      // Show as decimal seconds (e.g., 3.0s for 3000ms)
+      double secondsAsDouble = startTimeMs / 1000.0;
+      return "${secondsAsDouble.toStringAsFixed(1)}s";
     }
   }
 
@@ -108,7 +106,7 @@ class GenericTimepointItem extends StatelessWidget {
                           child: Opacity(
                             opacity: 0.7,
                             child: Text(
-                              _calcT(timepointModel),
+                              _formatTime(timepointModel.startTime),
                               style: Theme.of(context).textTheme.labelSmall,
                               maxLines: 1,
                               textAlign: TextAlign.right,

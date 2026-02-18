@@ -22,5 +22,5 @@ Map<String, dynamic> _$TimelineScheduleModelToJson(
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'timepoints': instance.timepoints,
+      'timepoints': instance.timepoints.map((e) => e.toJson()).toList(),
     };
