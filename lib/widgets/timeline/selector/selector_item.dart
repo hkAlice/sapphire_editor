@@ -14,10 +14,10 @@ import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SelectorItem extends StatefulWidget {
-  final SelectorModel selectorModel;
+  final int selectorId;
   final int index;
 
-  const SelectorItem({super.key, required this.selectorModel, required this.index});
+  const SelectorItem({super.key, required this.selectorId, required this.index});
 
   @override
   State<SelectorItem> createState() => _SelectorItemState();
@@ -32,6 +32,17 @@ Widget build(BuildContext context) {
   return Watch((context) {
     final timeline = signals.timeline.value;
     
+    // Get the selector reactively from the timeline
+    final selectorModel = timeline.selectors.firstWhere(
+      (s) => s.id == widget.selectorId,
+      orElse: () => SelectorModel(id: 0, name: "Error"),
+    );
+    
+    // If selector not found (deleted), return empty container
+    if (selectorModel.id == 0) {
+      return const SizedBox.shrink();
+    }
+    
     return Card(
       borderOnForeground: false,
       //shadowColor: Colors.transparent,
@@ -44,21 +55,21 @@ Widget build(BuildContext context) {
         leading: const Icon(Icons.scatter_plot_outlined),
         title: ReorderableDragStartListener(
           index: widget.index,
-          child: Text(widget.selectorModel.name)
+          child: Text(selectorModel.name)
         ),
-        subtitle: Text(widget.selectorModel.toString()),
+        subtitle: Text(selectorModel.toString()),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextModalEditorWidget(
-              text: widget.selectorModel.name,
+              text: selectorModel.name,
               headerText: "Edit selector name",
               icon: const Icon(Icons.edit_rounded),
               minLines: 1,
               maxLines: 1,
               onChanged: (value) {
-                widget.selectorModel.name = value;
+                signals.updateSelector(widget.selectorId, selectorModel.copyWith(name: value));
               }
             ),
             SizedBox(
@@ -69,7 +80,7 @@ Widget build(BuildContext context) {
                 splashRadius: 24.0,
                 padding: const EdgeInsets.all(2.0),
                 onPressed: () {
-                  timeline.selectors.removeAt(widget.index);
+                  signals.removeSelector(widget.selectorId);
                 },
               ),
             ),
@@ -95,9 +106,9 @@ Widget build(BuildContext context) {
                         min: 1,
                         max: 32,
                         label: "Count",
-                        value: widget.selectorModel.count,
+                        value: selectorModel.count,
                         onChanged: (value) {
-                          widget.selectorModel.count = value;
+                          signals.updateSelector(widget.selectorId, selectorModel.copyWith(count: value));
                         }
                       ),
                       const SizedBox(height: 8.0,),
@@ -105,15 +116,12 @@ Widget build(BuildContext context) {
                       GenericItemPickerWidget<String>(
                         label: "Exclude selector result",
                         items: timeline.selectors.map((e) => e.name).toList()
-                          ..remove(widget.selectorModel.name)
+                          ..remove(selectorModel.name)
                           ..insert(0, "<none>"),
-                        initialValue: widget.selectorModel.excludeSelectorName == "" ? "<none>" : widget.selectorModel.excludeSelectorName,
+                        initialValue: selectorModel.excludeSelectorName == "" ? "<none>" : selectorModel.excludeSelectorName,
                         onChanged: (value) {
-                          if(value == "<none>") {
-                            value = "";
-                          }
-                          
-                          widget.selectorModel.excludeSelectorName = value;
+                          final newValue = value == "<none>" ? "" : value;
+                          signals.updateSelector(widget.selectorId, selectorModel.copyWith(excludeSelectorName: newValue));
                         },
                       )
                     ],
@@ -136,22 +144,22 @@ Widget build(BuildContext context) {
                           child: SizedBox(
                             width: 200,
                             child: SwitchTextWidget(
-                              enabled: widget.selectorModel.fillRandomEntries,
+                              enabled: selectorModel.fillRandomEntries,
                               leading: const Text("Fill random entries"),
                               onPressed: () {
-                                widget.selectorModel.fillRandomEntries = !widget.selectorModel.fillRandomEntries;
+                                signals.updateSelector(widget.selectorId, selectorModel.copyWith(fillRandomEntries: !selectorModel.fillRandomEntries));
                               }
                             ),
                           ),
                         ),
         const SizedBox(height: 8.0,),
-        for(var filter in widget.selectorModel.filters) ...[
+        for(var filter in selectorModel.filters) ...[
           Column(
             children: [
               Row(
                 children: [
                   SmallFilterLogicWidget(
-                    first: widget.selectorModel.filters.indexOf(filter) == 0,
+                    first: selectorModel.filters.indexOf(filter) == 0,
                     logic: "And",
                     negate: filter.negate,
                   ),
@@ -159,14 +167,22 @@ Widget build(BuildContext context) {
                     enabled: filter.negate,
                     icon: Icons.not_interested,
                     onPressed: () {
-                      filter.negate = !filter.negate;
+                      // Create updated filter and update the selector
+                      final updatedFilter = filter.copyWith(negate: !filter.negate);
+                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
                     },
                   ),
                   SwitchIconWidget(
                     enabled: filter.enforceOnRandom,
                     icon: Icons.gavel_rounded,
                     onPressed: () {
-                      filter.enforceOnRandom = !filter.enforceOnRandom;
+                      // Create updated filter and update the selector
+                      final updatedFilter = filter.copyWith(enforceOnRandom: !filter.enforceOnRandom);
+                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
                     },
                   ),
                   SizedBox(
@@ -179,7 +195,11 @@ Widget build(BuildContext context) {
                         return treatEnumName(value);
                       },
                       onChanged: (newValue) {
-                        filter.type = newValue;
+                        // Create updated filter and update the selector
+                        final updatedFilter = filter.copyWith(type: newValue);
+                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
                       },
                     ),
                   ),
@@ -189,7 +209,11 @@ Widget build(BuildContext context) {
                       label: "Param",
                       initialValue: filter.param == null ? 0 : filter.param as int,
                       onChanged: (value) {
-                        filter.param = value as dynamic;
+                        // Create updated filter and update the selector
+                        final updatedFilter = filter.copyWith(param: value);
+                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
                       }
                     ),
                   ),
@@ -202,7 +226,8 @@ Widget build(BuildContext context) {
                       splashRadius: 24.0,
                       padding: const EdgeInsets.all(2.0),
                       onPressed: () {
-                        widget.selectorModel.filters.remove(filter);
+                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..remove(filter);
+                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
                       },
                     ),
                   ),
@@ -215,7 +240,8 @@ Widget build(BuildContext context) {
         AddGenericWidget(
           text: "Add new filter",
           onTap: () {
-            widget.selectorModel.filters.add(SelectorFilterModel());
+            final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..add(SelectorFilterModel());
+            signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
           }
         )
                       ],

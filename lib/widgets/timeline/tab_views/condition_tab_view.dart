@@ -14,12 +14,6 @@ class ConditionTabView extends StatefulWidget {
 }
 
 class _ConditionTabViewState extends State<ConditionTabView> {
-  void _addNewCondition() {
-    final signals = SignalsProvider.of(context);
-    signals.timeline.value.addNewCondition();
-    signals.timeline.value = signals.timeline.value;
-  }
-
   @override
   Widget build(BuildContext context) {
     final signals = SignalsProvider.of(context);
@@ -42,8 +36,8 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                       onPressed: () {
                         for(var condition in timeline.conditions) {
                           condition.enabled = true;
+                          signals.updateCondition(condition.id, condition);
                         }
-                        signals.timeline.value = signals.timeline.value;
                       },
                       child: const Text("Enable all")
                     ),
@@ -52,8 +46,8 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                       onPressed: () {
                         for(var condition in timeline.conditions) {
                           condition.enabled = false;
+                          signals.updateCondition(condition.id, condition);
                         }
-                        signals.timeline.value = signals.timeline.value;
                       },
                       child: const Text("Disable all")
                     ),
@@ -87,7 +81,12 @@ class _ConditionTabViewState extends State<ConditionTabView> {
             ),
             Padding(
               padding: const EdgeInsets.all(14.0),
-              child: AddGenericWidget(text: "New condition", onTap: () { _addNewCondition(); }),
+              child: AddGenericWidget(
+                text: "New condition",
+                onTap: () { 
+                  signals.timeline.value.addNewCondition();
+                }
+              ),
             ),
           ],
         ),

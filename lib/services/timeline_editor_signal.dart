@@ -8,6 +8,8 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
+import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 
 class TimelineEditorSignal {
@@ -422,6 +424,69 @@ class TimelineEditorSignal {
     
     final newConditions = [...timeline.value.conditions, condition];
     timeline.value = timeline.value.copyWith(conditions: newConditions);
+    
+    _saveToHistory();
+  }
+
+  // Selector mutation methods
+
+  int _generateSelectorId() {
+    if (timeline.value.selectors.isEmpty) return 1;
+    return timeline.value.selectors.map((s) => s.id).reduce((a, b) => a > b ? a : b) + 1;
+  }
+
+  void updateSelector(int selectorId, SelectorModel newSelector) {
+    batch(() {
+      final selectorIndex = timeline.value.selectors.indexWhere((s) => s.id == selectorId);
+      if (selectorIndex == -1) return;
+      
+      final newSelectors = [...timeline.value.selectors];
+      newSelectors[selectorIndex] = newSelector;
+      
+      timeline.value = timeline.value.copyWith(selectors: newSelectors);
+    });
+    
+    _saveToHistory();
+  }
+
+  void removeSelector(int selectorId) {
+    batch(() {
+      final newSelectors = timeline.value.selectors.where((s) => s.id != selectorId).toList();
+      timeline.value = timeline.value.copyWith(selectors: newSelectors);
+    });
+    
+    _saveToHistory();
+  }
+
+  void addSelector([SelectorModel? selector]) {
+    selector ??= SelectorModel(
+      id: _generateSelectorId(),
+      name: "Selector ${timeline.value.selectors.length + 1}",
+      count: 1,
+      description: "",
+      fillRandomEntries: false,
+      filterList: [
+        SelectorFilterModel(type: SelectorFilterType.player),
+      ]
+    );
+    
+    final newSelectors = [...timeline.value.selectors, selector];
+    timeline.value = timeline.value.copyWith(selectors: newSelectors);
+    
+    _saveToHistory();
+  }
+
+  void reorderSelector(int oldIndex, int newIndex) {
+    batch(() {
+      final selectors = [...timeline.value.selectors];
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final item = selectors.removeAt(oldIndex);
+      selectors.insert(newIndex, item);
+      
+      timeline.value = timeline.value.copyWith(selectors: selectors);
+    });
     
     _saveToHistory();
   }

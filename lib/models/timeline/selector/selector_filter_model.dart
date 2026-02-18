@@ -19,6 +19,20 @@ class SelectorFilterModel {
   factory SelectorFilterModel.fromJson(Map<String, dynamic> json) => _$SelectorFilterModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SelectorFilterModelToJson(this);
+
+  SelectorFilterModel copyWith({
+    SelectorFilterType? type,
+    bool? negate,
+    bool? enforceOnRandom,
+    dynamic param,
+  }) {
+    return SelectorFilterModel(
+      type: type ?? this.type,
+      negate: negate ?? this.negate,
+      enforceOnRandom: enforceOnRandom ?? this.enforceOnRandom,
+      param: param ?? this.param,
+    );
+  }
 }
 
 enum SelectorFilterType {

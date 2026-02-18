@@ -31,6 +31,26 @@ class SelectorModel {
 
   Map<String, dynamic> toJson() => _$SelectorModelToJson(this);
 
+  SelectorModel copyWith({
+    int? id,
+    String? name,
+    String? description,
+    bool? fillRandomEntries,
+    int? count,
+    List<SelectorFilterModel>? filters,
+    String? excludeSelectorName,
+  }) {
+    return SelectorModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      fillRandomEntries: fillRandomEntries ?? this.fillRandomEntries,
+      count: count ?? this.count,
+      filterList: filters ?? List.from(this.filters),
+      excludeSelectorName: excludeSelectorName ?? this.excludeSelectorName,
+    );
+  }
+
   @override
   String toString() {
     var countStr = "Select $count target${count == 1 ? '' : 's'} where ";

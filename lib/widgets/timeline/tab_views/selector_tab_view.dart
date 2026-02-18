@@ -35,14 +35,8 @@ class _SelectorTabViewState extends State<SelectorTabView> {
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
               child: ReorderableListView.builder(
                 buildDefaultDragHandles: false,
-                onReorder: (int oldindex, int newindex) {
-                  setState(() {
-                    if(newindex > oldindex) {
-                      newindex -= 1;
-                    }
-                    final items = timeline.selectors.removeAt(oldindex);
-                    timeline.selectors.insert(newindex, items);
-                  });
+                onReorder: (int oldIndex, int newIndex) {
+                  signals.reorderSelector(oldIndex, newIndex);
                 },
                 itemCount: timeline.selectors.length,
                 physics: const NeverScrollableScrollPhysics(),
@@ -52,7 +46,7 @@ class _SelectorTabViewState extends State<SelectorTabView> {
                   return SelectorItem(
                     key: Key("selector_${selectorModel.id}"),
                     index: i,
-                    selectorModel: selectorModel,
+                    selectorId: selectorModel.id,
                   );
                 }
               ),
@@ -62,9 +56,7 @@ class _SelectorTabViewState extends State<SelectorTabView> {
               child: AddGenericWidget(
                 text: "New selector",
                 onTap: () {
-                  setState(() {
-                    timeline.addNewSelector();
-                  });
+                  signals.addSelector();
                 }
               ),
             ),
