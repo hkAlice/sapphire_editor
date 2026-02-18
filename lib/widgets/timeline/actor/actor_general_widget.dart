@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
+import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
 class ActorGeneralWidget extends StatefulWidget {
-  final int index;
+  final int actorId;
   final ActorModel actorModel;
   final List<ActorModel> actors;
-  final Function() onUpdate;
-
-  const ActorGeneralWidget({super.key, required this.actorModel, required this.actors, required this.index, required this.onUpdate});
+  const ActorGeneralWidget({super.key, required this.actorModel, required this.actors, required this.actorId});
 
   @override
   State<ActorGeneralWidget> createState() => _ActorGeneralWidgetState();
@@ -37,22 +37,22 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
 
   @override
   void dispose() {
+    super.dispose();
     _localIdEditingController.dispose();
     _layoutIdEditingController.dispose();
     _hpEditingController.dispose();
-    super.dispose();
   }
 
   void _updateControllerIfNeeded() {
-    if (_lastId != widget.actorModel.id) {
+    if(_lastId != widget.actorModel.id) {
       _localIdEditingController.value = TextEditingValue(text: widget.actorModel.id.toString());
       _lastId = widget.actorModel.id;
     }
-    if (_lastLayoutId != widget.actorModel.layoutId) {
+    if(_lastLayoutId != widget.actorModel.layoutId) {
       _layoutIdEditingController.value = TextEditingValue(text: widget.actorModel.layoutId.toString());
       _lastLayoutId = widget.actorModel.layoutId;
     }
-    if (_lastHp != widget.actorModel.hp) {
+    if(_lastHp != widget.actorModel.hp) {
       _hpEditingController.value = TextEditingValue(text: widget.actorModel.hp.toString());
       _lastHp = widget.actorModel.hp;
     }
@@ -61,88 +61,89 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
   @override
   Widget build(BuildContext context) {
     _updateControllerIfNeeded();
+    final signals = SignalsProvider.of(context);
+    
+    return Watch((context) {
+      final actor = signals.selectedActor.value;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: Column(
-          children: [
-            const SmallHeadingWidget(
-              title: "General",
-              trailing: OutlinedButton(
-                onPressed: null,
-                child: Row(
-                  children: [
-                    Icon(Icons.terminal_rounded),
-                    SizedBox(width: 8.0,),
-                    Text("Load BNPC data"),
-                  ],
-                )
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Padding(
+          padding: const EdgeInsets.all(14.0),
+          child: Column(
+            children: [
+              const SmallHeadingWidget(
+                title: "General",
+                trailing: OutlinedButton(
+                  onPressed: null,
+                  child: Row(
+                    children: [
+                      Icon(Icons.terminal_rounded),
+                      SizedBox(width: 8.0,),
+                      Text("Load BNPC data"),
+                    ],
+                  )
+                ),
               ),
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: SimpleNumberField(
-                    initialValue: widget.actorModel.id,
-                    controller: _localIdEditingController,
-                    label: "Local ID",
-                    enabled: false,
-                    onChanged: (value) {},
+              Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    child: SimpleNumberField(
+                      initialValue: actor.id,
+                      controller: _localIdEditingController,
+                      label: "Local ID",
+                      enabled: false,
+                      onChanged: (value) {},
+                    ),
                   ),
-                ),
-                const SizedBox(width: 18.0,),
-                SizedBox(
-                  width: 150,
-                  child: SimpleNumberField(
-                    initialValue: widget.actorModel.layoutId,
-                    controller: _layoutIdEditingController,
-                    label: "Layout ID",
+                  const SizedBox(width: 18.0,),
+                  SizedBox(
+                    width: 150,
+                    child: SimpleNumberField(
+                      initialValue: actor.layoutId,
+                      controller: _layoutIdEditingController,
+                      label: "Layout ID",
+                      onChanged: (value) {
+                        actor.layoutId = value;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 18.0,),
+                  SizedBox(
+                    width: 110,
+                    child: SimpleNumberField(
+                      initialValue: widget.actorModel.hp,
+                      controller: _hpEditingController,
+                      label: "HP",
+                      onChanged: (value) {
+                        actor.hp = value;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 18.0,),
+                  NumberButton(
+                    min: 0,
+                    max: 32,
+                    value: actor.subactors.length,
+                    label: "Subactors",
                     onChanged: (value) {
-                      widget.actorModel.layoutId = value;
-                      widget.onUpdate();
+                      var subactorCount = actor.subactors.length;
+                      if(value < subactorCount) {
+                        actor.subactors.removeLast();
+                      }
+                      else if(value > subactorCount) {
+                        actor.subactors.add("${widget.actorModel.name} <subactor ${subactorCount + 1}>");
+                      }
                     },
                   ),
-                ),
-                const SizedBox(width: 18.0,),
-                SizedBox(
-                  width: 110,
-                  child: SimpleNumberField(
-                    initialValue: widget.actorModel.hp,
-                    controller: _hpEditingController,
-                    label: "HP",
-                    onChanged: (value) {
-                      widget.actorModel.hp = value;
-                      widget.onUpdate();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 18.0,),
-                NumberButton(
-                  min: 0,
-                  max: 32,
-                  value: widget.actorModel.subactors.length,
-                  label: "Subactors",
-                  onChanged: (value) {
-                    var subactorCount = widget.actorModel.subactors.length;
-                    if(value < subactorCount) {
-                      widget.actorModel.subactors.removeLast();
-                    }
-                    else if(value > subactorCount) {
-                      widget.actorModel.subactors.add("${widget.actorModel.name} <subactor ${subactorCount + 1}>");
-                    }
-            
-                    widget.onUpdate();
-                  },
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

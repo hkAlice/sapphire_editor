@@ -95,12 +95,14 @@ class _LogMessagePointWidgetState extends State<LogMessagePointWidget> {
   }
 
   void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
-    final oldTimepoint = schedule.timepoints.firstWhere((t) => t == widget.timepointModel);
+    final oldTimepoint = schedule.timepoints
+    .firstWhere((t) => t.id == widget.timepointModel.id);
     final newTimepoint = TimepointModel(
+      id: oldTimepoint.id,
       type: oldTimepoint.type,
       startTime: oldTimepoint.startTime,
       data: pointData,
     );
-    signals.updateTimepoint(actor, schedule, oldTimepoint, newTimepoint);
+    signals.updateTimepoint(actor.id, schedule.id, oldTimepoint.id, newTimepoint);
   }
 }

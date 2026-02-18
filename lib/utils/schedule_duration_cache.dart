@@ -10,7 +10,7 @@ class ScheduleDurationCache {
   ScheduleDurationCache._(this.scheduleHash, this.duration, this.timeElapsedMap);
   
   factory ScheduleDurationCache.calculate(TimelineScheduleModel schedule) {
-    final hash = schedule.hashCode;
+    final hash = schedule.id;
     
     if (_cache.containsKey(hash)) {
       final cached = _cache[hash]!;
@@ -54,7 +54,7 @@ class ScheduleDurationCache {
     
     final duration = _formatDuration(timeElapsedMs);
     
-    return ScheduleDurationCache._(schedule.hashCode, duration, timeElapsedMap);
+    return ScheduleDurationCache._(schedule.id, duration, timeElapsedMap);
   }
   
   static String _formatDuration(int durationTotalMs) {

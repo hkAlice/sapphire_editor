@@ -10,8 +10,9 @@ import 'package:sapphire_editor/services/storage_helper.dart';
 class TimelineEditorSignal {
   final Signal<TimelineModel> timeline;
 
-  final Signal<int> selectedActorIndex;
-  final Signal<int> selectedScheduleIndex;
+  final Signal<int?> selectedActorId;
+  final Signal<int?> selectedScheduleId;
+
 
   late final Computed<ActorModel> selectedActor;
   late final Computed<TimelineScheduleModel> selectedSchedule;
@@ -33,36 +34,59 @@ class TimelineEditorSignal {
 
   TimelineEditorSignal([TimelineModel? initialTimeline])
       : timeline = signal<TimelineModel>(initialTimeline ?? _createDefaultTimeline()),
-        selectedActorIndex = signal(0),
-        selectedScheduleIndex = signal(0),
+        selectedActorId = signal(0),
+        selectedScheduleId = signal(0),
         _historyIndex = signal(-1),
         lastAutosave = signal<DateTime?>(null),
         _pendingJsonInput = signal('') {
+
     selectedActor = computed(() {
       final actors = timeline.value.actors;
-      if (actors.isEmpty) {
-        throw StateError("Timeline must contain at least one actor");
+
+      if(actors.isEmpty) {
+        return throw StateError("Timeline must contain at least one actor");
       }
 
-      final index = selectedActorIndex.value
-          .clamp(0, actors.length - 1);
+      final id = selectedActorId.value;
 
-      return actors[index];
+      return actors.firstWhere(
+        (a) => a.id == id,
+        orElse: () => actors.first,
+      );
     });
+
+
 
     selectedSchedule = computed(() {
       final schedules = selectedActor.value.schedules;
 
-      if (schedules.isEmpty) {
-        throw StateError("Actor must contain at least one schedule");
+      if(schedules.isEmpty) {
+        return throw StateError("Actor must contain at least one schedule");
       }
 
-      final index = selectedScheduleIndex.value
-          .clamp(0, schedules.length - 1);
+      final id = selectedScheduleId.value;
 
-      return schedules[index];
+      return schedules.firstWhere(
+        (s) => s.id == id,
+        orElse: () => schedules.first,
+      );
     });
 
+    
+    effect(() {
+      final actors = timeline.value.actors;
+
+      if(actors.isEmpty)
+        return;
+
+      final currentId = selectedActorId.value;
+
+      final exists = actors.any((a) => a.id == currentId);
+
+      if(!exists) {
+        Future.microtask(() => selectedActorId.value = actors.first.id);
+      }
+    });
 
     jsonOutput = computed(() {
       try {
@@ -83,72 +107,107 @@ class TimelineEditorSignal {
     });
   }
 
-  void updateTimepoint(ActorModel actor, TimelineScheduleModel schedule, TimepointModel oldTimepoint, TimepointModel newTimepoint) {
+  void updateTimepoint(int actorId, int scheduleId, int timepointId, TimepointModel newTimepoint) {
+    batch(() {
+      final actor = timeline.value.actors.where((a) => a.id == actorId).first;
+      final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
+
+      final newActor = _replaceTimepoint(actor, schedule, timepointId, newTimepoint);
+      final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actor.id);
+      
+      if(actorIndex == -1)
+        return;
+
+      final newActors = [...timeline.value.actors];
+      newActors[actorIndex] = newActor;
+
+      timeline.value = timeline.value.copyWith(actors: newActors);
+    });
+
     _saveToHistory();
-
-    final newActor = _replaceTimepoint(actor, schedule, oldTimepoint, newTimepoint);
-    final actorIndex = timeline.value.actors.indexOf(actor);
-    
-    if (actorIndex == -1) return;
-    
-    final newActors = [...timeline.value.actors];
-    newActors[actorIndex] = newActor;
-
-    timeline.value = timeline.value.copyWith(actors: newActors);
   }
 
-  void addTimepoint(TimelineScheduleModel schedule, TimepointModel timepoint) {
+  void addTimepoint(int actorId, int scheduleId, TimepointModel timepoint) {
+    
+      final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actorId);
+
+      if(actorIndex == -1)
+        return;
+
+      final actor = timeline.value.actors[actorIndex];
+
+      final scheduleIndex = actor.schedules.indexWhere((s) => s.id == scheduleId);
+
+      if(scheduleIndex == -1)
+        return;
+      
+      final schedule = actor.schedules[scheduleIndex];
+
+      
+
+      final newSchedule = schedule.copyWith(
+        timepoints: [...schedule.timepoints, timepoint]
+      );
+
+
+      _updateSchedule(schedule, newSchedule, actorId);
+
+    
+
+    
     _saveToHistory();
-
-    final newSchedule = schedule.copyWith(
-      timepoints: [...schedule.timepoints, timepoint]
-    );
-
-    _updateSchedule(schedule, newSchedule);
   }
 
-  void removeTimepoint(TimelineScheduleModel schedule, TimepointModel timepoint) {
-    _saveToHistory();
+  void removeTimepoint(TimelineScheduleModel schedule, TimepointModel timepoint, int actorId) {
 
     final newSchedule = schedule.copyWith(
       timepoints: schedule.timepoints.where((t) => t != timepoint).toList()
     );
 
-    _updateSchedule(schedule, newSchedule);
+    _updateSchedule(schedule, newSchedule, actorId);
+
+    _saveToHistory();
   }
 
-  void duplicateTimepoint(TimelineScheduleModel schedule, TimepointModel timepoint) {
+  void duplicateTimepoint(TimelineScheduleModel schedule, TimepointModel timepoint, int actorId) {
+    batch(() {
+      final newTimepoint = TimepointModel.fromJson(jsonDecode(jsonEncode(timepoint)));
+      newTimepoint.id = schedule.generateTimepointId();
+
+      final newSchedule = schedule.copyWith(
+        timepoints: [...schedule.timepoints, newTimepoint]
+      );
+
+      _updateSchedule(schedule, newSchedule, actorId);
+    });
+
     _saveToHistory();
 
-    final newTimepoint = TimepointModel.fromJson(jsonDecode(jsonEncode(timepoint)));
-    final newSchedule = schedule.copyWith(
-      timepoints: [...schedule.timepoints, newTimepoint]
-    );
-
-    _updateSchedule(schedule, newSchedule);
   }
 
-  void reorderTimepoint(TimelineScheduleModel schedule, int oldIndex, int newIndex) {
+  void reorderTimepoint(TimelineScheduleModel schedule, int oldIndex, int newIndex, int actorId) {
+    batch(() {
+      final timepoints = [...schedule.timepoints];
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final item = timepoints.removeAt(oldIndex);
+      timepoints.insert(newIndex, item);
+
+      final newSchedule = schedule.copyWith(timepoints: timepoints);
+      _updateSchedule(schedule, newSchedule, actorId);
+    });
+
     _saveToHistory();
-
-    final timepoints = [...schedule.timepoints];
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-    final item = timepoints.removeAt(oldIndex);
-    timepoints.insert(newIndex, item);
-
-    final newSchedule = schedule.copyWith(timepoints: timepoints);
-    _updateSchedule(schedule, newSchedule);
   }
 
-  void selectActor(int index) {
-    selectedActorIndex.value = index;
-    selectedScheduleIndex.value = 0;
+  void selectActor(int id) {
+    selectedActorId.value = id;
+    selectedScheduleId.value = null;
   }
 
-  void selectSchedule(int index) {
-    selectedScheduleIndex.value = index;
+  void selectSchedule(int id) {
+    selectedScheduleId.value = id;
   }
 
   bool loadFromJson(String jsonStr) {
@@ -189,41 +248,50 @@ class TimelineEditorSignal {
   }
 
   void addSchedule([ActorModel? actor]) {
-    _saveToHistory();
+    
     actor ??= selectedActor.value;
 
     final newSchedule = TimelineScheduleModel(id: actor.schedules.length + 1, name: "Schedule ${actor.schedules.length + 1}");
     final newActor = actor.copyWith(schedules: [...actor.schedules, newSchedule]);
 
     final newActors = List<ActorModel>.from(timeline.value.actors);
-    final actorIndex = timeline.value.actors.indexOf(actor);
+    final actorIndex = timeline.value.actors.indexWhere((a) => a.id == newActor.id);
     newActors[actorIndex] = newActor;
 
     timeline.value = timeline.value.copyWith(actors: newActors);
+
+    //_saveToHistory();
   }
 
   void reorderSchedule(ActorModel actor, int oldIndex, int newIndex) {
+    batch(() {
+      final schedules = [...actor.schedules];
+      if(newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      
+      final item = schedules.removeAt(oldIndex);
+      schedules.insert(newIndex, item);
+
+      final newActor = actor.copyWith(schedules: schedules);
+
+      final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actor.id);
+
+      if(actorIndex == -1)
+        return;
+      
+      final newActors = [...timeline.value.actors];
+      newActors[actorIndex] = newActor;
+
+      timeline.value = timeline.value.copyWith(actors: newActors);
+
+    });
+
     _saveToHistory();
-
-    final schedules = [...actor.schedules];
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-    final item = schedules.removeAt(oldIndex);
-    schedules.insert(newIndex, item);
-
-    final newActor = actor.copyWith(schedules: schedules);
-
-    final actorIndex = timeline.value.actors.indexOf(actor);
-    if (actorIndex == -1) return;
-    
-    final newActors = [...timeline.value.actors];
-    newActors[actorIndex] = newActor;
-
-    timeline.value = timeline.value.copyWith(actors: newActors);
   }
 
   void _saveToHistory() {
+    return;
     if (_historyIndex.value < _history.length - 1) {
       _history.removeRange(_historyIndex.value + 1, _history.length);
     }
@@ -248,31 +316,44 @@ class TimelineEditorSignal {
     });
   }
 
-  void _updateSchedule(TimelineScheduleModel oldSchedule, TimelineScheduleModel newSchedule) {
-    final actorIndex = timeline.value.actors.indexOf(selectedActor.value);
-    
-    if (actorIndex == -1) return;
-    
-    final scheduleIndex = selectedActor.value.schedules.indexOf(oldSchedule);
-    if (scheduleIndex == -1) return;
+  void _updateSchedule(
+    TimelineScheduleModel oldSchedule,
+    TimelineScheduleModel newSchedule,
+    int actorId
+  ) {
+    final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actorId);
 
-    final newSchedules = [...selectedActor.value.schedules];
+    if(actorIndex == -1)
+      return;
+
+    final actor = timeline.value.actors[actorIndex];
+
+    final scheduleIndex = actor.schedules.indexWhere((s) => s.id == oldSchedule.id);
+
+    if(scheduleIndex == -1)
+      return;
+
+    final newSchedules = [...actor.schedules];
     newSchedules[scheduleIndex] = newSchedule;
-    
-    final newActor = selectedActor.value.copyWith(schedules: newSchedules);
+
+    final newActor = actor.copyWith(schedules: newSchedules);
+
     final newActors = [...timeline.value.actors];
     newActors[actorIndex] = newActor;
 
     timeline.value = timeline.value.copyWith(actors: newActors);
   }
 
-  ActorModel _replaceTimepoint(ActorModel actor, TimelineScheduleModel schedule, TimepointModel oldTp, TimepointModel newTp) {
-    final scheduleIndex = actor.schedules.indexOf(schedule);
+
+  ActorModel _replaceTimepoint(ActorModel actor, TimelineScheduleModel schedule, int timepointId, TimepointModel newTp) {
+    final scheduleIndex = actor.schedules.indexWhere((s) => s.id == schedule.id);
     
-    if (scheduleIndex == -1) return actor;
+    if(scheduleIndex == -1)
+      return actor;
     
-    final timepointIndex = schedule.timepoints.indexOf(oldTp);
-    if (timepointIndex == -1) return actor;
+    final timepointIndex = schedule.timepoints.indexWhere((s) => s.id == timepointId);
+    if(timepointIndex == -1)
+      return actor;
     
     final newTimepoints = [...schedule.timepoints];
     newTimepoints[timepointIndex] = newTp;
@@ -284,7 +365,9 @@ class TimelineEditorSignal {
   }
 
   bool _validateTimeline(TimelineModel timeline) {
-    if (timeline.actors.isEmpty) return false;
+    if(timeline.actors.isEmpty)
+      return false;
+    
     return timeline.actors.every((a) => a.schedules.isNotEmpty);
   }
 
@@ -293,7 +376,11 @@ class TimelineEditorSignal {
     timeline.addNewActor(bnpcName: "Ifrit", layoutId: 4126276, hp: 13884);
     timeline.addNewActor(bnpcName: "Ifrit Control", layoutId: 4126284, hp: 445);
     timeline.addNewActor(bnpcName: "Ifrit Nail 1", layoutId: 4126281, hp: 445);
-    timeline.addNewSchedule(timeline.actors.first);
+
+    timeline.actors.forEach((actor) {
+      timeline.addNewSchedule(actor);
+    });
+    
     timeline.addNewCondition();
     return timeline;
   }

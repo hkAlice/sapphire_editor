@@ -23,6 +23,7 @@ part 'timepoint_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class TimepointModel {
   // todo: private field this + expose to json -> JsonKey(includeFromJson: true, includeToJson: true)
+  int id;
   TimepointType type;
   String description;
 
@@ -30,7 +31,7 @@ class TimepointModel {
 
   dynamic data = {};
 
-  TimepointModel({required this.type, this.description = "", this.startTime = 0, this.data}) {
+  TimepointModel({required this.id, required this.type, this.description = "", this.startTime = 0, this.data}) {
     changeType(type);
   }
 
@@ -39,21 +40,24 @@ class TimepointModel {
   Map<String, dynamic> toJson() => _$TimepointModelToJson(this);
 
   TimepointModel copyWith({
+    int? id,
     TimepointType? type,
     String? description,
     int? startTime,
     dynamic data,
   }) {
     final newTimepoint = TimepointModel(
+      id: id ?? this.id,
       type: type ?? this.type,
       description: description ?? this.description,
       startTime: startTime ?? this.startTime,
       data: data ?? this.data,
     );
     
-    if (type != null && type != this.type) {
+    if(type != null && type != this.type) {
       newTimepoint.changeType(type);
-    } else {
+    }
+    else {
       newTimepoint.data = data ?? this.data;
     }
     

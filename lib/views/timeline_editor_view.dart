@@ -73,19 +73,26 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
               const Divider(),
               Expanded(
                 child: Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        flex: 7,
-                        child: TimelineList(),
-                      ),
-                      const VerticalDivider(),
-                      Expanded(
-                        flex: 4,
-                        child: _JsonEditorPanel(),
-                      ),
-                    ],
+                  child: Watch((context) {
+                      final actorId = _signal!.selectedActorId.value ?? 1;
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            flex: 7,
+                            child: TimelineList(
+                              actorId: actorId,
+                            ),
+                          ),
+                          const VerticalDivider(),
+                          Expanded(
+                            flex: 4,
+                            child: _JsonEditorPanel(),
+                          ),
+                        ],
+                      );
+                    }
                   ),
                 ),
               ),

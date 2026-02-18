@@ -14,8 +14,7 @@ class ActorTabView extends StatelessWidget {
 
     return Watch((context) {
       final timelineModel = signals.timeline.value;
-      final currentActorIndex = signals.selectedActorIndex.value;
-      final selectedActor = timelineModel.actors[currentActorIndex];
+      final selectedActor = signals.selectedActor.value;
 
       return SingleChildScrollView(
         child: Padding(
@@ -24,17 +23,12 @@ class ActorTabView extends StatelessWidget {
             children: [
               ActorDetailedSelect(
                 actors: timelineModel.actors,
-                index: currentActorIndex,
-                onChanged: (currActor) {
-                  signals.selectActor(currActor);
-                }
+                actorId: selectedActor.id
               ),
               ActorGeneralWidget(
                 actors: timelineModel.actors,
                 actorModel: selectedActor,
-                index: currentActorIndex,
-                onUpdate: () {
-                }
+                actorId: selectedActor.id
               ),
               const ActorPartsWidget()
             ],

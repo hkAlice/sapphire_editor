@@ -8,74 +8,78 @@ import 'package:tab_container/tab_container.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class TimelineList extends StatelessWidget {
-  const TimelineList({super.key});
+  final int actorId;
+
+  const TimelineList({
+    super.key,
+    required this.actorId
+  });
 
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      return TabContainer(
-        borderRadius: BorderRadius.circular(16.0),
-        tabEdge: TabEdge.top,
-        curve: Curves.easeInOutCubic,
-        transitionBuilder: (child, animation) {
-          animation = CurvedAnimation(
-            curve: Curves.easeInOutCubic,
-            parent: animation
-          );
-          return SlideTransition(
-            position: Tween(
-              begin: const Offset(0.2, 0.0),
-              end: const Offset(0.0, 0.0),
-            ).animate(animation),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
+      return DefaultTabController(
+        length: 4,
+        child: Column(
+          children: [
+            TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.transparent,
+              indicator: BoxDecoration(
+                color: Theme.of(context).hoverColor,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              labelStyle: Theme.of(context).textTheme.bodyLarge,
+              unselectedLabelStyle: Theme.of(context).textTheme.bodyLarge,
+              tabs: const [
+                Tab(icon: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.cruelty_free_outlined, size: 22.0),
+                    SizedBox(width: 8.0),
+                    Text("Actor"),
+                  ],
+                )),
+                Tab(icon: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.g_mobiledata, size: 28.0),
+                    SizedBox(width: 8.0),
+                    Text("Condition"),
+                  ],
+                )),
+                Tab(icon: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.linear_scale_rounded, size: 22.0),
+                    SizedBox(width: 8.0),
+                    Text("Schedule"),
+                  ],
+                )),
+                Tab(icon: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.scatter_plot_outlined, size: 22.0),
+                    SizedBox(width: 8.0),
+                    Text("Selector"),
+                  ],
+                )),
+              ],
             ),
-          );
-        },
-        selectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
-        unselectedTextStyle:  Theme.of(context).textTheme.bodyLarge,
-        color: Theme.of(context).hoverColor,
-        tabs: const <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.cruelty_free_outlined, size: 22.0,),
-              SizedBox(width: 8.0,),
-              Text("Actor")
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.g_mobiledata, size: 28.0,),
-              SizedBox(width: 8.0,),
-              Text("Condition")
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.linear_scale_rounded, size: 22.0,),
-              SizedBox(width: 8.0,),
-              Text("Schedule")
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.scatter_plot_outlined, size: 22.0,),
-              SizedBox(width: 8.0,),
-              Text("Selector")
-            ],
-          )
-        ],
-        children: const <Widget>[
-          ActorTabView(),
-          ConditionTabView(),
-          ScheduleTabView(),
-          SelectorTabView()
-        ]
+            Expanded(
+              child: TabBarView(
+                children: [
+                  ActorTabView(),
+                  ConditionTabView(),
+                  ScheduleTabView(
+                    actorId: actorId,
+                  ),
+                  SelectorTabView(),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     });
   }

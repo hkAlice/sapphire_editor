@@ -148,9 +148,9 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
           ),
           const SizedBox(height: 18.0,),
           if(pointData.positionType == PositionType.absolute && pointData.targetType == ActorTargetType.self)
-            _SetPosAbsoluteWidget(pointData: pointData, signals: signals, actor: actor, schedule: schedule,)
+            _SetPosAbsoluteWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData, signals: signals, actor: actor, schedule: schedule,)
           else
-            _SetPosRelativeWidget(pointData: pointData, signals: signals, actor: actor, schedule: schedule,),
+            _SetPosRelativeWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData, signals: signals, actor: actor, schedule: schedule,),
 
         ],
       );
@@ -158,23 +158,27 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
   }
 
   void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
-    final oldTimepoint = schedule.timepoints.firstWhere((t) => t == widget.timepointModel);
+    final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);
+
     final newTimepoint = TimepointModel(
+      id: oldTimepoint.id,
       type: oldTimepoint.type,
       startTime: oldTimepoint.startTime,
       data: pointData,
     );
-    signals.updateTimepoint(actor, schedule, oldTimepoint, newTimepoint);
+    signals.updateTimepoint(actor.id, schedule.id, oldTimepoint.id, newTimepoint);
   }
 }
 
 class _SetPosAbsoluteWidget extends StatefulWidget {
+  // todo: hax, this should not be like this at all
+  final Function() onUpdate;
   final SetPosPointModel pointData;
   final TimelineEditorSignal signals;
   final ActorModel actor;
   final TimelineScheduleModel schedule;
 
-  const _SetPosAbsoluteWidget({required this.pointData, required this.signals, required this.actor, required this.schedule});
+  const _SetPosAbsoluteWidget({required this.onUpdate, required this.pointData, required this.signals, required this.actor, required this.schedule});
 
   @override
   State<_SetPosAbsoluteWidget> createState() => _SetPosAbsoluteWidgetState();
@@ -219,7 +223,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[0] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -235,7 +239,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[1] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -251,7 +255,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[2] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -267,7 +271,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.rot = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -276,25 +280,16 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
       ],
     );
   }
-
-  void _updateTimepoint() {
-    final oldTimepoint = widget.schedule.timepoints.firstWhere((t) => t.data == widget.pointData);
-    final newTimepoint = TimepointModel(
-      type: oldTimepoint.type,
-      startTime: oldTimepoint.startTime,
-      data: widget.pointData,
-    );
-    widget.signals.updateTimepoint(widget.actor, widget.schedule, oldTimepoint, newTimepoint);
-  }
 }
 
 class _SetPosRelativeWidget extends StatefulWidget {
+  final Function onUpdate;
   final SetPosPointModel pointData;
   final TimelineEditorSignal signals;
   final ActorModel actor;
   final TimelineScheduleModel schedule;
 
-  const _SetPosRelativeWidget({required this.pointData, required this.signals, required this.actor, required this.schedule});
+  const _SetPosRelativeWidget({required this.onUpdate, required this.pointData, required this.signals, required this.actor, required this.schedule});
 
   @override
   State<_SetPosRelativeWidget> createState() => _SetPosRelativeWidgetState();
@@ -338,7 +333,7 @@ class _SetPosRelativeWidgetState extends State<_SetPosRelativeWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[0] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -353,7 +348,7 @@ class _SetPosRelativeWidgetState extends State<_SetPosRelativeWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[1] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -368,7 +363,7 @@ class _SetPosRelativeWidgetState extends State<_SetPosRelativeWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.pos[2] = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -383,7 +378,7 @@ class _SetPosRelativeWidgetState extends State<_SetPosRelativeWidget> {
             try {
               newParamValue = double.tryParse(value) ?? 0;
               widget.pointData.rot = newParamValue;
-              _updateTimepoint();
+              widget.onUpdate();
             }
             catch(_) { }
 
@@ -391,15 +386,5 @@ class _SetPosRelativeWidgetState extends State<_SetPosRelativeWidget> {
         ),
       ],
     );
-  }
-  
-  void _updateTimepoint() {
-    final oldTimepoint = widget.schedule.timepoints.firstWhere((t) => t == widget.pointData);
-    final newTimepoint = TimepointModel(
-      type: oldTimepoint.type,
-      startTime: oldTimepoint.startTime,
-      data: widget.pointData,
-    );
-    widget.signals.updateTimepoint(widget.actor, widget.schedule, oldTimepoint, newTimepoint);
   }
 }

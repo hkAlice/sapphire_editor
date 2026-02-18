@@ -8,6 +8,7 @@ part of 'timepoint_model.dart';
 
 TimepointModel _$TimepointModelFromJson(Map<String, dynamic> json) =>
     TimepointModel(
+      id: (json['id'] as num).toInt(),
       type: $enumDecode(_$TimepointTypeEnumMap, json['type']),
       description: json['description'] as String? ?? "",
       startTime: (json['startTime'] as num?)?.toInt() ?? 0,
@@ -16,6 +17,7 @@ TimepointModel _$TimepointModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$TimepointModelToJson(TimepointModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'type': _$TimepointTypeEnumMap[instance.type]!,
       'description': instance.description,
       'startTime': instance.startTime,

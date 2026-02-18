@@ -68,12 +68,13 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
     final timeline = signals.timeline.value;
     final actor = signals.selectedActor.value;
     final schedule = signals.selectedSchedule.value;
-    final oldTimepoint = schedule.timepoints.firstWhere((t) => t == widget.timepointModel);
+    final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);
     final newTimepoint = TimepointModel(
+      id: oldTimepoint.id,
       type: oldTimepoint.type,
       startTime: oldTimepoint.startTime,
       data: pointData,
     );
-    signals.updateTimepoint(actor, schedule, oldTimepoint, newTimepoint);
+    signals.updateTimepoint(actor.id, schedule.id, oldTimepoint.id, newTimepoint);
   }
 }

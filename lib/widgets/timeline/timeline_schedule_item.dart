@@ -9,10 +9,12 @@ import 'package:signals_flutter/signals_flutter.dart';
 
 class TimelineScheduleItem extends StatelessWidget {
   final int scheduleIndex;
+  final int scheduleId;
 
   const TimelineScheduleItem({
     super.key,
     required this.scheduleIndex,
+    required this.scheduleId
   });
 
   @override
@@ -20,7 +22,8 @@ class TimelineScheduleItem extends StatelessWidget {
     final signals = SignalsProvider.of(context);
 
     return Watch((context) {
-      final schedule = signals.selectedActor.value.schedules[scheduleIndex];
+      final actor = signals.selectedActor.value;
+      final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
 
@@ -34,64 +37,68 @@ class TimelineScheduleItem extends StatelessWidget {
           ),
           initiallyExpanded: true,
           title: ReorderableDragStartListener(index: scheduleIndex, child: Text(schedule.name)),
-        subtitle: Text(schedule.description.isNotEmpty ? schedule.description : timepointCountStr),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 54.0,
-              child: TextModalEditorWidget(
-                text: schedule.description,
-                headerText: "Edit schedule description",
-                onChanged: (description) {
-                }
+          subtitle: Text(schedule.description.isNotEmpty ? schedule.description : timepointCountStr),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 54.0,
+                child: TextModalEditorWidget(
+                  text: schedule.description,
+                  headerText: "Edit schedule description",
+                  onChanged: (description) {
+                  }
+                ),
               ),
-            ),
-            const SizedBox(width: 8.0,),
-            SizedBox(
-              width: 32.0,
-              height: 32.0,
-              child: TextModalEditorWidget(
-                text: schedule.name,
-                headerText: "Edit schedule name",
-                icon: const Icon(Icons.edit_rounded),
-                minLines: 1,
-                maxLines: 1,
-                onChanged: (value) {
-                }
+              const SizedBox(width: 8.0,),
+              SizedBox(
+                width: 32.0,
+                height: 32.0,
+                child: TextModalEditorWidget(
+                  text: schedule.name,
+                  headerText: "Edit schedule name",
+                  icon: const Icon(Icons.edit_rounded),
+                  minLines: 1,
+                  maxLines: 1,
+                  onChanged: (value) {
+                  }
+                ),
               ),
-            ),
-            const SizedBox(width: 8.0,),
-            SizedBox(
-              width: 48.0,
-              child: Text(cache.duration, style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.right,)
-            ),
-          ],
-        ),
-        children: [
-          ReorderableListView.builder(
-            buildDefaultDragHandles: false,
-            onReorder: (int oldindex, int newindex) {
-              signals.reorderTimepoint(schedule, oldindex, newindex);
-            },
-            itemCount: schedule.timepoints.length,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, i) {
-              var timepointModel = schedule.timepoints[i];
-
-              return GenericTimepointItem(
-                key: Key("timepoint_${timepointModel.hashCode}"),
-                timepointModel: timepointModel,
-                scheduleIndex: scheduleIndex,
-                timepointIndex: i,
-                timeElapsedMs: cache.timeElapsedMap[i]!,
-              );
-            }
+              const SizedBox(width: 8.0,),
+              SizedBox(
+                width: 48.0,
+                child: Text(cache.duration, style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.right,)
+              ),
+            ],
           ),
+          children: [
+            ReorderableListView.builder(
+              buildDefaultDragHandles: false,
+              onReorder: (int oldindex, int newindex) {
+                signals.reorderTimepoint(schedule, oldindex, newindex, actor.id);
+              },
+              itemCount: schedule.timepoints.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, i) {
+                var timepointModel = schedule.timepoints[i];
+
+                return GenericTimepointItem(
+                  key: ValueKey(timepointModel.id),
+                  timepointId: timepointModel.id,
+                  scheduleIndex: scheduleIndex,
+                  scheduleId: scheduleId,
+                  timepointIndex: i,
+                  timeElapsedMs: cache.timeElapsedMap[i]!,
+                  actorId: actor.id,
+                );
+              }
+            ),
             SmallAddGenericWidget(
               onTap: () {
-                signals.addTimepoint(schedule, TimepointModel(type: TimepointType.idle));
+                Future.delayed(Duration.zero, () {
+                  signals.addTimepoint(actor.id, schedule.id, TimepointModel(id: schedule.generateTimepointId(), type: TimepointType.idle));
+                });
               },
               text: "Add new timepoint",
             )
