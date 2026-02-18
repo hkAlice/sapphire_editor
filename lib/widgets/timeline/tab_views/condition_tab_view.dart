@@ -84,7 +84,7 @@ class _ConditionTabViewState extends State<ConditionTabView> {
               child: AddGenericWidget(
                 text: "New condition",
                 onTap: () { 
-                  signals.timeline.value.addNewCondition();
+                  signals.addCondition();
                 }
               ),
             ),

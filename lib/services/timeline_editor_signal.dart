@@ -60,8 +60,6 @@ class TimelineEditorSignal {
       );
     });
 
-
-
     selectedSchedule = computed(() {
       final schedules = selectedActor.value.schedules;
 
