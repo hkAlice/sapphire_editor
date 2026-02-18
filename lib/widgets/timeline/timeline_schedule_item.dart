@@ -50,7 +50,12 @@ class TimelineScheduleItem extends StatelessWidget {
                 child: TextModalEditorWidget(
                   text: schedule.description,
                   headerText: "Edit schedule description",
-                  onChanged: (description) {
+                  onChanged: (newDescription) {
+                    final newSchedule = schedule.copyWith(
+                      description: newDescription
+                    );
+
+                    signals.updateSchedule(schedule, newSchedule, actor.id);
                   }
                 ),
               ),
@@ -64,14 +69,23 @@ class TimelineScheduleItem extends StatelessWidget {
                   icon: const Icon(Icons.edit_rounded),
                   minLines: 1,
                   maxLines: 1,
-                  onChanged: (value) {
+                  onChanged: (newName) {
+                    final newSchedule = schedule.copyWith(
+                      name: newName
+                    );
+
+                    signals.updateSchedule(schedule, newSchedule, actor.id);
                   }
                 ),
               ),
               const SizedBox(width: 8.0,),
               SizedBox(
                 width: 48.0,
-                child: Text(cache.duration, style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.right,)
+                child: Text(
+                  cache.duration,
+                  style: Theme.of(context).textTheme.labelLarge,
+                  textAlign: TextAlign.right
+                )
               ),
             ],
           ),

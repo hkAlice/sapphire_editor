@@ -164,9 +164,7 @@ class TimelineEditorSignal {
       );
 
 
-      _updateSchedule(schedule, newSchedule, actorId);
-
-    
+      updateSchedule(schedule, newSchedule, actorId);
 
     
     _saveToHistory();
@@ -178,7 +176,7 @@ class TimelineEditorSignal {
       timepoints: schedule.timepoints.where((t) => t != timepoint).toList()
     );
 
-    _updateSchedule(schedule, newSchedule, actorId);
+    updateSchedule(schedule, newSchedule, actorId);
 
     _saveToHistory();
   }
@@ -192,7 +190,7 @@ class TimelineEditorSignal {
         timepoints: [...schedule.timepoints, newTimepoint]
       );
 
-      _updateSchedule(schedule, newSchedule, actorId);
+      updateSchedule(schedule, newSchedule, actorId);
     });
 
     _saveToHistory();
@@ -209,7 +207,7 @@ class TimelineEditorSignal {
       timepoints.insert(newIndex, item);
 
       final newSchedule = schedule.copyWith(timepoints: timepoints);
-      _updateSchedule(schedule, newSchedule, actorId);
+      updateSchedule(schedule, newSchedule, actorId);
     });
 
     _saveToHistory();
@@ -305,8 +303,7 @@ class TimelineEditorSignal {
   }
 
   void _saveToHistory() {
-    return;
-    if (_historyIndex.value < _history.length - 1) {
+    if(_historyIndex.value < _history.length - 1) {
       _history.removeRange(_historyIndex.value + 1, _history.length);
     }
 
@@ -314,7 +311,7 @@ class TimelineEditorSignal {
     _history.add(json);
     _historyIndex.value++;
 
-    while (_history.length > 50) {
+    while(_history.length > 50) {
       _history.removeAt(0);
       _historyIndex.value--;
     }
@@ -330,7 +327,7 @@ class TimelineEditorSignal {
     });
   }
 
-  void _updateSchedule(
+  void updateSchedule(
     TimelineScheduleModel oldSchedule,
     TimelineScheduleModel newSchedule,
     int actorId
@@ -389,7 +386,8 @@ class TimelineEditorSignal {
     batch(() {
       final conditionIndex = timeline.value.conditions.indexWhere((c) => c.id == conditionId);
       
-      if (conditionIndex == -1) return;
+      if(conditionIndex == -1)
+        return;
       
       final newConditions = [...timeline.value.conditions];
       newConditions[conditionIndex] = newCondition;
