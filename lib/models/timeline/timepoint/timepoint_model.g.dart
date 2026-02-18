@@ -8,7 +8,7 @@ part of 'timepoint_model.dart';
 
 TimepointModel _$TimepointModelFromJson(Map<String, dynamic> json) =>
     TimepointModel(
-      id: (json['id'] as num).toInt(),
+      id: (json['id'] as num?)?.toInt() ?? -1,
       type: $enumDecode(_$TimepointTypeEnumMap, json['type']),
       description: json['description'] as String? ?? "",
       startTime: (json['startTime'] as num?)?.toInt() ?? 0,

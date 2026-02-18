@@ -22,6 +22,7 @@ part 'timepoint_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TimepointModel {
+  @JsonKey(defaultValue: -1)
   int id;
   TimepointType type;
   String description;
