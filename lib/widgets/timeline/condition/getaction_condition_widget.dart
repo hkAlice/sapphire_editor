@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class GetActionConditionWidget extends StatefulWidget {
+  final int conditionId;
   final GetActionConditionModel paramData;
 
-  const GetActionConditionWidget({super.key, required this.paramData});
+  const GetActionConditionWidget({super.key, required this.conditionId, required this.paramData});
 
   @override
   State<GetActionConditionWidget> createState() => _GetActionConditionWidgetState();
@@ -31,6 +30,8 @@ class _GetActionConditionWidgetState extends State<GetActionConditionWidget> {
 
     return Watch((context) {
       final timeline = signals.timeline.value;
+      final conditionModel = timeline.conditions.firstWhere((c) => c.id == widget.conditionId);
+      
       return Row(
         children: [
           SizedBox(
@@ -41,6 +42,7 @@ class _GetActionConditionWidgetState extends State<GetActionConditionWidget> {
               initialValue: timeline.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor),
               onChanged: (newValue) {
                 widget.paramData.sourceActor = newValue.name;
+                signals.updateCondition(widget.conditionId, conditionModel);
               },
             )
           ),
@@ -52,6 +54,7 @@ class _GetActionConditionWidgetState extends State<GetActionConditionWidget> {
               initialValue: widget.paramData.actionId,
               onChanged: (newValue) {
                 widget.paramData.actionId = newValue;
+                signals.updateCondition(widget.conditionId, conditionModel);
               },
             )
           ),

@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ScheduleActiveConditionWidget extends StatefulWidget {
+  final int conditionId;
   final ScheduleActiveConditionModel paramData;
   
-  const ScheduleActiveConditionWidget({super.key, required this.paramData});
+  const ScheduleActiveConditionWidget({super.key, required this.conditionId, required this.paramData});
 
   @override
   State<ScheduleActiveConditionWidget> createState() => _ScheduleActiveConditionWidgetState();
@@ -31,6 +30,8 @@ class _ScheduleActiveConditionWidgetState extends State<ScheduleActiveConditionW
     final signals = SignalsProvider.of(context);
     return Watch((context) {
       final timeline = signals.timeline.value;
+      final conditionModel = timeline.conditions.firstWhere((c) => c.id == widget.conditionId);
+      
       _selectedActor = timeline.actors.firstWhereOrNull((e) => e.name == widget.paramData.sourceActor);
 
       return Row(
@@ -53,6 +54,7 @@ class _ScheduleActiveConditionWidgetState extends State<ScheduleActiveConditionW
                   widget.paramData.scheduleName = _selectedActor!.schedules.first.name;
                 }
                 
+                signals.updateCondition(widget.conditionId, conditionModel);
               },
             )
           ),
@@ -65,6 +67,7 @@ class _ScheduleActiveConditionWidgetState extends State<ScheduleActiveConditionW
               initialValue: widget.paramData.scheduleName,
               onChanged: (value) {
                 widget.paramData.scheduleName = value;
+                signals.updateCondition(widget.conditionId, conditionModel);
               },
             ),
           ),

@@ -39,6 +39,28 @@ class ConditionModel {
 
   Map<String, dynamic> toJson() => _$ConditionModelToJson(this);
 
+  ConditionModel copyWith({
+    int? id,
+    String? description,
+    ConditionType? condition,
+    dynamic paramData,
+    bool? loop,
+    bool? enabled,
+    String? targetActor,
+    String? targetSchedule,
+  }) {
+    return ConditionModel(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      condition: condition ?? this.condition,
+      paramData: paramData ?? this.paramData,
+      loop: loop ?? this.loop,
+      enabled: enabled ?? this.enabled,
+      targetActor: targetActor ?? this.targetActor,
+      targetSchedule: targetSchedule ?? this.targetSchedule,
+    );
+  }
+
   // todo: ugliest fucking thing ever. this sucks to do with json serializable + no setter
   void changeType(ConditionType type) {
     if(type != condition) {

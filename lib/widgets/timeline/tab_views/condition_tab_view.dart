@@ -76,13 +76,13 @@ class _ConditionTabViewState extends State<ConditionTabView> {
                 itemCount: timeline.conditions.length,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-          itemBuilder: (context, i) {
-            return ConditionItem(
-              key: Key("condition_${timeline.conditions[i].id}"),
-              index: i,
-              conditionModel: timeline.conditions[i],
-            );
-          }
+                itemBuilder: (context, i) {
+                  return ConditionItem(
+                    key: Key("condition_${timeline.conditions[i].id}"),
+                    index: i,
+                    conditionId: timeline.conditions[i].id,
+                  );
+                }
               ),
             ),
             Padding(

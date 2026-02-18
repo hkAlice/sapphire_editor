@@ -6,6 +6,8 @@ import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 
 class TimelineEditorSignal {
@@ -374,6 +376,54 @@ class TimelineEditorSignal {
     newSchedules[scheduleIndex] = schedule.copyWith(timepoints: newTimepoints);
 
     return actor.copyWith(schedules: newSchedules);
+  }
+
+  // Condition mutation methods
+
+  int _generateConditionId() {
+    if (timeline.value.conditions.isEmpty) return 1;
+    return timeline.value.conditions.map((c) => c.id).reduce((a, b) => a > b ? a : b) + 1;
+  }
+
+  void updateCondition(int conditionId, ConditionModel newCondition) {
+    batch(() {
+      final conditionIndex = timeline.value.conditions.indexWhere((c) => c.id == conditionId);
+      
+      if (conditionIndex == -1) return;
+      
+      final newConditions = [...timeline.value.conditions];
+      newConditions[conditionIndex] = newCondition;
+      
+      timeline.value = timeline.value.copyWith(conditions: newConditions);
+    });
+    
+    _saveToHistory();
+  }
+
+  void removeCondition(int conditionId) {
+    batch(() {
+      final newConditions = timeline.value.conditions.where((c) => c.id != conditionId).toList();
+      timeline.value = timeline.value.copyWith(conditions: newConditions);
+    });
+    
+    _saveToHistory();
+  }
+
+  void addCondition([ConditionModel? condition]) {
+    condition ??= ConditionModel(
+      id: _generateConditionId(),
+      condition: ConditionType.combatState,
+      paramData: CombatStateConditionModel(combatState: ActorCombatState.combat, sourceActor: timeline.value.actors.first.name),
+      targetActor: timeline.value.actors.first.name,
+      targetSchedule: timeline.value.actors.first.schedules.isEmpty ? null : timeline.value.actors.first.schedules.first.name,
+      description: "",
+      loop: true,
+    );
+    
+    final newConditions = [...timeline.value.conditions, condition];
+    timeline.value = timeline.value.copyWith(conditions: newConditions);
+    
+    _saveToHistory();
   }
 
   bool _validateTimeline(TimelineModel timeline) {

@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
@@ -17,10 +16,10 @@ import 'package:sapphire_editor/widgets/timeline/condition/varequals_condition_w
 import 'package:signals/signals_flutter.dart';
 
 class ConditionItem extends StatefulWidget {
-  final ConditionModel conditionModel;
+  final int conditionId;
   final int index;
 
-  const ConditionItem({super.key, required this.conditionModel, required this.index});
+  const ConditionItem({super.key, required this.conditionId, required this.index});
 
   @override
   State<ConditionItem> createState() => _ConditionItemState();
@@ -29,35 +28,40 @@ class ConditionItem extends StatefulWidget {
 class _ConditionItemState extends State<ConditionItem> {
   late ActorModel _selectedActor;
 
-  Widget _getCondDataWidget() {
-    final signals = SignalsProvider.of(context);
-    
-    if(widget.conditionModel.condition == ConditionType.combatState) {
-      return CombatStateConditionWidget(paramData: widget.conditionModel.paramData);
-    } else if(widget.conditionModel.condition == ConditionType.getAction) {
-      return GetActionConditionWidget(paramData: widget.conditionModel.paramData);
-    } else if(widget.conditionModel.condition == ConditionType.hpPctBetween) {
-      return HPMinMaxConditionWidget(paramData: widget.conditionModel.paramData);
-    } else if(widget.conditionModel.condition == ConditionType.scheduleActive) {
-      return ScheduleActiveConditionWidget(paramData: widget.conditionModel.paramData);
-    } else if(widget.conditionModel.condition == ConditionType.interruptedAction) {
-      return InterruptedActionConditionWidget(paramData: widget.conditionModel.paramData);
-    } else if(widget.conditionModel.condition == ConditionType.varEquals) {
-      return VarEqualsConditionWidget(paramData: widget.conditionModel.paramData);
+  Widget _getCondDataWidget(ConditionModel conditionModel) {
+    if(conditionModel.condition == ConditionType.combatState) {
+      return CombatStateConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
+    } else if(conditionModel.condition == ConditionType.getAction) {
+      return GetActionConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
+    } else if(conditionModel.condition == ConditionType.hpPctBetween) {
+      return HPMinMaxConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
+    } else if(conditionModel.condition == ConditionType.scheduleActive) {
+      return ScheduleActiveConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
+    } else if(conditionModel.condition == ConditionType.interruptedAction) {
+      return InterruptedActionConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
+    } else if(conditionModel.condition == ConditionType.varEquals) {
+      return VarEqualsConditionWidget(
+        conditionId: widget.conditionId,
+        paramData: conditionModel.paramData,
+      );
     } else {
-      return Text("Unimplemented condition type ${widget.conditionModel.condition}");
+      return Text("Unimplemented condition type ${conditionModel.condition}");
     }
-  }
-
-  @override
-  void initState() {
-    // hack: lol
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final signals = SignalsProvider.of(context);
-      _selectedActor = signals.timeline.value.actors.first;
-    });
-    
-    super.initState();
   }
 
   @override
@@ -66,7 +70,8 @@ class _ConditionItemState extends State<ConditionItem> {
     
     return Watch((context) {
       final timeline = signals.timeline.value;
-      var selectedTargetActor = timeline.actors.firstWhereOrNull((e) => e.name == widget.conditionModel.targetActor);
+      final conditionModel = signals.timeline.value.conditions.firstWhere((c) => widget.conditionId == c.id);
+      final selectedTargetActor = signals.timeline.value.actors.first;
 
       return Card(
         borderOnForeground: false,
@@ -84,33 +89,30 @@ class _ConditionItemState extends State<ConditionItem> {
                 child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.70, color: Theme.of(context).primaryColor),)
               ),
               SwitchTextWidget(
-                enabled: widget.conditionModel.enabled,
+                enabled: conditionModel.enabled,
                 onPressed: () {
-                  widget.conditionModel.enabled = !widget.conditionModel.enabled;
-                  signals.timeline.value = timeline;
+                  signals.updateCondition(widget.conditionId, conditionModel.copyWith(enabled: !conditionModel.enabled));
                 },
               ),
               const VerticalDivider(),
             ],
           ),
-          title: Text(widget.conditionModel.getReadableConditionStr()),
-          subtitle: widget.conditionModel.description?.isNotEmpty ?? false ? Text(widget.conditionModel.description!) : null,
+          title: Text(conditionModel.getReadableConditionStr()),
+          subtitle: conditionModel.description?.isNotEmpty ?? false ? Text(conditionModel.description!) : null,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               SwitchIconWidget(
                 icon: Icons.loop_rounded,
-                enabled: widget.conditionModel.loop,
+                enabled: conditionModel.loop,
                 onPressed: () {
-                  widget.conditionModel.loop = !widget.conditionModel.loop;
-                  signals.timeline.value = timeline;
+                  signals.updateCondition(widget.conditionId, conditionModel.copyWith(loop: !conditionModel.loop));
                 }
               ),
               IconButton(
                 icon: const Icon(Icons.clear_rounded),
                 onPressed: () {
-                  timeline.conditions.removeAt(widget.index);
-                  signals.timeline.value = timeline;
+                  signals.removeCondition(widget.conditionId);
                 },
               ),
             ],
@@ -133,13 +135,13 @@ class _ConditionItemState extends State<ConditionItem> {
                           child: GenericItemPickerWidget<ConditionType>(
                             label: "Condition",
                             items: ConditionType.values,
-                            initialValue: widget.conditionModel.condition,
+                            initialValue: conditionModel.condition,
                             propertyBuilder: (value) {
                               return treatEnumName(value);
                             },
                             onChanged: (newValue) {
-                              widget.conditionModel.changeType(newValue);
-                              signals.timeline.value = timeline;
+                              conditionModel.changeType(newValue);
+                              signals.updateCondition(widget.conditionId, conditionModel);
                             },
                           ),
                         ),
@@ -152,20 +154,24 @@ class _ConditionItemState extends State<ConditionItem> {
                           child: GenericItemPickerWidget<ActorModel>(
                             label: "Target Actor",
                             items: timeline.actors,
-                            initialValue: timeline.actors.firstWhereOrNull((e) => e.name == widget.conditionModel.targetActor),
+                            initialValue: timeline.actors.firstWhereOrNull((e) => e.name == conditionModel.targetActor),
                             onChanged: (newValue) {
                               _selectedActor = newValue as ActorModel;
                               
-                              widget.conditionModel.targetActor = _selectedActor.name;
+                              final newTargetActor = _selectedActor.name;
+                              String? newTargetSchedule;
                               
                               if(_selectedActor.schedules.isEmpty) {
-                                widget.conditionModel.targetSchedule = null;
+                                newTargetSchedule = null;
                               }
                               else {
-                                widget.conditionModel.targetSchedule = _selectedActor.schedules.first.name;
+                                newTargetSchedule = _selectedActor.schedules.first.name;
                               }
                               
-                              signals.timeline.value = timeline;
+                              signals.updateCondition(widget.conditionId, conditionModel.copyWith(
+                                targetActor: newTargetActor,
+                                targetSchedule: newTargetSchedule,
+                              ));
                             },
                           )
                         ),
@@ -174,11 +180,10 @@ class _ConditionItemState extends State<ConditionItem> {
                           width: 240,
                           child: GenericItemPickerWidget<String>(
                             label: "Schedule",
-                            items: selectedTargetActor == null ? [] : selectedTargetActor.schedules.map((e) => e.name).toList(),
-                            initialValue: widget.conditionModel.targetSchedule,
+                            items: selectedTargetActor.schedules.map((e) => e.name).toList(),
+                            initialValue: conditionModel.targetSchedule,
                             onChanged: (value) {
-                              widget.conditionModel.targetSchedule = value;
-                              signals.timeline.value = timeline;
+                              signals.updateCondition(widget.conditionId, conditionModel.copyWith(targetSchedule: value));
                             },
                           ),
                         ),
@@ -189,7 +194,7 @@ class _ConditionItemState extends State<ConditionItem> {
                     color: Colors.black12,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: _getCondDataWidget(),
+                      child: _getCondDataWidget(conditionModel),
                     )
                   )
                 ],
