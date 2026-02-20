@@ -17,4 +17,4 @@ jobs:
       - uses: bluefireteam/flutter-gh-pages@v9
         with:
           baseHref: /sapphire_editor/
-          buildArgs: --release --web-renderer canvaskit
+          buildArgs: --release --web-renderer canvaskit --pwa-strategy=none
