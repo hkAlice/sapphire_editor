@@ -108,14 +108,18 @@ class GenericTimepointItem extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 5.5),
-                            child: Opacity(
-                                opacity: 0.7,
-                                child: Text(
-                                  _formatTime(timepointModel.startTime),
-                                  style: Theme.of(context).textTheme.labelSmall,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.right,
-                                )),
+                            child: SizedBox(
+                              width: 40,
+                              child: Opacity(
+                                  opacity: 0.7,
+                                  child: Text(
+                                    _formatTime(timepointModel.startTime),
+                                    style:
+                                        Theme.of(context).textTheme.labelSmall,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.right,
+                                  )),
+                            ),
                           ),
                           const VerticalDivider(),
                           Container(
