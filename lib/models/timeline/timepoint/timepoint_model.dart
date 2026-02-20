@@ -216,8 +216,12 @@ enum TimepointType {
   directorVar,
   @JsonValue("idle")
   idle,
+  @JsonValue("interruptAction")
+  interruptAction,
   @JsonValue("logMessage")
   logMessage,
+  @JsonValue("rollRNG")
+  rollRNG,
   @JsonValue("setBGM")
   setBGM,
   @JsonValue("setCondition")
@@ -226,10 +230,6 @@ enum TimepointType {
   setPos,
   @JsonValue("snapshot")
   snapshot,
-  @JsonValue("interruptAction")
-  interruptAction,
-  @JsonValue("rollRNG")
-  rollRNG,
   @JsonValue("statusEffect")
   statusEffect
 }
