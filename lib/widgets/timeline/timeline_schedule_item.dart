@@ -37,9 +37,9 @@ class TimelineScheduleItem extends StatelessWidget {
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
 
-      double schedule_last_timepoint = 0.0;
+      double scheduleLastTimepoint = 0.0;
       if(schedule.timepoints.isNotEmpty) {
-        schedule_last_timepoint = schedule.timepoints.last.startTime / 1000.0;
+        scheduleLastTimepoint = schedule.timepoints.last.startTime / 1000.0;
       }
 
       return Card(
@@ -93,7 +93,7 @@ class TimelineScheduleItem extends StatelessWidget {
               SizedBox(
                 width: 48.0,
                 child: Text(
-                  "${schedule_last_timepoint.toStringAsFixed(1)}s",
+                  "${scheduleLastTimepoint.toStringAsFixed(1)}s",
                   style: Theme.of(context).textTheme.labelLarge,
                   textAlign: TextAlign.right
                 )

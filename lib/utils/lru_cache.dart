@@ -8,7 +8,7 @@ class LRUCache<K, V> {
     if(!_cache.containsKey(key))
       return null;
     
-    final value = _cache[key]!;
+    final value = _cache[key] as V;
     _cache.remove(key);
     _cache[key] = value;
     return value;

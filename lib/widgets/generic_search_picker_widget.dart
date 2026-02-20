@@ -69,7 +69,7 @@ class _GenericSearchPickerWidgetState<T> extends State<GenericSearchPickerWidget
           child: Row(
             children: [
               widget.leading ?? Container(),
-              Text(widget.propertyBuilder?.call(_selectedValue!) ?? _selectedValue.toString()),
+              Text(widget.propertyBuilder?.call(_selectedValue as T) ?? _selectedValue.toString()),
             ],
           ),
         ),

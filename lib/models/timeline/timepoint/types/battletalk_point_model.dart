@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'battletalk_point_model.g.dart';
 
-// TODO: change ids to actor str ref
 @JsonSerializable()
 class BattleTalkPointModel {
   String talkerActorName;

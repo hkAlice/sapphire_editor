@@ -111,17 +111,10 @@ class TimelineEditorSignal {
   }
 
   void updateTimepoint(int actorId, int scheduleId, int timepointId, TimepointModel newTimepoint) {
-    // DEBUG: Log the update operation
-    debugPrint('[updateTimepoint] Called with actorId=$actorId, scheduleId=$scheduleId, timepointId=$timepointId, newTimepoint.id=${newTimepoint.id}');
-    
     batch(() {
       final actor = timeline.value.actors.where((a) => a.id == actorId).first;
       final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
       
-      // DEBUG: Log found entities
-      debugPrint('[updateTimepoint] Found actor=${actor.id}, schedule=${schedule.id}');
-      debugPrint('[updateTimepoint] Schedule timepoints before: ${schedule.timepoints.map((t) => t.id).toList()}');
-
       final newActor = _replaceTimepoint(actor, schedule, timepointId, newTimepoint);
       final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actor.id);
 
@@ -131,9 +124,7 @@ class TimelineEditorSignal {
       final newActors = [...timeline.value.actors];
       newActors[actorIndex] = newActor;
       
-      // DEBUG: Log the new actor's schedule timepoints
       final newSchedule = newActor.schedules.firstWhere((s) => s.id == scheduleId);
-      debugPrint('[updateTimepoint] Schedule timepoints after: ${newSchedule.timepoints.map((t) => t.id).toList()}');
 
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
@@ -159,8 +150,11 @@ class TimelineEditorSignal {
 
       
 
+      final newTimepoints = [...schedule.timepoints, timepoint];
+      newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
+
       final newSchedule = schedule.copyWith(
-        timepoints: [...schedule.timepoints, timepoint]
+        timepoints: newTimepoints
       );
 
 
@@ -186,8 +180,11 @@ class TimelineEditorSignal {
       final newTimepoint = TimepointModel.fromJson(jsonDecode(jsonEncode(timepoint)));
       newTimepoint.id = schedule.generateTimepointId();
 
+      final newTimepoints = [...schedule.timepoints, newTimepoint];
+      newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
+
       final newSchedule = schedule.copyWith(
-        timepoints: [...schedule.timepoints, newTimepoint]
+        timepoints: newTimepoints
       );
 
       updateSchedule(schedule, newSchedule, actorId);
@@ -368,6 +365,7 @@ class TimelineEditorSignal {
     
     final newTimepoints = [...schedule.timepoints];
     newTimepoints[timepointIndex] = newTp;
+    newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
     
     final newSchedules = [...actor.schedules];
     newSchedules[scheduleIndex] = schedule.copyWith(timepoints: newTimepoints);
@@ -500,9 +498,9 @@ class TimelineEditorSignal {
     timeline.addNewActor(bnpcName: "Ifrit Control", layoutId: 4126284, hp: 445);
     timeline.addNewActor(bnpcName: "Ifrit Nail 1", layoutId: 4126281, hp: 445);
 
-    timeline.actors.forEach((actor) {
+    for(var actor in timeline.actors) {
       timeline.addNewSchedule(actor);
-    });
+    }
     
     timeline.addNewCondition();
     return timeline;

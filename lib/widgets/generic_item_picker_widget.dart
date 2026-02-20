@@ -43,7 +43,7 @@ class _GenericItemPickerWidgetState<T> extends State<GenericItemPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
-      value: widget.items.contains(_setValue) ? _setValue : null,
+      initialValue: widget.items.contains(_setValue) ? _setValue : null,
       elevation: 16,
       isDense: true,
       isExpanded: true,

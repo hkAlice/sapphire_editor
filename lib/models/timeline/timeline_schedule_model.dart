@@ -11,7 +11,7 @@ class TimelineScheduleModel {
 
   List<TimepointModel> timepoints;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeToJson: false, includeFromJson: false)
   int _nextTimepointId = 1;
 
   TimelineScheduleModel({

@@ -7,8 +7,8 @@ class SignalsProvider extends InheritedWidget {
   const SignalsProvider({
     super.key,
     required this.signals,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static TimelineEditorSignal of(BuildContext context) {
     final provider = context.dependOnInheritedWidgetOfExactType<SignalsProvider>();

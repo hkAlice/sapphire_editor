@@ -174,7 +174,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                         autoCloseDuration: const Duration(seconds: 3),
                       );
                     }
-                    catch(e) {
+                    catch(_) {
                     }
                   },
                   icon: const Icon(Icons.copy_rounded),

@@ -73,121 +73,118 @@ class GenericTimepointItem extends StatelessWidget {
     return Watch((context) {
       final timepointModel = timepointSignal.value;
 
-      return ReorderableDragStartListener(
-        index: timepointIndex,
-        child: InkWell(
-          onTap: () async {
-            showDialog<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return TimepointEditorWidget(
-                  scheduleId: scheduleId,
-                  timepointId: timepointModel.id,
-                  actorId: actorId,
-                  signals:
-                      signals, // dialog loses context since signalprovider doesn't wrap runApp()
-                );
-              },
-            );
-          },
-          child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.black12,
-                  border: Border(
-                      left: BorderSide(
-                          color: timepointModel.getColorForTimepointType(),
-                          width: 2.0),
-                      top: BorderSide(
-                          color: Colors.grey.shade800.withAlpha(150),
-                          width: 1.0))),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5.5),
-                            child: SizedBox(
-                              width: 40,
-                              child: Opacity(
-                                  opacity: 0.7,
-                                  child: Text(
-                                    _formatTime(timepointModel.startTime),
-                                    style:
-                                        Theme.of(context).textTheme.labelSmall,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.right,
-                                  )),
+      return InkWell(
+        onTap: () async {
+          showDialog<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return TimepointEditorWidget(
+                scheduleId: scheduleId,
+                timepointId: timepointModel.id,
+                actorId: actorId,
+                signals:
+                    signals, // dialog loses context since signalprovider doesn't wrap runApp()
+              );
+            },
+          );
+        },
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.black12,
+                border: Border(
+                    left: BorderSide(
+                        color: timepointModel.getColorForTimepointType(),
+                        width: 2.0),
+                    top: BorderSide(
+                        color: Colors.grey.shade800.withAlpha(150),
+                        width: 1.0))),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  IntrinsicHeight(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.5),
+                          child: SizedBox(
+                            width: 40,
+                            child: Opacity(
+                                opacity: 0.7,
+                                child: Text(
+                                  _formatTime(timepointModel.startTime),
+                                  style:
+                                      Theme.of(context).textTheme.labelSmall,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.right,
+                                )),
+                          ),
+                        ),
+                        const VerticalDivider(),
+                        Container(
+                            width: 110,
+                            padding: const EdgeInsets.only(left: 4.0),
+                            child: Text(
+                              treatEnumName(timepointModel.type),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            )),
+                        const VerticalDivider(),
+                        Expanded(
+                            child: Text(
+                          timepointModel.data.toString(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )),
+                        const VerticalDivider(),
+                        SizedBox(
+                          width: 24.0,
+                          height: 24.0,
+                          child: IconButton(
+                            padding: const EdgeInsets.all(0.0),
+                            icon: const Icon(
+                              Icons.copy,
+                              size: 16.0,
                             ),
+                            splashRadius: 14.0,
+                            onPressed: () {
+                              signals.duplicateTimepoint(
+                                  signals.selectedSchedule.value,
+                                  timepointModel,
+                                  actorId);
+                            },
                           ),
-                          const VerticalDivider(),
-                          Container(
-                              width: 110,
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                treatEnumName(timepointModel.type),
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              )),
-                          const VerticalDivider(),
-                          Expanded(
-                              child: Text(
-                            timepointModel.data.toString(),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )),
-                          const VerticalDivider(),
-                          SizedBox(
-                            width: 24.0,
-                            height: 24.0,
-                            child: IconButton(
-                              padding: const EdgeInsets.all(0.0),
-                              icon: const Icon(
-                                Icons.copy,
-                                size: 16.0,
-                              ),
-                              splashRadius: 14.0,
-                              onPressed: () {
-                                signals.duplicateTimepoint(
-                                    signals.selectedSchedule.value,
-                                    timepointModel,
-                                    actorId);
-                              },
+                        ),
+                        const SizedBox(
+                          width: 4.0,
+                        ),
+                        SizedBox(
+                          width: 24.0,
+                          height: 24.0,
+                          child: IconButton(
+                            padding: const EdgeInsets.all(0.0),
+                            icon: const Icon(
+                              Icons.clear_rounded,
+                              size: 16.0,
                             ),
+                            splashRadius: 14.0,
+                            onPressed: () {
+                              signals.removeTimepoint(
+                                  signals.selectedSchedule.value,
+                                  timepointModel,
+                                  actorId);
+                            },
                           ),
-                          const SizedBox(
-                            width: 4.0,
-                          ),
-                          SizedBox(
-                            width: 24.0,
-                            height: 24.0,
-                            child: IconButton(
-                              padding: const EdgeInsets.all(0.0),
-                              icon: const Icon(
-                                Icons.clear_rounded,
-                                size: 16.0,
-                              ),
-                              splashRadius: 14.0,
-                              onPressed: () {
-                                signals.removeTimepoint(
-                                    signals.selectedSchedule.value,
-                                    timepointModel,
-                                    actorId);
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 4.0,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          width: 4.0,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
-        ),
+                  ),
+                ],
+              ),
+            )),
       );
     });
   }

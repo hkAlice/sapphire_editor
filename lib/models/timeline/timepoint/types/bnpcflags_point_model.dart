@@ -30,7 +30,6 @@ class BNpcFlagsPointModel {
   }
 }
 
-// TODO: xdd
 // enum extensions are "cleaner", but also more than double the verbose + overhead of branching/LUT
 class BNpcFlags {
   static const none = 0x00;
