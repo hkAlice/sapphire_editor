@@ -303,12 +303,6 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                         max: 60000,
                         value: timepointModel.startTime,
                         label: "Start time",
-                        inputFormatters: <TextInputFormatter>[
-                          MaskTextInputFormatter(
-                              mask: "##:##",
-                              filter: {"#": RegExp(r'[0-9]')},
-                              type: MaskAutoCompletionType.lazy)
-                        ],
                         builder: (value) {
                           var seconds = value / 1000;
                           return "${seconds.toStringAsFixed(1)}s";

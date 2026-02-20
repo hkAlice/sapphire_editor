@@ -35,8 +35,9 @@ class _NumberButtonState extends State<NumberButton> {
   late int _numValue;
   bool _holdingStepper = false;
   late TextEditingController _controller;
+  late FocusNode _focusNode;
 
-  void _setBoundValue(int value) {
+  void _setBoundValue(int value, {bool notify = true, bool forceUpdateText = false}) {
     _numValue = value;
     if(_numValue <= widget.min) {
       _numValue = widget.min;
@@ -45,21 +46,45 @@ class _NumberButtonState extends State<NumberButton> {
       _numValue = widget.max;
     }
     
-    _controller.text = widget.builder != null ? widget.builder!(_numValue) : _numValue.toString();
-    _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+    if(forceUpdateText || !_focusNode.hasFocus) {
+      _controller.text = _numValue.toString();
+    }
 
-    widget.onChanged(_numValue);
+    if(notify) {
+      widget.onChanged(_numValue);
+    }
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     _numValue = widget.value;
-    _controller = TextEditingController(text: widget.builder != null ? widget.builder!(_numValue) : _numValue.toString());
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if(!_focusNode.hasFocus) {
+        _setBoundValue(_numValue);
+      } else {
+        _controller.text = _numValue.toString();
+        _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+      }
+    });
+
+    _controller = TextEditingController(text: _numValue.toString());
+  }
+
+  @override
+  void didUpdateWidget(covariant NumberButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget.value != oldWidget.value && widget.value != _numValue) {
+      _numValue = widget.value;
+      _controller.text = _numValue.toString();
+    }
   }
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -71,6 +96,7 @@ class _NumberButtonState extends State<NumberButton> {
       child: Stack(
         children: [
           TextField(
+            focusNode: _focusNode,
             enabled: widget.enabled,
             readOnly: widget.readOnlyField,
             maxLines: 1,
@@ -83,19 +109,21 @@ class _NumberButtonState extends State<NumberButton> {
             decoration: InputDecoration(
               filled: false,
               border: OutlineInputBorder(),
-              label: widget.label == null ? null : Text(widget.label!),
+              label: widget.label == null && widget.builder == null 
+                  ? null 
+                  : Text("${widget.label ?? ''} ${widget.builder != null ? "(${widget.builder!(_numValue)})" : ""}".trim()),
             ),
             onChanged: (value) {
-              int newValue = 0;
-              try {
-                newValue = int.tryParse(value) ?? 0;
-              }
-              catch(e) {
-                // failed to parse, ignore
-                return;
-              }
+              int? newValue = int.tryParse(value);
+              if(newValue == null) return;
               
-              _setBoundValue(newValue);
+              setState(() {
+                _numValue = newValue;
+              });
+            },
+            onSubmitted: (value) {
+              _focusNode.unfocus();
+              widget.onChanged(_numValue);
             },
           ),
           Transform.translate(
@@ -112,18 +140,27 @@ class _NumberButtonState extends State<NumberButton> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTapDown: (_) {
-                        _setBoundValue(_numValue - widget.stepCount);
+                        _focusNode.unfocus();
+                        _setBoundValue(_numValue - widget.stepCount, forceUpdateText: true);
                       },
                       onLongPressStart: (_) async {
+                        _focusNode.unfocus();
                         _holdingStepper = true;
                     
                         do {
-                          _setBoundValue(_numValue - widget.stepCount);
+                          _setBoundValue(_numValue - widget.stepCount, notify: false, forceUpdateText: true);
                     
-                          await Future.delayed(const Duration(milliseconds: 20));
+                          await Future.delayed(const Duration(milliseconds: 50));
                         } while(_holdingStepper);
+                        widget.onChanged(_numValue);
                       },
-                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                      onLongPressEnd: (_) => _holdingStepper = false,
+                      onLongPressCancel: () {
+                        if(_holdingStepper) {
+                          _holdingStepper = false;
+                          widget.onChanged(_numValue);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
                         child: const Icon(Icons.remove_rounded, size: 16.0,),
@@ -137,18 +174,27 @@ class _NumberButtonState extends State<NumberButton> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTapDown: (_) {
-                        _setBoundValue(_numValue + widget.stepCount);
+                        _focusNode.unfocus();
+                        _setBoundValue(_numValue + widget.stepCount, forceUpdateText: true);
                       },
                       onLongPressStart: (_) async {
+                        _focusNode.unfocus();
                         _holdingStepper = true;
                     
                         do {
-                          _setBoundValue(_numValue + widget.stepCount);
+                          _setBoundValue(_numValue + widget.stepCount, notify: false, forceUpdateText: true);
                     
-                          await Future.delayed(const Duration(milliseconds: 20));
+                          await Future.delayed(const Duration(milliseconds: 50));
                         } while(_holdingStepper);
+                        widget.onChanged(_numValue);
                       },
-                      onLongPressEnd: (_) => setState(() => _holdingStepper = false),
+                      onLongPressEnd: (_) => _holdingStepper = false,
+                      onLongPressCancel: () {
+                        if(_holdingStepper) {
+                          _holdingStepper = false;
+                          widget.onChanged(_numValue);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
                         child: const Icon(Icons.add_rounded, size: 16.0,),
