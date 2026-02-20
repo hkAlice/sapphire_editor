@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
@@ -123,8 +122,6 @@ class TimelineEditorSignal {
 
       final newActors = [...timeline.value.actors];
       newActors[actorIndex] = newActor;
-      
-      final newSchedule = newActor.schedules.firstWhere((s) => s.id == scheduleId);
 
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
