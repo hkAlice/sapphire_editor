@@ -21,9 +21,11 @@ class ActorModel {
     required this.hp,
     subactorsList,
     scheduleList,
-  }) : schedules = scheduleList ?? [], subactors = subactorsList ?? [];
+  })  : schedules = scheduleList ?? [],
+        subactors = subactorsList ?? [];
 
-  factory ActorModel.fromJson(Map<String, dynamic> json) => _$ActorModelFromJson(json);
+  factory ActorModel.fromJson(Map<String, dynamic> json) =>
+      _$ActorModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActorModelToJson(this);
 
