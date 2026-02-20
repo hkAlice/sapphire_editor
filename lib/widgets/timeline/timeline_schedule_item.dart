@@ -21,12 +21,18 @@ class TimelineScheduleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final signals = SignalsProvider.of(context);
 
+    // Create a computed signal for this specific schedule to avoid rebuilds when other schedules change
+    final scheduleSignal = computed(() {
+      final actor = signals.selectedActor.value;
+      return actor.schedules.firstWhere(
+        (s) => s.id == scheduleId,
+        orElse: () => actor.schedules.first,
+      );
+    });
+
     return Watch((context) {
       final actor = signals.selectedActor.value;
-      final schedule = actor.schedules.where((s) => s.id == scheduleId).first;
-      
-      // DEBUG: Log what the list view sees
-      debugPrint('[TimelineScheduleItem] scheduleId=$scheduleId, schedule.id=${schedule.id}, timepoints=${schedule.timepoints.map((t) => t.id).toList()}');
+      final schedule = scheduleSignal.value;
       
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
@@ -112,14 +118,13 @@ class TimelineScheduleItem extends StatelessWidget {
                   scheduleIndex: scheduleIndex,
                   scheduleId: scheduleId,
                   timepointIndex: i,
-                  timeElapsedMs: cache.timeElapsedMap[i]!,
+                  timeElapsedMs: cache.timeElapsedList[i],
                   actorId: actor.id,
                 );
               }
             ),
             SmallAddGenericWidget(
               onTap: () {
-                // todo: i don't think this is needed
                 Future.delayed(Duration.zero, () {
                   signals.addTimepoint(actor.id, schedule.id, TimepointModel(id: schedule.generateTimepointId(), type: TimepointType.idle));
                 });

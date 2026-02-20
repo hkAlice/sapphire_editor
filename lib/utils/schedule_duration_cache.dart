@@ -5,9 +5,9 @@ class ScheduleDurationCache {
   
   final int scheduleHash;
   final String duration;
-  final Map<int, int> timeElapsedMap;
+  final List<int> timeElapsedList;
   
-  ScheduleDurationCache._(this.scheduleHash, this.duration, this.timeElapsedMap);
+  ScheduleDurationCache._(this.scheduleHash, this.duration, this.timeElapsedList);
   
   factory ScheduleDurationCache.calculate(TimelineScheduleModel schedule) {
     final hash = schedule.id;
@@ -30,12 +30,12 @@ class ScheduleDurationCache {
   }
   
   static bool _isValid(TimelineScheduleModel schedule, ScheduleDurationCache cached) {
-    if(schedule.timepoints.length != cached.timeElapsedMap.length) return false;
+    if(schedule.timepoints.length != cached.timeElapsedList.length) return false;
     
     for(int i = 0; i < schedule.timepoints.length; i++) {
       if(schedule.timepoints[i].startTime != 
           (i < schedule.timepoints.length - 1 ? 
-           cached.timeElapsedMap[i + 1]! - cached.timeElapsedMap[i]! : 
+           cached.timeElapsedList[i + 1] - cached.timeElapsedList[i] : 
            schedule.timepoints[i].startTime)) {
         return false;
       }
@@ -44,17 +44,17 @@ class ScheduleDurationCache {
   }
   
   static ScheduleDurationCache _calculate(TimelineScheduleModel schedule) {
-    final timeElapsedMap = <int, int>{};
+    final timeElapsedList = List<int>.filled(schedule.timepoints.length, 0);
     int timeElapsedMs = 0;
     
     for(int i = 0; i < schedule.timepoints.length; i++) {
-      timeElapsedMap[i] = timeElapsedMs;
+      timeElapsedList[i] = timeElapsedMs;
       timeElapsedMs += schedule.timepoints[i].startTime;
     }
     
     final duration = _formatDuration(timeElapsedMs);
     
-    return ScheduleDurationCache._(schedule.id, duration, timeElapsedMap);
+    return ScheduleDurationCache._(schedule.id, duration, timeElapsedList);
   }
   
   static String _formatDuration(int durationTotalMs) {

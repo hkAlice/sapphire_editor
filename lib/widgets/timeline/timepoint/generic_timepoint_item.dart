@@ -63,12 +63,15 @@ class GenericTimepointItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final signals = SignalsProvider.of(context);
 
-    return Watch((context) {
+    final timepointSignal = computed(() {
       final actor =
           signals.timeline.value.actors.firstWhere((a) => a.id == actorId);
       final schedule = actor.schedules.firstWhere((s) => s.id == scheduleId);
-      final timepointModel =
-          schedule.timepoints.firstWhere((t) => t.id == timepointId);
+      return schedule.timepoints.firstWhere((t) => t.id == timepointId);
+    });
+
+    return Watch((context) {
+      final timepointModel = timepointSignal.value;
 
       return ReorderableDragStartListener(
         index: timepointIndex,
@@ -80,7 +83,7 @@ class GenericTimepointItem extends StatelessWidget {
                 return TimepointEditorWidget(
                   scheduleId: scheduleId,
                   timepointId: timepointModel.id,
-                  actorId: actor.id,
+                  actorId: actorId,
                   signals:
                       signals, // dialog loses context since signalprovider doesn't wrap runApp()
                 );
@@ -150,7 +153,7 @@ class GenericTimepointItem extends StatelessWidget {
                                 signals.duplicateTimepoint(
                                     signals.selectedSchedule.value,
                                     timepointModel,
-                                    actor.id);
+                                    actorId);
                               },
                             ),
                           ),
@@ -171,7 +174,7 @@ class GenericTimepointItem extends StatelessWidget {
                                 signals.removeTimepoint(
                                     signals.selectedSchedule.value,
                                     timepointModel,
-                                    actor.id);
+                                    actorId);
                               },
                             ),
                           ),
@@ -257,38 +260,12 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
     return Watch((context) {
       final signals = widget.signals;
 
-      // DEBUG: Compare data sources
-      debugPrint('[TimepointEditorWidget] === DATA SOURCE COMPARISON ===');
-      debugPrint(
-          '[TimepointEditorWidget] selectedActorId: ${signals.selectedActorId.value}');
-      debugPrint(
-          '[TimepointEditorWidget] selectedScheduleId: ${signals.selectedScheduleId.value}');
-
-      // Check selectedActor computed
-      final selectedActorComputed = signals.selectedActor.value;
-      debugPrint(
-          '[TimepointEditorWidget] selectedActor.value: id=${selectedActorComputed.id}, schedules=${selectedActorComputed.schedules.map((s) => '${s.id}(${s.timepoints.length}tps)').toList()}');
-
-      // Check direct timeline access
-      final directActor = signals.timeline.value.actors
-          .firstWhere((a) => a.id == widget.actorId);
-      debugPrint(
-          '[TimepointEditorWidget] direct actor lookup: id=${directActor.id}, schedules=${directActor.schedules.map((s) => '${s.id}(${s.timepoints.length}tps)').toList()}');
-
-      debugPrint(
-          '[TimepointEditorWidget] Looking for actorId=${widget.actorId}, scheduleId=${widget.scheduleId}, timepointId=${widget.timepointId}');
-
       final actor = signals.timeline.value.actors
           .firstWhere((a) => a.id == widget.actorId);
       final schedule =
           actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
-      debugPrint(
-          '[TimepointEditorWidget] Found schedule: ${schedule.id}, timepoints: ${schedule.timepoints.map((t) => t.id).toList()}');
-
       final timepointModel =
           schedule.timepoints.firstWhere((t) => t.id == widget.timepointId);
-      debugPrint(
-          '[TimepointEditorWidget] Found timepoint: ${timepointModel.id}');
 
       return AlertDialog(
         title: Row(
@@ -344,8 +321,8 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                           final newTp =
                               timepointModel.copyWith(startTime: value);
                           signals.updateTimepoint(
-                              signals.selectedActor.value.id,
-                              signals.selectedSchedule.value.id,
+                              actor.id,
+                              schedule.id,
                               timepointModel.id,
                               newTp);
                         }),
@@ -370,8 +347,8 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                             timepointModel.changeType(value);
 
                             signals.updateTimepoint(
-                                signals.selectedActor.value.id,
-                                signals.selectedSchedule.value.id,
+                                actor.id,
+                                schedule.id,
                                 timepointModel.id,
                                 timepointModel);
                           },
@@ -403,8 +380,8 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                             final newTp = timepointModel.copyWith(
                                 description: description);
                             signals.updateTimepoint(
-                                signals.selectedActor.value.id,
-                                signals.selectedSchedule.value.id,
+                                actor.id,
+                                schedule.id,
                                 timepointModel.id,
                                 newTp);
                           }),
