@@ -64,7 +64,6 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
   }
   
   void _updateTimepoint(TimelineEditorSignal signals) {
-    final timeline = signals.timeline.value;
     final actor = signals.selectedActor.value;
     final schedule = signals.selectedSchedule.value;
     final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);

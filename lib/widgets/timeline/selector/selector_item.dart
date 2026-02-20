@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
@@ -39,7 +38,7 @@ Widget build(BuildContext context) {
     );
     
     // If selector not found (deleted), return empty container
-    if (selectorModel.id == 0) {
+    if(selectorModel.id == 0) {
       return const SizedBox.shrink();
     }
     

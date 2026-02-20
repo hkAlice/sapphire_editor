@@ -4,9 +4,7 @@ import 'package:sapphire_editor/repositories/local_repository.dart';
 import 'package:sapphire_editor/services/settings_helper.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/services/theme_service.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/views/main_view.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +22,6 @@ void main() async {
   var theme = FlexScheme.values.firstWhere((e) => e.name == uiSettings.theme, orElse: () => FlexScheme.damask);
 
   themeService.updateThemeData(FlexThemeData.dark(scheme: theme));
-
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    print(details.exception);
-    print(details.stack);
-  };
   
   runApp(SapphireEditorApp(themeService: themeService,)
   );

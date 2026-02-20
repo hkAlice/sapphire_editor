@@ -47,7 +47,7 @@ class GenericTimepointItem extends StatelessWidget {
   String _formatTime(int startTimeMs) {
     Duration startTime = Duration(milliseconds: startTimeMs);
 
-    if (startTime.inHours > 0) {
+    if(startTime.inHours > 0) {
       int hours = startTime.inHours;
       int minutes = startTime.inMinutes % 60;
       int seconds = startTime.inSeconds % 60;
@@ -363,7 +363,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                           initialValue: timepointModel.type,
                           isDense: true,
                           onChanged: (TimepointType? value) {
-                            if (value == null) {
+                            if(value == null) {
                               return;
                             }
 

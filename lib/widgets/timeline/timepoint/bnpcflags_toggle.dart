@@ -85,27 +85,27 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
   FlagState _getFlagState(int flagBit) {
     int mask = _flagsMask ?? 0xFFFFFFFF;
 
-    if ((mask & flagBit) == 0) return FlagState.unchanged;
-    if ((_flags & flagBit) != 0) return FlagState.set;
+    if((mask & flagBit) == 0) return FlagState.unchanged;
+    if((_flags & flagBit) != 0) return FlagState.set;
     return FlagState.clear;
   }
 
   void _cycleFlag(int flagBit) {
     FlagState current = _getFlagState(flagBit);
     FlagState next;
-    if (current == FlagState.unchanged)
+    if(current == FlagState.unchanged)
       next = FlagState.set;
-    else if (current == FlagState.set)
+    else if(current == FlagState.set)
       next = FlagState.clear;
     else
       next = FlagState.unchanged;
 
     int mask = _flagsMask ?? 0xFFFFFFFF;
 
-    if (next == FlagState.unchanged) {
+    if(next == FlagState.unchanged) {
       mask &= ~flagBit;
       _flags &= ~flagBit;
-    } else if (next == FlagState.set) {
+    } else if(next == FlagState.set) {
       mask |= flagBit;
       _flags |= flagBit;
     } else {
@@ -134,7 +134,7 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
                         style: Theme.of(context).textTheme.labelSmall),
                     Text(_flags.toRadixString(2).padLeft(12, "0"),
                         style: Theme.of(context).textTheme.displaySmall),
-                    if (_flagsMask != null) ...[
+                    if(_flagsMask != null) ...[
                       const SizedBox(height: 8),
                       Text("Mask",
                           style: Theme.of(context).textTheme.labelSmall),

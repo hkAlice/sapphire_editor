@@ -61,7 +61,7 @@ class TimepointModel {
       data: data ?? this.data,
     );
 
-    if (type != null && type != this.type) {
+    if(type != null && type != this.type) {
       newTimepoint.changeType(type);
     } else {
       newTimepoint.data = data ?? this.data;
@@ -72,7 +72,7 @@ class TimepointModel {
 
   // Simplified changeType using a factory map instead of giant if-else
   void changeType(TimepointType pointType) {
-    if (type != pointType) {
+    if(type != pointType) {
       data = <String, dynamic>{};
     }
 
@@ -80,7 +80,7 @@ class TimepointModel {
 
     data ??= <String, dynamic>{};
 
-    if (data is Map<String, dynamic>) {
+    if(data is Map<String, dynamic>) {
       data = _timepointDataFactory(pointType, data);
     }
   }

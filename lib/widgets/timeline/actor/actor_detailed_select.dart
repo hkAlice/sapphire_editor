@@ -28,9 +28,6 @@ class _ActorDetailedSelectState extends State<ActorDetailedSelect> {
     
     return Watch((context) {
       final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
-      final timeline = signals.timeline.value;
-
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

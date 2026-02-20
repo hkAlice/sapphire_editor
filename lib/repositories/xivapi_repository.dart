@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:sapphire_editor/models/repository/item_minimal.dart';
 
 class XivApiRepository {
   static final XivApiRepository _instance = XivApiRepository._internal();
@@ -20,7 +17,7 @@ class XivApiRepository {
     // get asset filename
     String icon = extended
       ? num.toString().padLeft(5, "0")
-      : "0" + num.toString().padLeft(5, "0");
+      : "0${num.toString().padLeft(5, "0")}";
 
     // get path id
     String folderId = extended

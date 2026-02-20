@@ -5,7 +5,8 @@ class LRUCache<K, V> {
   LRUCache(this.capacity);
 
   V? get(K key) {
-    if (!_cache.containsKey(key)) return null;
+    if(!_cache.containsKey(key))
+      return null;
     
     final value = _cache[key]!;
     _cache.remove(key);
@@ -14,9 +15,9 @@ class LRUCache<K, V> {
   }
 
   void put(K key, V value) {
-    if (_cache.containsKey(key)) {
+    if(_cache.containsKey(key)) {
       _cache.remove(key);
-    } else if (_cache.length >= capacity) {
+    } else if(_cache.length >= capacity) {
       _cache.remove(_cache.keys.first);
     }
     

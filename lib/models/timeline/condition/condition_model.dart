@@ -101,19 +101,19 @@ class ConditionModel {
     if(condition == ConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
       summary += "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
-    } else if (condition == ConditionType.getAction) {
+    } else if(condition == ConditionType.getAction) {
       var param = paramData as GetActionConditionModel;
       summary += "${param.sourceActor} casts Action#${param.actionId}";
-    } else if (condition == ConditionType.combatState) {
+    } else if(condition == ConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
       summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
-    } else if (condition == ConditionType.scheduleActive) {
+    } else if(condition == ConditionType.scheduleActive) {
       var param = paramData as ScheduleActiveConditionModel;
       summary += "${param.sourceActor}->${param.scheduleName} is active";
-    } else if (condition == ConditionType.interruptedAction) {
+    } else if(condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
-    } else if (condition == ConditionType.varEquals) {
+    } else if(condition == ConditionType.varEquals) {
       var param = paramData as VarEqualsConditionModel;
       summary += "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
     } else {

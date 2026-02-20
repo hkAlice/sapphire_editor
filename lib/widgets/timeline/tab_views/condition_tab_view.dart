@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';

@@ -200,7 +200,7 @@ class TimelineEditorSignal {
   void reorderTimepoint(TimelineScheduleModel schedule, int oldIndex, int newIndex, int actorId) {
     batch(() {
       final timepoints = [...schedule.timepoints];
-      if (newIndex > oldIndex) {
+      if(newIndex > oldIndex) {
         newIndex -= 1;
       }
       final item = timepoints.removeAt(oldIndex);
@@ -238,7 +238,7 @@ class TimelineEditorSignal {
     _pendingJsonInput.value = json;
     
     _jsonDebounceTimer = Timer(const Duration(milliseconds: 500), () {
-      if (_pendingJsonInput.value.isNotEmpty) {
+      if(_pendingJsonInput.value.isNotEmpty) {
         loadFromJson(_pendingJsonInput.value);
         _pendingJsonInput.value = '';
       }
@@ -246,14 +246,14 @@ class TimelineEditorSignal {
   }
 
   void undo() {
-    if (!canUndo.value) return;
+    if(!canUndo.value) return;
 
     _historyIndex.value--;
     timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
   }
 
   void redo() {
-    if (!canRedo.value) return;
+    if(!canRedo.value) return;
 
     _historyIndex.value++;
     timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
@@ -378,7 +378,7 @@ class TimelineEditorSignal {
   // Condition mutation methods
 
   int _generateConditionId() {
-    if (timeline.value.conditions.isEmpty) return 1;
+    if(timeline.value.conditions.isEmpty) return 1;
     return timeline.value.conditions.map((c) => c.id).reduce((a, b) => a > b ? a : b) + 1;
   }
 
@@ -427,14 +427,14 @@ class TimelineEditorSignal {
   // Selector mutation methods
 
   int _generateSelectorId() {
-    if (timeline.value.selectors.isEmpty) return 1;
+    if(timeline.value.selectors.isEmpty) return 1;
     return timeline.value.selectors.map((s) => s.id).reduce((a, b) => a > b ? a : b) + 1;
   }
 
   void updateSelector(int selectorId, SelectorModel newSelector) {
     batch(() {
       final selectorIndex = timeline.value.selectors.indexWhere((s) => s.id == selectorId);
-      if (selectorIndex == -1) return;
+      if(selectorIndex == -1) return;
       
       final newSelectors = [...timeline.value.selectors];
       newSelectors[selectorIndex] = newSelector;
@@ -475,7 +475,7 @@ class TimelineEditorSignal {
   void reorderSelector(int oldIndex, int newIndex) {
     batch(() {
       final selectors = [...timeline.value.selectors];
-      if (newIndex > oldIndex) {
+      if(newIndex > oldIndex) {
         newIndex -= 1;
       }
       final item = selectors.removeAt(oldIndex);

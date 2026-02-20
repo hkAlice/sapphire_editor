@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/schedule_tab_view.dart';
 import 'package:sapphire_editor/widgets/timeline/tab_views/selector_tab_view.dart';
-import 'package:tab_container/tab_container.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class TimelineList extends StatelessWidget {

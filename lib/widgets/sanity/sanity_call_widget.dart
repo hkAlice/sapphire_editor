@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/utils/timeline_sanity.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
-import 'package:signals_flutter/signals_flutter.dart';
 
 class SanityCallWidget extends StatefulWidget {
   const SanityCallWidget({super.key});

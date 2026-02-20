@@ -78,8 +78,6 @@ String directorOpcToString(DirectorOpcode opc) {
       op = "<<";
     case DirectorOpcode.srl:
       op = ">>";
-    default:
-      op = "unk";
   }
 
   return op;

@@ -22,7 +22,7 @@ class BNpcFlagsPointModel {
   String toString() {
     var flagsStr = BNpcFlags.flagsStr(flags);
 
-    if (flagsStr.isEmpty) {
+    if(flagsStr.isEmpty) {
       return "Set and clear all flags";
     } else {
       return "Set $flagsStr";
@@ -50,44 +50,44 @@ class BNpcFlags {
   static String flagsStr(int flags) {
     String bnpcFlags = "";
 
-    if (flags & BNpcFlags.immobile == BNpcFlags.immobile) {
+    if(flags & BNpcFlags.immobile == BNpcFlags.immobile) {
       bnpcFlags += " Immobile |";
     }
-    if (flags & BNpcFlags.turningDisabled == BNpcFlags.turningDisabled) {
+    if(flags & BNpcFlags.turningDisabled == BNpcFlags.turningDisabled) {
       bnpcFlags += " TurningDisabled |";
     }
-    if (flags & BNpcFlags.invincible == BNpcFlags.invincible) {
+    if(flags & BNpcFlags.invincible == BNpcFlags.invincible) {
       bnpcFlags += " Invincible |";
     }
-    if (flags & BNpcFlags.invincibleRefill == BNpcFlags.invincibleRefill) {
+    if(flags & BNpcFlags.invincibleRefill == BNpcFlags.invincibleRefill) {
       bnpcFlags += " InvincibleRefill |";
     }
-    if (flags & BNpcFlags.noDeaggro == BNpcFlags.noDeaggro) {
+    if(flags & BNpcFlags.noDeaggro == BNpcFlags.noDeaggro) {
       bnpcFlags += " NoDeaggro |";
     }
-    if (flags & BNpcFlags.untargetable == BNpcFlags.untargetable) {
+    if(flags & BNpcFlags.untargetable == BNpcFlags.untargetable) {
       bnpcFlags += " Untargetable |";
     }
-    if (flags & BNpcFlags.autoAttackDisabled == BNpcFlags.autoAttackDisabled) {
+    if(flags & BNpcFlags.autoAttackDisabled == BNpcFlags.autoAttackDisabled) {
       bnpcFlags += " AutoAtkDisabled |";
     }
-    if (flags & BNpcFlags.invisible == BNpcFlags.invisible) {
+    if(flags & BNpcFlags.invisible == BNpcFlags.invisible) {
       bnpcFlags += " Invisible |";
     }
-    if (flags & BNpcFlags.noRoam == BNpcFlags.noRoam) {
+    if(flags & BNpcFlags.noRoam == BNpcFlags.noRoam) {
       bnpcFlags += " NoRoam |";
     }
-    if (flags & BNpcFlags.unused1 == BNpcFlags.unused1) {
+    if(flags & BNpcFlags.unused1 == BNpcFlags.unused1) {
       bnpcFlags += " unused1 |";
     }
-    if (flags & BNpcFlags.unused2 == BNpcFlags.unused2) {
+    if(flags & BNpcFlags.unused2 == BNpcFlags.unused2) {
       bnpcFlags += " unused2 |";
     }
-    if (flags & BNpcFlags.unused3 == BNpcFlags.unused3) {
+    if(flags & BNpcFlags.unused3 == BNpcFlags.unused3) {
       bnpcFlags += " unused3 |";
     }
 
-    if (bnpcFlags.isNotEmpty) {
+    if(bnpcFlags.isNotEmpty) {
       bnpcFlags = bnpcFlags.substring(0, bnpcFlags.length - 1).trim();
     }
 

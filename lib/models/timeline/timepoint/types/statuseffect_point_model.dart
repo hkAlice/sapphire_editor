@@ -36,7 +36,7 @@ class StatusEffectPointModel {
 
     sum += " to ${treatEnumName(targetType)}";
 
-    if (targetType == ActorTargetType.selectorTarget ||
+    if(targetType == ActorTargetType.selectorTarget ||
         targetType == ActorTargetType.selectorPos) {
       sum += " $selectorName#${selectorIndex + 1}";
     }

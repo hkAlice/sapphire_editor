@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/loottable/loottable_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/widgets/loottable/tab_views/loottable_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/tab_views/actor_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/tab_views/condition_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/tab_views/schedule_tab_view.dart';
-import 'package:sapphire_editor/widgets/timeline/tab_views/selector_tab_view.dart';
 import 'package:tab_container/tab_container.dart';
 
 class LootTableList extends StatefulWidget {

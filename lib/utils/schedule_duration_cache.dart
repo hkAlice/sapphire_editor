@@ -12,9 +12,9 @@ class ScheduleDurationCache {
   factory ScheduleDurationCache.calculate(TimelineScheduleModel schedule) {
     final hash = schedule.id;
     
-    if (_cache.containsKey(hash)) {
+    if(_cache.containsKey(hash)) {
       final cached = _cache[hash]!;
-      if (_isValid(schedule, cached)) {
+      if(_isValid(schedule, cached)) {
         return cached;
       }
     }
@@ -22,7 +22,7 @@ class ScheduleDurationCache {
     final result = _calculate(schedule);
     _cache[hash] = result;
     
-    if (_cache.length > 100) {
+    if(_cache.length > 100) {
       _cache.remove(_cache.keys.first);
     }
     
@@ -30,10 +30,10 @@ class ScheduleDurationCache {
   }
   
   static bool _isValid(TimelineScheduleModel schedule, ScheduleDurationCache cached) {
-    if (schedule.timepoints.length != cached.timeElapsedMap.length) return false;
+    if(schedule.timepoints.length != cached.timeElapsedMap.length) return false;
     
-    for (int i = 0; i < schedule.timepoints.length; i++) {
-      if (schedule.timepoints[i].startTime != 
+    for(int i = 0; i < schedule.timepoints.length; i++) {
+      if(schedule.timepoints[i].startTime != 
           (i < schedule.timepoints.length - 1 ? 
            cached.timeElapsedMap[i + 1]! - cached.timeElapsedMap[i]! : 
            schedule.timepoints[i].startTime)) {
@@ -47,7 +47,7 @@ class ScheduleDurationCache {
     final timeElapsedMap = <int, int>{};
     int timeElapsedMs = 0;
     
-    for (int i = 0; i < schedule.timepoints.length; i++) {
+    for(int i = 0; i < schedule.timepoints.length; i++) {
       timeElapsedMap[i] = timeElapsedMs;
       timeElapsedMs += schedule.timepoints[i].startTime;
     }
@@ -61,14 +61,14 @@ class ScheduleDurationCache {
     final duration = Duration(milliseconds: durationTotalMs);
     
     String twoDigits(int n) {
-      if (n >= 10) return "$n";
+      if(n >= 10) return "$n";
       return "0$n";
     }
     
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     
-    if (duration.inHours > 0) {
+    if(duration.inHours > 0) {
       return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
     } else {
       return "$twoDigitMinutes:$twoDigitSeconds";

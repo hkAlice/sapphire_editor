@@ -36,7 +36,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
     final autosaveKeys = await autosave.getAllKeys();
 
     TimelineModel? timeline;
-    if (autosaveKeys.isNotEmpty) {
+    if(autosaveKeys.isNotEmpty) {
       try {
         final json = await autosave.get(autosaveKeys.last);
         timeline = TimelineModel.fromJson(jsonDecode(json));
@@ -51,7 +51,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    if (_signal == null) {
+    if(_signal == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -118,7 +118,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
 
     return Watch((context) {
       final json = signals.jsonOutput.value;
-      if (!_jsonController.text.isNotEmpty || _jsonController.text != json) {
+      if(!_jsonController.text.isNotEmpty || _jsonController.text != json) {
         _jsonController.text = json;
         _jsonController.formatJson(sortJson: true);
       }
@@ -206,7 +206,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
           ),
           Watch((context) {
             final lastSave = signals.lastAutosave.value;
-            if (lastSave == null) return const SizedBox.shrink();
+            if(lastSave == null) return const SizedBox.shrink();
 
             return Positioned(
               bottom: 8,

@@ -28,8 +28,8 @@ class TimelineScheduleModel {
     
     // assign IDs to timepoints loaded with default value (-1)
     // this handles older timeline json without timeline id (version < 20)
-    for (final timepoint in schedule.timepoints) {
-      if (timepoint.id == -1) {
+    for(final timepoint in schedule.timepoints) {
+      if(timepoint.id == -1) {
         timepoint.id = schedule.generateTimepointId();
       }
     }
