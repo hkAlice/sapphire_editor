@@ -10,6 +10,8 @@ BNpcSpawnPointModel _$BNpcSpawnPointModelFromJson(Map<String, dynamic> json) =>
     BNpcSpawnPointModel(
       spawnActor: json['spawnActor'] as String? ?? "<unknown>",
       flags: (json['flags'] as num?)?.toInt() ?? 0,
+      flagsMask: (json['flagsMask'] as num?)?.toInt(),
+      invulnType: (json['invulnType'] as num?)?.toInt(),
       hateSource: json['hateSource'] == null
           ? null
           : HateSourceModel.fromJson(
@@ -21,6 +23,8 @@ Map<String, dynamic> _$BNpcSpawnPointModelToJson(
     <String, dynamic>{
       'spawnActor': instance.spawnActor,
       'flags': instance.flags,
+      'flagsMask': instance.flagsMask,
+      'invulnType': instance.invulnType,
       'hateSource': instance.hateSource,
     };
 

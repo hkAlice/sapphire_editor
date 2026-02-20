@@ -17,6 +17,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_mod
 import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/statuseffect_point_model.dart';
 
 part 'timepoint_model.g.dart';
 
@@ -31,11 +32,17 @@ class TimepointModel {
 
   dynamic data = {};
 
-  TimepointModel({required this.id, required this.type, this.description = "", this.startTime = 0, this.data}) {
+  TimepointModel(
+      {required this.id,
+      required this.type,
+      this.description = "",
+      this.startTime = 0,
+      this.data}) {
     changeType(type);
   }
 
-  factory TimepointModel.fromJson(Map<String, dynamic> json) => _$TimepointModelFromJson(json);
+  factory TimepointModel.fromJson(Map<String, dynamic> json) =>
+      _$TimepointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TimepointModelToJson(this);
 
@@ -53,20 +60,19 @@ class TimepointModel {
       startTime: startTime ?? this.startTime,
       data: data ?? this.data,
     );
-    
-    if(type != null && type != this.type) {
+
+    if (type != null && type != this.type) {
       newTimepoint.changeType(type);
-    }
-    else {
+    } else {
       newTimepoint.data = data ?? this.data;
     }
-    
+
     return newTimepoint;
   }
 
   // Simplified changeType using a factory map instead of giant if-else
   void changeType(TimepointType pointType) {
-    if(type != pointType) {
+    if (type != pointType) {
       data = <String, dynamic>{};
     }
 
@@ -74,12 +80,13 @@ class TimepointModel {
 
     data ??= <String, dynamic>{};
 
-    if(data is Map<String, dynamic>) {
+    if (data is Map<String, dynamic>) {
       data = _timepointDataFactory(pointType, data);
     }
   }
 
-  static dynamic _timepointDataFactory(TimepointType type, Map<String, dynamic> json) {
+  static dynamic _timepointDataFactory(
+      TimepointType type, Map<String, dynamic> json) {
     return switch (type) {
       TimepointType.setPos => SetPosPointModel.fromJson(json),
       TimepointType.idle => IdlePointModel.fromJson(json),
@@ -98,12 +105,13 @@ class TimepointModel {
       TimepointType.actionTimeline => ActionTimelinePointModel.fromJson(json),
       TimepointType.interruptAction => InterruptActionPointModel.fromJson(json),
       TimepointType.rollRNG => RollRNGPointModel.fromJson(json),
+      TimepointType.statusEffect => StatusEffectPointModel.fromJson(json),
     };
   }
-  
+
   // Color getter using extension method
   Color get color => type.color;
-  
+
   // Display name getter using extension method
   String get displayName => type.displayName;
 
@@ -140,6 +148,8 @@ extension TimepointTypeExtension on TimepointType {
       case TimepointType.interruptAction:
       case TimepointType.rollRNG:
         return Colors.orangeAccent;
+      case TimepointType.statusEffect:
+        return Colors.purpleAccent;
     }
   }
 
@@ -179,6 +189,8 @@ extension TimepointTypeExtension on TimepointType {
         return "Interrupt Action";
       case TimepointType.rollRNG:
         return "Roll RNG";
+      case TimepointType.statusEffect:
+        return "Status Effect";
     }
   }
 }
@@ -217,5 +229,7 @@ enum TimepointType {
   @JsonValue("interruptAction")
   interruptAction,
   @JsonValue("rollRNG")
-  rollRNG
+  rollRNG,
+  @JsonValue("statusEffect")
+  statusEffect
 }

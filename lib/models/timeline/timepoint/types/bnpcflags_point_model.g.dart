@@ -10,6 +10,8 @@ BNpcFlagsPointModel _$BNpcFlagsPointModelFromJson(Map<String, dynamic> json) =>
     BNpcFlagsPointModel(
       targetActor: json['targetActor'] as String? ?? "",
       flags: (json['flags'] as num?)?.toInt() ?? 0,
+      flagsMask: (json['flagsMask'] as num?)?.toInt(),
+      invulnType: (json['invulnType'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$BNpcFlagsPointModelToJson(
@@ -17,4 +19,6 @@ Map<String, dynamic> _$BNpcFlagsPointModelToJson(
     <String, dynamic>{
       'targetActor': instance.targetActor,
       'flags': instance.flags,
+      'flagsMask': instance.flagsMask,
+      'invulnType': instance.invulnType,
     };

@@ -7,13 +7,21 @@ part 'bnpcspawn_point_model.g.dart';
 class BNpcSpawnPointModel {
   String spawnActor;
   int flags;
+  int? flagsMask;
+  int? invulnType;
   HateSourceModel? hateSource;
 
-  BNpcSpawnPointModel({this.spawnActor = "<unknown>", this.flags = 0, this.hateSource}) {
+  BNpcSpawnPointModel(
+      {this.spawnActor = "<unknown>",
+      this.flags = 0,
+      this.flagsMask,
+      this.invulnType,
+      this.hateSource}) {
     hateSource ??= HateSourceModel();
   }
 
-  factory BNpcSpawnPointModel.fromJson(Map<String, dynamic> json) => _$BNpcSpawnPointModelFromJson(json);
+  factory BNpcSpawnPointModel.fromJson(Map<String, dynamic> json) =>
+      _$BNpcSpawnPointModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BNpcSpawnPointModelToJson(this);
 
@@ -28,9 +36,11 @@ class HateSourceModel {
   String hateType;
   String source;
 
-  HateSourceModel({this.hateType = "<to-be-defined>", this.source = "<to-de-befined>"});
+  HateSourceModel(
+      {this.hateType = "<to-be-defined>", this.source = "<to-de-befined>"});
 
-  factory HateSourceModel.fromJson(Map<String, dynamic> json) => _$HateSourceModelFromJson(json);
+  factory HateSourceModel.fromJson(Map<String, dynamic> json) =>
+      _$HateSourceModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$HateSourceModelToJson(this);
 }
