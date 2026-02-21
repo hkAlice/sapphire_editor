@@ -58,7 +58,7 @@ class TriStateFlagWidget extends StatelessWidget {
   }
 }
 
-class BNpcFlagsToggle extends StatefulWidget {
+class BNpcFlagsToggle extends StatelessWidget {
   final int flags;
   final int? flagsMask;
   final int? invulnType;
@@ -73,20 +73,11 @@ class BNpcFlagsToggle extends StatefulWidget {
       required this.onUpdate,
       this.isDense = false});
 
-  @override
-  State<BNpcFlagsToggle> createState() => _BNpcFlagsToggleState();
-}
-
-class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
-  late int _flags = widget.flags;
-  late int? _flagsMask = widget.flagsMask;
-  late int? _invulnType = widget.invulnType;
-
   FlagState _getFlagState(int flagBit) {
-    int mask = _flagsMask ?? 0xFFFFFFFF;
+    int mask = flagsMask ?? 0xFFFFFFFF;
 
     if((mask & flagBit) == 0) return FlagState.unchanged;
-    if((_flags & flagBit) != 0) return FlagState.set;
+    if((flags & flagBit) != 0) return FlagState.set;
     return FlagState.clear;
   }
 
@@ -100,22 +91,21 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
     else
       next = FlagState.unchanged;
 
-    int mask = _flagsMask ?? 0xFFFFFFFF;
+    int mask = flagsMask ?? 0xFFFFFFFF;
+    int newFlags = flags;
 
     if(next == FlagState.unchanged) {
       mask &= ~flagBit;
-      _flags &= ~flagBit;
+      newFlags &= ~flagBit;
     } else if(next == FlagState.set) {
       mask |= flagBit;
-      _flags |= flagBit;
+      newFlags |= flagBit;
     } else {
       mask |= flagBit;
-      _flags &= ~flagBit;
+      newFlags &= ~flagBit;
     }
 
-    _flagsMask = mask;
-    widget.onUpdate(_flags, _flagsMask, _invulnType);
-    setState(() {});
+    onUpdate(newFlags, mask, invulnType);
   }
 
   @override
@@ -123,7 +113,7 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
     return Column(
       children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          widget.isDense
+          isDense
               ? Container()
               : Expanded(
                   child: Center(
@@ -132,13 +122,13 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
                   children: [
                     Text("Flags",
                         style: Theme.of(context).textTheme.labelSmall),
-                    Text(_flags.toRadixString(2).padLeft(12, "0"),
+                    Text(flags.toRadixString(2).padLeft(12, "0"),
                         style: Theme.of(context).textTheme.displaySmall),
-                    if(_flagsMask != null) ...[
+                    if(flagsMask != null) ...[
                       const SizedBox(height: 8),
                       Text("Mask",
                           style: Theme.of(context).textTheme.labelSmall),
-                      Text(_flagsMask!.toRadixString(2).padLeft(12, "0"),
+                      Text(flagsMask!.toRadixString(2).padLeft(12, "0"),
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -238,12 +228,10 @@ class _BNpcFlagsToggleState extends State<BNpcFlagsToggle> {
               child: GenericItemPickerWidget<InvincibilityType>(
                 label: "Invincibility Type",
                 items: InvincibilityType.values,
-                initialValue: InvincibilityType.values[_invulnType ?? 0],
+                initialValue: InvincibilityType.values[invulnType ?? 0],
                 propertyBuilder: (value) => treatEnumName(value),
                 onChanged: (newValue) {
-                  _invulnType = newValue.index;
-                  widget.onUpdate(_flags, _flagsMask, _invulnType);
-                  setState(() {});
+                  onUpdate(flags, flagsMask, newValue.index);
                 },
               ),
             )

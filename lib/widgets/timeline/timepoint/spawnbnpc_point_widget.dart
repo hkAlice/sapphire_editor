@@ -9,13 +9,18 @@ import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_toggle.dart';
 import 'package:signals/signals_flutter.dart';
-
 class BNpcSpawnPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int? actorId;
+  final int? scheduleId;
 
   const BNpcSpawnPointWidget(
-      {super.key, required this.timepointModel, required this.signals});
+      {super.key,
+      required this.timepointModel,
+      required this.signals,
+      this.actorId,
+      this.scheduleId});
 
   @override
   State<BNpcSpawnPointWidget> createState() => _BNpcSpawnPointWidgetState();
@@ -29,9 +34,13 @@ class _BNpcSpawnPointWidgetState extends State<BNpcSpawnPointWidget> {
   Widget build(BuildContext context) {
     final signals = widget.signals;
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
       final timeline = signals.timeline.value;
+      final actor = widget.actorId != null
+          ? timeline.actors.firstWhere((a) => a.id == widget.actorId)
+          : signals.selectedActor.value;
+      final schedule = widget.scheduleId != null
+          ? actor.schedules.firstWhere((s) => s.id == widget.scheduleId)
+          : signals.selectedSchedule.value;
 
       return Row(
         children: [

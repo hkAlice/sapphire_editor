@@ -220,9 +220,17 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
       case TimepointType.bNpcDespawn:
         return BNpcDespawnPointWidget(timepointModel: tp, signals: signals);
       case TimepointType.bNpcFlags:
-        return BNpcFlagsPointWidget(timepointModel: tp, signals: signals);
+        return BNpcFlagsPointWidget(
+            timepointModel: tp,
+            signals: signals,
+            actorId: widget.actorId,
+            scheduleId: widget.scheduleId);
       case TimepointType.bNpcSpawn:
-        return BNpcSpawnPointWidget(timepointModel: tp, signals: signals);
+        return BNpcSpawnPointWidget(
+            timepointModel: tp,
+            signals: signals,
+            actorId: widget.actorId,
+            scheduleId: widget.scheduleId);
       case TimepointType.directorFlags:
         return DirectorFlagsPointWidget(timepointModel: tp, signals: signals);
       case TimepointType.directorSeq:

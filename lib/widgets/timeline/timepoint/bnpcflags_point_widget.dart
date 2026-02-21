@@ -10,9 +10,15 @@ import 'package:signals/signals_flutter.dart';
 class BNpcFlagsPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int? actorId;
+  final int? scheduleId;
 
   const BNpcFlagsPointWidget(
-      {super.key, required this.timepointModel, required this.signals});
+      {super.key,
+      required this.timepointModel,
+      required this.signals,
+      this.actorId,
+      this.scheduleId});
 
   @override
   State<BNpcFlagsPointWidget> createState() => _BNpcFlagsPointWidgetState();
@@ -27,8 +33,13 @@ class _BNpcFlagsPointWidgetState extends State<BNpcFlagsPointWidget> {
     final signals = widget.signals;
 
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
+      final timeline = signals.timeline.value;
+      final actor = widget.actorId != null
+          ? timeline.actors.firstWhere((a) => a.id == widget.actorId)
+          : signals.selectedActor.value;
+      final schedule = widget.scheduleId != null
+          ? actor.schedules.firstWhere((s) => s.id == widget.scheduleId)
+          : signals.selectedSchedule.value;
 
       return BNpcFlagsToggle(
           flags: pointData.flags,

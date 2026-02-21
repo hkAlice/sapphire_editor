@@ -23,8 +23,7 @@ void main() async {
 
   themeService.updateThemeData(FlexThemeData.dark(scheme: theme));
   
-  runApp(SapphireEditorApp(themeService: themeService,)
-  );
+  runApp(SapphireEditorApp(themeService: themeService,));
 }
 
 class SapphireEditorApp extends StatefulWidget {
