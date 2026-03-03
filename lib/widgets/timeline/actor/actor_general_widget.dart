@@ -4,6 +4,7 @@ import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/small_heading_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/actor/add_bnpc_dialog.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class ActorGeneralWidget extends StatefulWidget {
@@ -64,11 +65,17 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
           padding: const EdgeInsets.all(14.0),
           child: Column(
             children: [
-              const SmallHeadingWidget(
+              SmallHeadingWidget(
                 title: "General",
                 trailing: OutlinedButton(
-                  onPressed: null,
-                  child: Row(
+                  onPressed: () {
+                    final currentSignals = SignalsProvider.of(context);
+                    showDialog(
+                      context: context,
+                      builder: (context) => AddBnpcDialog(signals: currentSignals),
+                    );
+                  },
+                  child: const Row(
                     children: [
                       Icon(Icons.terminal_rounded),
                       SizedBox(width: 8.0,),

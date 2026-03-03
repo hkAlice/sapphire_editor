@@ -253,6 +253,36 @@ class TimelineEditorSignal {
     timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
   }
 
+  void addActor({required String bnpcName, required int layoutId, required int hp}) {
+    List<ActorModel> newActors = [...timeline.value.actors];
+
+    // remove generic actor placeholder if it's the only one
+    if(newActors.length == 1 && newActors.first.name == "Generic Actor" && newActors.first.layoutId == 0) {
+      newActors.clear();
+    }
+
+    int nextId = 1;
+    if(newActors.isNotEmpty) {
+      nextId = newActors.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1;
+    }
+
+    final actorModel = ActorModel(
+      id: nextId,
+      name: bnpcName,
+      type: "BNPC",
+      layoutId: layoutId,
+      hp: hp,
+      scheduleList: [
+        TimelineScheduleModel(id: 1, name: "Initial Schedule")
+      ]
+    );
+
+    newActors.add(actorModel);
+    timeline.value = timeline.value.copyWith(actors: newActors);
+
+    _saveToHistory();
+  }
+
   void addSchedule([ActorModel? actor]) {
     
     actor ??= selectedActor.value;
@@ -266,7 +296,7 @@ class TimelineEditorSignal {
 
     timeline.value = timeline.value.copyWith(actors: newActors);
 
-    //_saveToHistory();
+    _saveToHistory();
   }
 
   void reorderSchedule(ActorModel actor, int oldIndex, int newIndex) {
@@ -491,9 +521,10 @@ class TimelineEditorSignal {
 
   static TimelineModel _createDefaultTimeline() {
     final timeline = TimelineModel(name: "Brand new timeline");
-    timeline.addNewActor(bnpcName: "Ifrit", layoutId: 4126276, hp: 13884);
-    timeline.addNewActor(bnpcName: "Ifrit Control", layoutId: 4126284, hp: 445);
-    timeline.addNewActor(bnpcName: "Ifrit Nail 1", layoutId: 4126281, hp: 445);
+
+    // BNPCs will be loaded dynamically via the Load BNPC dialog.
+    // Adding an initial generic actor so UI doesn't crash on start.
+    timeline.addNewActor(bnpcName: "Generic Actor", layoutId: 0, hp: 0xFF14);
 
     for(var actor in timeline.actors) {
       timeline.addNewSchedule(actor);
@@ -501,6 +532,13 @@ class TimelineEditorSignal {
     
     timeline.addNewCondition();
     return timeline;
+  }
+
+  void createNewTimeline() {
+    timeline.value = _createDefaultTimeline();
+    _history.clear();
+    _historyIndex.value = -1;
+    _saveToHistory();
   }
 
   void dispose() {

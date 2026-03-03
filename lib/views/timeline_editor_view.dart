@@ -68,7 +68,33 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                 title: "Timeline Editor",
                 subtitle: "Outputs encounter timeline data in JSON",
                 heading: Image.asset("assets/images/icon_trials.png"),
-                trailing: SanityCallWidget(),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("New Timeline"),
+                            content: const Text("Are you sure you want to start a new timeline? Unsaved changes will be lost."),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text("Cancel")),
+                              ElevatedButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("Confirm")),
+                            ],
+                          )
+                        );
+                        if (confirm == true) {
+                          _signal?.createNewTimeline();
+                        }
+                      },
+                      icon: const Icon(Icons.file_copy_rounded),
+                      label: const Text("New Timeline"),
+                    ),
+                    const SizedBox(width: 16),
+                    const SanityCallWidget(),
+                  ],
+                ),
               ),
               const Divider(),
               Expanded(
