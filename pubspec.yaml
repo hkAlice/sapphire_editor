@@ -62,6 +62,7 @@ dependencies:
   dropdown_search: ^6.0.2
   signals: ^6.3.0
   signals_flutter: ^6.3.0
+  disable_web_context_menu: ^1.1.0
 
 dev_dependencies:
   flutter_test:
