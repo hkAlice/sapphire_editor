@@ -21,7 +21,8 @@ class BnpcLayerRepository {
             .map((element) => element['name'] as String)
             .toList();
         return _cachedZones!;
-      } else {
+      }
+      else {
         throw Exception("Failed to load zones: ${response.statusCode}");
       }
     }
@@ -37,10 +38,12 @@ class BnpcLayerRepository {
       final response = await http.get(Uri.parse(url));
       if(response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
-      } else {
+      }
+      else {
         throw Exception("Failed to load zone data: ${response.statusCode}");
       }
-    } catch (e) {
+    }
+    catch(e) {
       throw Exception("Error fetching zone data from GitHub: $e");
     }
   }

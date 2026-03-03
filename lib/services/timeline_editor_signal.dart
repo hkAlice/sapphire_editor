@@ -319,6 +319,37 @@ class TimelineEditorSignal {
     _saveToHistory();
   }
 
+  void removeSchedule(TimelineScheduleModel schedule, int actorId) {
+    final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actorId);
+    if (actorIndex == -1) return;
+    final actor = timeline.value.actors[actorIndex];
+    final newSchedules = actor.schedules.where((s) => s.id != schedule.id).toList();
+    final newActor = actor.copyWith(schedules: newSchedules);
+    final newActors = [...timeline.value.actors];
+    newActors[actorIndex] = newActor;
+    timeline.value = timeline.value.copyWith(actors: newActors);
+    _saveToHistory();
+  }
+
+  void duplicateSchedule(TimelineScheduleModel schedule, int actorId) {
+    batch(() {
+      final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actorId);
+      if (actorIndex == -1) return;
+      final actor = timeline.value.actors[actorIndex];
+      final newId = actor.schedules.map((s) => s.id).reduce((a, b) => a > b ? a : b) + 1;
+      final copy = TimelineScheduleModel.fromJson({
+        ...jsonDecode(jsonEncode(schedule.toJson())) as Map<String, dynamic>,
+        'id': newId,
+        'name': '${schedule.name} (copy)',
+      });
+      final newActor = actor.copyWith(schedules: [...actor.schedules, copy]);
+      final newActors = [...timeline.value.actors];
+      newActors[actorIndex] = newActor;
+      timeline.value = timeline.value.copyWith(actors: newActors);
+    });
+    _saveToHistory();
+  }
+
   void reorderSchedule(ActorModel actor, int oldIndex, int newIndex) {
     batch(() {
       final schedules = [...actor.schedules];

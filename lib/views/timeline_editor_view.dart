@@ -40,8 +40,8 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
       try {
         final json = await autosave.get(autosaveKeys.last);
         timeline = TimelineModel.fromJson(jsonDecode(json));
-      } catch (_) {
       }
+      catch(_) {}
     }
 
     setState(() {
@@ -167,9 +167,9 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
               ),
               hintText: "To load a timeline, paste the JSON here."
             ),
-        onChanged: (value) {
-          signals.setPendingJson(value);
-        },
+            onChanged: (value) {
+              signals.setPendingJson(value);
+            },
             commonTextStyle: const TextStyle(fontFamily: "monospace"),
             keyHighlightStyle: const TextStyle(color: Color(0xFF7587A6)),
             stringHighlightStyle: const TextStyle(color: Color(0xFF8F9D6A)),
