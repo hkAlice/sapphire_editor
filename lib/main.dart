@@ -1,5 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show BrowserContextMenu;
 import 'package:sapphire_editor/repositories/local_repository.dart';
 import 'package:sapphire_editor/services/settings_helper.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
@@ -14,6 +16,10 @@ void main() async {
   }
   catch(e) {
     // it is what it is
+  }
+
+  if(kIsWeb) {
+     BrowserContextMenu.disableContextMenu();
   }
 
   var uiSettings = await SettingsHelper().getUISettings();
