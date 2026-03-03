@@ -72,8 +72,8 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
     }
   }
 
-  void _addSelectedActors() {
-    for(var instance in _selectedInstances) {
+  void _addActors(Iterable<BnpcInstance> instances) {
+    for(var instance in instances) {
       final String bnpcName = instance.nameId != null 
           ? LocalRepository().getBnpcName(instance.nameId!)
           : "Actor ${instance.layoutId}";
@@ -158,8 +158,13 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Cancel"),
         ),
+        if(_loadedInstances != null && _loadedInstances!.isNotEmpty)
+          OutlinedButton(
+            onPressed: () => _addActors(_loadedInstances!),
+            child: const Text("Add All"),
+          ),
         ElevatedButton(
-          onPressed: _selectedInstances.isEmpty ? null : _addSelectedActors,
+          onPressed: _selectedInstances.isEmpty ? null : () => _addActors(_selectedInstances),
           child: Text("Add Selected (${_selectedInstances.length})"),
         )
       ],
