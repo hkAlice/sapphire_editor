@@ -104,7 +104,7 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                       controller: _layoutIdEditingController,
                       label: "Layout ID",
                       onChanged: (value) {
-                        actor.layoutId = value;
+                        signals.updateActor(actor.id, actor.copyWith(layoutId: value));
                       },
                     ),
                   ),
@@ -112,11 +112,11 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                   SizedBox(
                     width: 110,
                     child: SimpleNumberField(
-                      initialValue: widget.actorModel.hp,
+                      initialValue: actor.hp,
                       controller: _hpEditingController,
                       label: "HP",
                       onChanged: (value) {
-                        actor.hp = value;
+                        signals.updateActor(actor.id, actor.copyWith(hp: value));
                       },
                     ),
                   ),
@@ -127,13 +127,16 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                     value: actor.subactors.length,
                     label: "Subactors",
                     onChanged: (value) {
+                      // todo: fix bug where holding button causes delayed state!!
                       var subactorCount = actor.subactors.length;
+                      var newSubactors = [...actor.subactors];
                       if(value < subactorCount) {
-                        actor.subactors.removeLast();
+                        newSubactors.removeLast();
                       }
                       else if(value > subactorCount) {
-                        actor.subactors.add("${widget.actorModel.name} <subactor ${subactorCount + 1}>");
+                        newSubactors.add("${actor.name} <subactor ${subactorCount + 1}>");
                       }
+                      signals.updateActor(actor.id, actor.copyWith(subactors: newSubactors));
                     },
                   ),
                 ],

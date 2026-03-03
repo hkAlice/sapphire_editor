@@ -259,6 +259,20 @@ class TimelineEditorSignal {
     });
   }
 
+  void updateActor(int actorId, ActorModel newActor) {
+    batch(() {
+      final actorIndex = timeline.value.actors.indexWhere((a) => a.id == actorId);
+
+      if(actorIndex == -1)
+        return;
+
+      final newActors = [...timeline.value.actors];
+      newActors[actorIndex] = newActor;
+
+      timeline.value = timeline.value.copyWith(actors: newActors);
+    });
+  }
+
   void addActor({required String bnpcName, required int layoutId, required int hp}) {
     List<ActorModel> newActors = [...timeline.value.actors];
 
