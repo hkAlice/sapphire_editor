@@ -232,25 +232,49 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
           ),
           Watch((context) {
             final lastSave = signals.lastAutosave.value;
-            if(lastSave == null) return const SizedBox.shrink();
 
             return Positioned(
               bottom: 8,
               right: 8,
-              child: Opacity(
-                opacity: 0.5,
-                child: FilledButton(
-                  onPressed: null,
-                  child: Row(
-                    children: [
-                      const Icon(Icons.save),
-                      const SizedBox(width: 6.0,),
-                      Text(DateFormat("yyyy/MM/dd HH:mm").format(lastSave),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Opacity(
+                    opacity: signals.canUndo.value ? 0.8 : 0.3,
+                    child: IconButton.filled(
+                      onPressed: signals.canUndo.value ? () => signals.undo() : null,
+                      icon: const Icon(Icons.undo_rounded),
+                      tooltip: "Undo",
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 8.0),
+                  Opacity(
+                    opacity: signals.canRedo.value ? 0.8 : 0.3,
+                    child: IconButton.filled(
+                      onPressed: signals.canRedo.value ? () => signals.redo() : null,
+                      icon: const Icon(Icons.redo_rounded),
+                      tooltip: "Redo",
+                    ),
+                  ),
+                  if(lastSave != null) ...[
+                    const SizedBox(width: 8.0),
+                    Opacity(
+                      opacity: 0.5,
+                      child: FilledButton(
+                        onPressed: null,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.save),
+                            const SizedBox(width: 6.0,),
+                            Text(DateFormat("yyyy/MM/dd HH:mm").format(lastSave),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             );
           })

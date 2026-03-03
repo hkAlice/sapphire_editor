@@ -107,6 +107,8 @@ class TimelineEditorSignal {
       final json = jsonOutput.value;
       _scheduleAutosave(json);
     });
+
+    _saveToHistory();
   }
 
   void updateTimepoint(int actorId, int scheduleId, int timepointId, TimepointModel newTimepoint) {
@@ -219,8 +221,8 @@ class TimelineEditorSignal {
   bool loadFromJson(String jsonStr) {
     try {
       final json = jsonDecode(jsonStr);
-      _saveToHistory();
       timeline.value = TimelineModel.fromJson(json);
+      _saveToHistory();
       return true;
     } catch (_) {
       return false;
@@ -240,17 +242,21 @@ class TimelineEditorSignal {
   }
 
   void undo() {
-    if(!canUndo.value) return;
+    if(!canUndo.peek()) return;
 
-    _historyIndex.value--;
-    timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
+    batch(() {
+      _historyIndex.value--;
+      timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
+    });
   }
 
   void redo() {
-    if(!canRedo.value) return;
+    if(!canRedo.peek()) return;
 
-    _historyIndex.value++;
-    timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
+    batch(() {
+      _historyIndex.value++;
+      timeline.value = TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
+    });
   }
 
   void addActor({required String bnpcName, required int layoutId, required int hp}) {
