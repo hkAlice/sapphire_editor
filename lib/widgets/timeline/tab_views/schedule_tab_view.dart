@@ -61,7 +61,15 @@ class ScheduleTabView extends StatelessWidget {
                 }
               ),
             ),
-          )
+          ),
+          SliverToBoxAdapter(
+            child: Center(
+              child: Text(
+                "Tip: Right-click schedules and timepoints to edit them.",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5)),
+              ),
+            )
+          ),
         ],
       );
     });
