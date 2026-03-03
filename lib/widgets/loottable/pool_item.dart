@@ -22,8 +22,6 @@ class PoolItem extends StatefulWidget {
 class _PoolItemState extends State<PoolItem> {
   int _totalWeight = 0;
   late TextEditingController _weightController;
-  late TextEditingController _pickMinController;
-  late TextEditingController _pickMaxController;
 
   int _calculateTotalWeight() {
     return widget.lootPoolModel.items.fold(0, (sum, e) => sum + e.weight);
@@ -33,16 +31,8 @@ class _PoolItemState extends State<PoolItem> {
   void initState() {
     _totalWeight = _calculateTotalWeight();
     _weightController = TextEditingController(text: _totalWeight.toString());
-    _pickMinController = TextEditingController(text: widget.lootPoolModel.pick.min.toString());
-    _pickMaxController = TextEditingController(text: widget.lootPoolModel.pick.max.toString());
+    
     super.initState();
-  }
-  @override
-  void dispose() {
-    _weightController.dispose();
-    _pickMinController.dispose();
-    _pickMaxController.dispose();
-    super.dispose();
   }
 
   @override

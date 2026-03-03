@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/repositories/bnpc_layer_repository.dart';
+import 'package:sapphire_editor/repositories/local_repository.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 
 class AddBnpcDialog extends StatefulWidget {
@@ -36,7 +37,8 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
         _zones = zones;
         _loadingZones = false;
       });
-    } catch (e) {
+    }
+    catch(e) {
       setState(() {
         _zoneDataError = "Failed to load zones ($e)";
         _loadingZones = false;
@@ -61,7 +63,8 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
         _loadedInstances = instances;
         _loadingInstances = false;
       });
-    } catch (e) {
+    }
+    catch(e) {
       setState(() {
         _zoneDataError = "Failed to load zone data ($e)";
         _loadingInstances = false;
@@ -70,9 +73,13 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
   }
 
   void _addSelectedActors() {
-    for (var instance in _selectedInstances) {
+    for(var instance in _selectedInstances) {
+      final String bnpcName = instance.nameId != null 
+          ? LocalRepository().getBnpcName(instance.nameId!)
+          : "Actor ${instance.layoutId}";
+
       widget.signals.addActor(
-        bnpcName: "BNPC - ${instance.layoutId}",
+        bnpcName: bnpcName,
         layoutId: instance.layoutId,
         hp: 0xFF14, // default placeholder
       );
@@ -90,28 +97,28 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_loadingZones)
+            if(_loadingZones)
               const Center(child: CircularProgressIndicator())
-            else if (_zones != null)
+            else if(_zones != null)
               DropdownButton<String>(
                 isExpanded: true,
                 value: _selectedZone,
                 hint: const Text("Select a Zone"),
                 items: _zones!.map((z) => DropdownMenuItem(value: z, child: Text(z))).toList(),
                 onChanged: (val) {
-                  if (val != null) {
+                  if(val != null) {
                     _fetchZoneInstances(val);
                   }
                 },
               )
-            else if (_zoneDataError != null)
+            else if(_zoneDataError != null)
               Text(_zoneDataError!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
             
             const SizedBox(height: 16),
             
-            if (_loadingInstances)
+            if(_loadingInstances)
               const Expanded(child: Center(child: CircularProgressIndicator()))
-            else if (_loadedInstances != null)
+            else if(_loadedInstances != null)
               Expanded(
                 child: _loadedInstances!.isEmpty
                   ? const Text("No BNPC data found for this zone.")
@@ -121,15 +128,20 @@ class _AddBnpcDialogState extends State<AddBnpcDialog> {
                         final instance = _loadedInstances![index];
                         final isSelected = _selectedInstances.contains(instance);
                         
+                        final String resolvedName = instance.nameId != null 
+                            ? LocalRepository().getBnpcName(instance.nameId!)
+                            : "Unknown BNPC";
+
                         return CheckboxListTile(
-                          title: Text("Layout: ${instance.layoutId} (BaseID: ${instance.baseId})"),
-                          subtitle: Text("Group: ${instance.groupName} - NameID: ${instance.nameId}"),
+                          title: Text("$resolvedName (Layout: ${instance.layoutId})"),
+                          subtitle: Text("BaseID: ${instance.baseId} • Group: ${instance.groupName} • NameID: ${instance.nameId}"),
                           value: isSelected,
                           onChanged: (val) {
                             setState(() {
-                              if (val == true) {
+                              if(val == true) {
                                 _selectedInstances.add(instance);
-                              } else {
+                              }
+                              else {
                                 _selectedInstances.remove(instance);
                               }
                             });

@@ -8,13 +8,13 @@ class BnpcLayerRepository {
   List<String>? _cachedZones;
 
   Future<List<String>> fetchZones() async {
-    if (_cachedZones != null) {
+    if(_cachedZones != null) {
       return _cachedZones!;
     }
 
     try {
       final response = await http.get(Uri.parse(_githubApiUrl));
-      if (response.statusCode == 200) {
+      if(response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _cachedZones = data
             .where((element) => element['type'] == 'dir')
@@ -24,7 +24,8 @@ class BnpcLayerRepository {
       } else {
         throw Exception("Failed to load zones: ${response.statusCode}");
       }
-    } catch (e) {
+    }
+    catch(e) {
       throw Exception("Error fetching zones from GitHub: $e");
     }
   }
@@ -34,7 +35,7 @@ class BnpcLayerRepository {
     
     try {
       final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
+      if(response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
       } else {
         throw Exception("Failed to load zone data: ${response.statusCode}");
@@ -49,20 +50,20 @@ class BnpcLayerRepository {
     List<BnpcInstance> instances = [];
 
     // The root structure has groups like 'LVD_bnpc_01'
-    for (var group in zoneMap.values) {
-      if (group is Map<String, dynamic> && group.containsKey('bnpcs')) {
+    for(var group in zoneMap.values) {
+      if(group is Map<String, dynamic> && group.containsKey('bnpcs')) {
         final bnpcs = group['bnpcs'] as Map<String, dynamic>;
         for (var entry in bnpcs.entries) {
           final instanceIdStr = entry.key;
           final value = entry.value as Map<String, dynamic>;
           final baseInfo = value['baseInfo'] as Map<String, dynamic>?;
           
-          if (baseInfo != null) {
+          if(baseInfo != null) {
             final layoutId = baseInfo['instanceId'] as int? ?? int.tryParse(instanceIdStr);
             final nameId = baseInfo['nameId'] as int?;
             final baseId = baseInfo['baseId'] as int?;
 
-            if (layoutId != null) {
+            if(layoutId != null) {
               instances.add(BnpcInstance(
                 layoutId: layoutId,
                 nameId: nameId,

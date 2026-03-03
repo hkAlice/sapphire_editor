@@ -64,7 +64,7 @@ class TimelineSanitySvc {
 
     for(var actor in timeline.actors) {
       if(actorNames.contains(actor.name)) {
-        _err("DuplicateActorName", "Duplicate actor name '${actor.name}'.",
+        _warn("DuplicateActorName", "Duplicate actor name '${actor.name}'.",
             items);
       }
       actorNames.add(actor.name);

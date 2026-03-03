@@ -84,7 +84,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                             ],
                           )
                         );
-                        if (confirm == true) {
+                        if(confirm == true) {
                           _signal?.createNewTimeline();
                         }
                       },
