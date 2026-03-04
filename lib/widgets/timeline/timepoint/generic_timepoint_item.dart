@@ -197,13 +197,13 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
 
     switch (tp.type) {
       case TimepointType.actionTimeline:
-        return ActionTimelinePointWidget(timepointModel: tp, signals: signals);
+        return ActionTimelinePointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.castAction:
-        return CastActionPointWidget(timepointModel: tp, signals: signals);
+        return CastActionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.battleTalk:
-        return BattleTalkPointWidget(timepointModel: tp, signals: signals);
+        return BattleTalkPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.bNpcDespawn:
-        return BNpcDespawnPointWidget(timepointModel: tp, signals: signals);
+        return BNpcDespawnPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.bNpcFlags:
         return BNpcFlagsPointWidget(
             timepointModel: tp,
@@ -217,29 +217,29 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
             actorId: widget.actorId,
             scheduleId: widget.scheduleId);
       case TimepointType.directorFlags:
-        return DirectorFlagsPointWidget(timepointModel: tp, signals: signals);
+        return DirectorFlagsPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.directorSeq:
-        return DirectorSeqPointWidget(timepointModel: tp, signals: signals);
+        return DirectorSeqPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.directorVar:
-        return DirectorVarPointWidget(timepointModel: tp, signals: signals);
+        return DirectorVarPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.idle:
         return IdlePointWidget(timepointModel: tp, signals: signals);
       case TimepointType.logMessage:
-        return LogMessagePointWidget(timepointModel: tp, signals: signals);
+        return LogMessagePointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.setBGM:
-        return SetBgmPointWidget(timepointModel: tp, signals: signals);
+        return SetBgmPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.setCondition:
-        return SetConditionPointWidget(timepointModel: tp, signals: signals);
+        return SetConditionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.setPos:
-        return SetPosPointWidget(timepointModel: tp, signals: signals);
+        return SetPosPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.snapshot:
-        return SnapshotPointWidget(timepointModel: tp, signals: signals);
+        return SnapshotPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.interruptAction:
-        return InterruptActionPointWidget(timepointModel: tp, signals: signals);
+        return InterruptActionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.rollRNG:
-        return RollRNGPointWidget(timepointModel: tp, signals: signals);
+        return RollRNGPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
       case TimepointType.statusEffect:
-        return StatusEffectPointWidget(timepointModel: tp, signals: signals);
+        return StatusEffectPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
     }
   }
 

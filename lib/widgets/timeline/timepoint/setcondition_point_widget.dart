@@ -13,8 +13,10 @@ import 'package:signals/signals_flutter.dart';
 class SetConditionPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
-  const SetConditionPointWidget({super.key, required this.timepointModel, required this.signals});
+  const SetConditionPointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<SetConditionPointWidget> createState() => _SetConditionPointWidgetState();
@@ -27,8 +29,8 @@ class _SetConditionPointWidgetState extends State<SetConditionPointWidget> {
   Widget build(BuildContext context) {
     final signals = widget.signals;
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
       final timeline = signals.timeline.value;
 
       return Row(

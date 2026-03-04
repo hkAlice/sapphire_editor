@@ -17,8 +17,8 @@ class BNpcFlagsPointWidget extends StatefulWidget {
       {super.key,
       required this.timepointModel,
       required this.signals,
-      this.actorId,
-      this.scheduleId});
+      required this.actorId,
+      required this.scheduleId});
 
   @override
   State<BNpcFlagsPointWidget> createState() => _BNpcFlagsPointWidgetState();
@@ -34,12 +34,8 @@ class _BNpcFlagsPointWidgetState extends State<BNpcFlagsPointWidget> {
 
     return Watch((context) {
       final timeline = signals.timeline.value;
-      final actor = widget.actorId != null
-          ? timeline.actors.firstWhere((a) => a.id == widget.actorId)
-          : signals.selectedActor.value;
-      final schedule = widget.scheduleId != null
-          ? actor.schedules.firstWhere((s) => s.id == widget.scheduleId)
-          : signals.selectedSchedule.value;
+      final actor = timeline.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
 
       return BNpcFlagsToggle(
           flags: pointData.flags,

@@ -1,8 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
@@ -11,8 +13,10 @@ import 'package:signals/signals_flutter.dart';
 class ActionTimelinePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
-  const ActionTimelinePointWidget({super.key, required this.timepointModel, required this.signals});
+  const ActionTimelinePointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<ActionTimelinePointWidget> createState() => _ActionTimelinePointWidgetState();
@@ -25,6 +29,8 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
   Widget build(BuildContext context) {
     return Watch((context) {
       final signals = widget.signals;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
       var validActors = List<String>.from(signals.timeline.value.actors.map((e) => e.name));
 
       return Row(
@@ -40,7 +46,7 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
                   initialValue: validActors.firstWhereOrNull((e) => e == pointData.actorName),
                   onChanged: (newValue) {
                     pointData.actorName = newValue;
-                    _updateTimepoint(signals);
+                    _updateTimepoint(signals, actor, schedule);
                   },
                 ),
               ),
@@ -52,7 +58,7 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
                   initialValue: pointData.actionTimelineId,
                   onChanged: (value) {
                     pointData.actionTimelineId = value;
-                    _updateTimepoint(signals);
+                    _updateTimepoint(signals, actor, schedule);
                   }
                 ),
               ),
@@ -63,9 +69,7 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
     });
   }
   
-  void _updateTimepoint(TimelineEditorSignal signals) {
-    final actor = signals.selectedActor.value;
-    final schedule = signals.selectedSchedule.value;
+  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
     final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);
     final newTimepoint = TimepointModel(
       id: oldTimepoint.id,

@@ -14,9 +14,11 @@ import 'package:signals/signals_flutter.dart';
 class StatusEffectPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
   const StatusEffectPointWidget(
-      {super.key, required this.timepointModel, required this.signals});
+      {super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<StatusEffectPointWidget> createState() =>
@@ -32,8 +34,8 @@ class _StatusEffectPointWidgetState extends State<StatusEffectPointWidget> {
     final signals = widget.signals;
 
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
       final timeline = signals.timeline.value;
 
       var validActors = List<String>.from(actor.subactors)

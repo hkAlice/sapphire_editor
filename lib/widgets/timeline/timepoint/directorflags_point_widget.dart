@@ -15,8 +15,10 @@ import 'package:signals/signals_flutter.dart';
 class DirectorFlagsPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
-  const DirectorFlagsPointWidget({super.key, required this.timepointModel, required this.signals});
+  const DirectorFlagsPointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<DirectorFlagsPointWidget> createState() => _DirectorFlagsPointWidgetState();
@@ -29,8 +31,8 @@ class _DirectorFlagsPointWidgetState extends State<DirectorFlagsPointWidget> {
   Widget build(BuildContext context) {
     final signals = widget.signals;
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
 
       return Row(
         children: [

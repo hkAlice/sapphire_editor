@@ -10,8 +10,10 @@ import 'package:signals/signals_flutter.dart';
 class SetBgmPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
-  const SetBgmPointWidget({super.key, required this.timepointModel, required this.signals});
+  const SetBgmPointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<SetBgmPointWidget> createState() => _SetBgmPointWidgetState();
@@ -39,7 +41,8 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
   Widget build(BuildContext context) {
     final signals = widget.signals;
     return Watch((context) {
-      final actor = signals.selectedActor.value;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
 
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +54,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
               initialValue: pointData.bgmId,
               onChanged: (value) {
                 pointData.bgmId = value;
-                _updateTimepoint(signals, actor);
+                _updateTimepoint(signals, actor, schedule);
               }
             ),
           ),
@@ -60,8 +63,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
     });
   }
 
-  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor) {
-    final schedule = signals.selectedSchedule.value;
+  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
     final oldTimepoint = schedule.timepoints
     .firstWhere((t) => t.id == widget.timepointModel.id);
     final newTimepoint = TimepointModel(

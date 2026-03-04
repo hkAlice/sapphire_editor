@@ -12,8 +12,10 @@ import 'package:signals/signals_flutter.dart';
 class CastActionPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
   final TimelineEditorSignal signals;
+  final int actorId;
+  final int scheduleId;
 
-  const CastActionPointWidget({super.key, required this.timepointModel, required this.signals});
+  const CastActionPointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
 
   @override
   State<CastActionPointWidget> createState() => _CastActionPointWidgetState();
@@ -27,8 +29,8 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
     final signals = widget.signals;
     
     return Watch((context) {
-      final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
+      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
+      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
       final timeline = signals.timeline.value;
       
       var validActors = List<String>.from(actor.subactors)..insert(0, actor.name);
