@@ -69,6 +69,9 @@ class TimelineScheduleItem extends StatelessWidget {
         const PopupMenuItem(value: 'edit_name', child: Row(children: [Icon(Icons.edit_rounded, size: 16), SizedBox(width: 8), Text('Edit name')])),
         const PopupMenuItem(value: 'edit_desc', child: Row(children: [Icon(Icons.comment_rounded, size: 16), SizedBox(width: 8), Text('Edit description')])),
         const PopupMenuDivider(),
+        PopupMenuItem(value: 'move_up', enabled: scheduleIndex > 0, child: const Row(children: [Icon(Icons.arrow_upward_rounded, size: 16), SizedBox(width: 8), Text('Move up')])),
+        PopupMenuItem(value: 'move_down', enabled: scheduleIndex < actor.schedules.length - 1, child: const Row(children: [Icon(Icons.arrow_downward_rounded, size: 16), SizedBox(width: 8), Text('Move down')])),
+        const PopupMenuDivider(),
         const PopupMenuItem(value: 'duplicate', child: Row(children: [Icon(Icons.copy_rounded, size: 16), SizedBox(width: 8), Text('Duplicate')])),
         const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_rounded, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Delete', style: TextStyle(color: Colors.redAccent))])),
       ],
@@ -84,6 +87,12 @@ class TimelineScheduleItem extends StatelessWidget {
           _showEditDialog(context, 'Edit schedule description', schedule.description, onChanged: (newDesc) {
             signals.updateSchedule(schedule, schedule.copyWith(description: newDesc), actor.id);
           });
+          break;
+        case 'move_up':
+          signals.reorderSchedule(actor, scheduleIndex, scheduleIndex - 1);
+          break;
+        case 'move_down':
+          signals.reorderSchedule(actor, scheduleIndex, scheduleIndex + 2);
           break;
         case 'duplicate':
           signals.duplicateSchedule(schedule, actor.id);
@@ -132,7 +141,7 @@ class TimelineScheduleItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4.0),
               ),
               initiallyExpanded: true,
-              title: ReorderableDragStartListener(index: scheduleIndex, child: Text(schedule.name)),
+              title: Text(schedule.name),
               subtitle: Text(schedule.description.isNotEmpty ? schedule.description : timepointCountStr),
               trailing: SizedBox(
                 width: 48.0,

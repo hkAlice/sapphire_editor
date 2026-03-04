@@ -40,7 +40,6 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
     final signals = widget.signals;
     return Watch((context) {
       final actor = signals.selectedActor.value;
-      final schedule = signals.selectedSchedule.value;
 
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +51,7 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
               initialValue: pointData.bgmId,
               onChanged: (value) {
                 pointData.bgmId = value;
-                _updateTimepoint(signals, actor, schedule);
+                _updateTimepoint(signals, actor);
               }
             ),
           ),
@@ -61,7 +60,8 @@ class _SetBgmPointWidgetState extends State<SetBgmPointWidget> {
     });
   }
 
-  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
+  void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor) {
+    final schedule = signals.selectedSchedule.value;
     final oldTimepoint = schedule.timepoints
     .firstWhere((t) => t.id == widget.timepointModel.id);
     final newTimepoint = TimepointModel(

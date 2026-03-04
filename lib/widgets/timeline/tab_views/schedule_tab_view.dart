@@ -37,11 +37,8 @@ class ScheduleTabView extends StatelessWidget {
           const SliverToBoxAdapter(child: SizedBox(height: 8.0,)),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            sliver: SliverReorderableList(
+            sliver: SliverList.builder(
               itemCount: actor.schedules.length,
-              onReorder: (int oldindex, int newindex) {
-                signals.reorderSchedule(actor, oldindex, newindex);
-              },
               itemBuilder: (context, i) {
                 return TimelineScheduleItem(
                   key: ValueKey(actor.schedules[i].id),
