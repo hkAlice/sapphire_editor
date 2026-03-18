@@ -1,32 +1,17 @@
 import 'package:disable_web_context_menu/disable_web_context_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
-import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/actiontimeline_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcdespawn_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/directorflags_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/directorseq_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/directorvar_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/interruptaction_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/rollrng_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/setpos_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/setcondition_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/snapshot_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/timepoint/statuseffect_point_widget.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_registry.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_scope.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class GenericTimepointItem extends StatelessWidget {
+  final String? phaseId;
   final int timepointId;
   final int scheduleIndex;
   final int scheduleId;
@@ -36,6 +21,7 @@ class GenericTimepointItem extends StatelessWidget {
 
   const GenericTimepointItem(
       {super.key,
+      this.phaseId,
       required this.timepointId,
       required this.scheduleIndex,
       required this.scheduleId,
@@ -63,14 +49,26 @@ class GenericTimepointItem extends StatelessWidget {
     final signals = SignalsProvider.of(context);
 
     final timepointSignal = computed(() {
-      final actor =
-          signals.timeline.value.actors.firstWhere((a) => a.id == actorId);
-      final schedule = actor.schedules.firstWhere((s) => s.id == scheduleId);
-      return schedule.timepoints.firstWhere((t) => t.id == timepointId);
+      if(scheduleId < 0) {
+        final resolvedPhaseId = phaseId ?? signals.selectedPhaseId.value;
+        return TimelineNodeLookup.findOnEnterTimepoint(
+          signals,
+          actorId,
+          resolvedPhaseId,
+          timepointId,
+        );
+      }
+
+      final lookup = TimelineNodeLookup.resolveTimepoint(
+          signals, actorId, scheduleId, timepointId);
+      return lookup?.timepoint;
     });
 
     return Watch((context) {
       final timepointModel = timepointSignal.value;
+      if(timepointModel == null) {
+        return const SizedBox.shrink();
+      }
 
       return DisableWebContextMenu(
         child: GestureDetector(
@@ -89,11 +87,19 @@ class GenericTimepointItem extends StatelessWidget {
               ],
             ).then((value) {
               if(value == null) return;
+              final resolvedPhaseId = phaseId ?? signals.selectedPhaseId.value;
+              if(resolvedPhaseId == null) {
+                return;
+              }
+
+              final resolvedScheduleId = scheduleId < 0 ? null : scheduleId;
               if(value == 'duplicate') {
-                signals.duplicateTimepoint(signals.selectedSchedule.value, timepointModel, actorId);
+                signals.duplicateTimepointInPhase(
+                    actorId, resolvedPhaseId, resolvedScheduleId, timepointModel);
               }
               else if(value == 'delete') {
-                signals.removeTimepoint(signals.selectedSchedule.value, timepointModel, actorId);
+                signals.removeTimepointInPhase(
+                    actorId, resolvedPhaseId, resolvedScheduleId, timepointModel);
               }
             });
           },
@@ -102,12 +108,14 @@ class GenericTimepointItem extends StatelessWidget {
               showDialog<void>(
                 context: context,
                 builder: (BuildContext context) {
-                  return TimepointEditorWidget(
-                    scheduleId: scheduleId,
-                    timepointId: timepointModel.id,
-                    actorId: actorId,
-                    signals:
-                        signals, // dialog loses context since signalprovider doesn't wrap runApp()
+                  return SignalsProvider(
+                    signals: signals,
+                    child: TimepointEditorWidget(
+                      phaseId: phaseId,
+                      scheduleId: scheduleId,
+                      timepointId: timepointModel.id,
+                      actorId: actorId,
+                    ),
                   );
                 },
               );
@@ -174,17 +182,17 @@ class GenericTimepointItem extends StatelessWidget {
 }
 
 class TimepointEditorWidget extends StatefulWidget {
+  final String? phaseId;
   final int scheduleId;
   final int timepointId;
   final int actorId;
-  final TimelineEditorSignal signals;
 
   const TimepointEditorWidget({
     super.key,
+    this.phaseId,
     required this.scheduleId,
     required this.timepointId,
     required this.actorId,
-    required this.signals,
   });
 
   @override
@@ -192,68 +200,45 @@ class TimepointEditorWidget extends StatefulWidget {
 }
 
 class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
-  Widget _generateTypedTimepoint(TimepointModel tp) {
-    final signals = widget.signals;
-
-    switch (tp.type) {
-      case TimepointType.actionTimeline:
-        return ActionTimelinePointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.castAction:
-        return CastActionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.battleTalk:
-        return BattleTalkPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.bNpcDespawn:
-        return BNpcDespawnPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.bNpcFlags:
-        return BNpcFlagsPointWidget(
-            timepointModel: tp,
-            signals: signals,
-            actorId: widget.actorId,
-            scheduleId: widget.scheduleId);
-      case TimepointType.bNpcSpawn:
-        return BNpcSpawnPointWidget(
-            timepointModel: tp,
-            signals: signals,
-            actorId: widget.actorId,
-            scheduleId: widget.scheduleId);
-      case TimepointType.directorFlags:
-        return DirectorFlagsPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.directorSeq:
-        return DirectorSeqPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.directorVar:
-        return DirectorVarPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.idle:
-        return IdlePointWidget(timepointModel: tp, signals: signals);
-      case TimepointType.logMessage:
-        return LogMessagePointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.setBGM:
-        return SetBgmPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.setCondition:
-        return SetConditionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.setPos:
-        return SetPosPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.snapshot:
-        return SnapshotPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.interruptAction:
-        return InterruptActionPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.rollRNG:
-        return RollRNGPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-      case TimepointType.statusEffect:
-        return StatusEffectPointWidget(timepointModel: tp, signals: signals, actorId: widget.actorId, scheduleId: widget.scheduleId);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      final signals = widget.signals;
+      final signals = SignalsProvider.of(context);
+      final isOnEnter = widget.scheduleId < 0;
+      final resolvedPhaseId = widget.phaseId ?? signals.selectedPhaseId.value;
+      final actor = TimelineNodeLookup.findActor(signals, widget.actorId);
+      final phase = isOnEnter
+          ? TimelineNodeLookup.findPhase(signals, widget.actorId, resolvedPhaseId)
+          : null;
+      final lookup = isOnEnter
+          ? null
+          : TimelineNodeLookup.resolveTimepoint(
+              signals, widget.actorId, widget.scheduleId, widget.timepointId);
+      final timepointModel = isOnEnter
+          ? TimelineNodeLookup.findOnEnterTimepoint(
+              signals, widget.actorId, resolvedPhaseId, widget.timepointId)
+          : lookup?.timepoint;
+      final schedule = lookup?.schedule;
+          final updatePhaseId =
+            widget.phaseId ?? phase?.id ?? signals.selectedPhaseId.value;
 
-      final actor = signals.timeline.value.actors
-          .firstWhere((a) => a.id == widget.actorId);
-      final schedule =
-          actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
-      final timepointModel =
-          schedule.timepoints.firstWhere((t) => t.id == widget.timepointId);
+          if(updatePhaseId == null ||
+            actor == null ||
+          timepointModel == null ||
+          (!isOnEnter && schedule == null) ||
+          (isOnEnter && phase == null)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if(!mounted) {
+            return;
+          }
+
+          final navigator = Navigator.of(context);
+          if(navigator.canPop()) {
+            navigator.pop();
+          }
+        });
+        return const SizedBox.shrink();
+      }
 
       return AlertDialog(
         title: Row(
@@ -302,9 +287,10 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                         onChanged: (value) {
                           final newTp =
                               timepointModel.copyWith(startTime: value);
-                          signals.updateTimepoint(
+                          signals.updateTimepointInPhase(
                               actor.id,
-                              schedule.id,
+                              updatePhaseId,
+                              isOnEnter ? null : schedule!.id,
                               timepointModel.id,
                               newTp);
                         }),
@@ -328,9 +314,10 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
 
                             timepointModel.changeType(value);
 
-                            signals.updateTimepoint(
+                            signals.updateTimepointInPhase(
                                 actor.id,
-                                schedule.id,
+                                updatePhaseId,
+                                isOnEnter ? null : schedule!.id,
                                 timepointModel.id,
                                 timepointModel);
                           },
@@ -361,9 +348,10 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                           onChanged: (description) {
                             final newTp = timepointModel.copyWith(
                                 description: description);
-                            signals.updateTimepoint(
+                            signals.updateTimepointInPhase(
                                 actor.id,
-                                schedule.id,
+                                updatePhaseId,
+                                isOnEnter ? null : schedule!.id,
                                 timepointModel.id,
                                 newTp);
                           }),
@@ -376,7 +364,18 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                   padding: timepointModel.type == TimepointType.idle
                       ? null
                       : const EdgeInsets.all(8.0),
-                  child: _generateTypedTimepoint(timepointModel))
+                  child: TimepointEditorScope(
+                    signals: signals,
+                    actorId: actor.id,
+                    phaseId: updatePhaseId,
+                    scheduleId: schedule?.id ?? -1,
+                    timepointId: timepointModel.id,
+                    child: TimepointEditorRegistry.buildEditor(
+                      TimepointEditorContext(
+                        timepointModel: timepointModel,
+                      ),
+                    ),
+                  ))
             ],
           ),
         ),

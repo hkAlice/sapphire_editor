@@ -1,77 +1,66 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
+import 'package:sapphire_editor/services/timeline_editor_signal.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
-import 'package:sapphire_editor/widgets/switch_icon_widget.dart';
-import 'package:sapphire_editor/widgets/switch_text_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/interruptedaction_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/scheduleactive_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/varequals_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/condition_editor_registry.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/condition_editor_scope.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ConditionItem extends StatefulWidget {
   final int conditionId;
   final int index;
+  final TimelineEditorSignal signals;
 
-  const ConditionItem({super.key, required this.conditionId, required this.index});
+  const ConditionItem(
+      {super.key,
+      required this.conditionId,
+      required this.index,
+      required this.signals});
 
   @override
   State<ConditionItem> createState() => _ConditionItemState();
 }
 
 class _ConditionItemState extends State<ConditionItem> {
-  late ActorModel _selectedActor;
-
-  Widget _getCondDataWidget(ConditionModel conditionModel) {
-    if(conditionModel.condition == ConditionType.combatState) {
-      return CombatStateConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else if(conditionModel.condition == ConditionType.getAction) {
-      return GetActionConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else if(conditionModel.condition == ConditionType.hpPctBetween) {
-      return HPMinMaxConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else if(conditionModel.condition == ConditionType.scheduleActive) {
-      return ScheduleActiveConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else if(conditionModel.condition == ConditionType.interruptedAction) {
-      return InterruptedActionConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else if(conditionModel.condition == ConditionType.varEquals) {
-      return VarEqualsConditionWidget(
-        conditionId: widget.conditionId,
-        paramData: conditionModel.paramData,
-      );
-    } else {
-      return Text("Unimplemented condition type ${conditionModel.condition}");
+  String _defaultActionTargetForPhase(
+      String phaseId, List<TimelinePhaseModel> phases) {
+    final currentIndex = phases.indexWhere((phase) => phase.id == phaseId);
+    if(currentIndex != -1 && currentIndex + 1 < phases.length) {
+      return phases[currentIndex + 1].id;
     }
+
+    if(phases.isNotEmpty) {
+      return phases.first.id;
+    }
+
+    return "";
   }
 
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
-    
+    final signals = widget.signals;
+
     return Watch((context) {
-      final timeline = signals.timeline.value;
-      final conditionModel = signals.timeline.value.conditions.firstWhere((c) => widget.conditionId == c.id);
-      final selectedTargetActor = signals.timeline.value.actors.first;
+      final actor = signals.selectedActor.value;
+      final phase = signals.selectedPhase.value;
+      final conditionModel =
+          TimelineNodeLookup.findConditionInPhase(phase, widget.conditionId);
+      if(conditionModel == null) {
+        return const SizedBox.shrink();
+      }
+
+      final phaseTargets = actor.phases;
+      final defaultActionTarget =
+          _defaultActionTargetForPhase(phase.id, phaseTargets);
+      final actionModel = conditionModel.action ??
+          TriggerActionModel(
+              type: "transitionPhase", target: defaultActionTarget);
+      final actionTargetItems = phaseTargets.map((p) => p.id).toList();
 
       return Card(
         borderOnForeground: false,
@@ -85,34 +74,27 @@ class _ConditionItemState extends State<ConditionItem> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ReorderableDragStartListener(
-                index: widget.index,
-                child: Text(widget.index.toString().padLeft(2, "0"), style: Theme.of(context).textTheme.displaySmall!.apply(fontSizeFactor: 0.70, color: Theme.of(context).primaryColor),)
-              ),
-              SwitchTextWidget(
-                enabled: conditionModel.enabled,
-                onPressed: () {
-                  signals.updateCondition(widget.conditionId, conditionModel.copyWith(enabled: !conditionModel.enabled));
-                },
-              ),
+                  index: widget.index,
+                  child: Text(
+                    widget.index.toString().padLeft(2, "0"),
+                    style: Theme.of(context).textTheme.displaySmall!.apply(
+                        fontSizeFactor: 0.70,
+                        color: Theme.of(context).primaryColor),
+                  )),
               const VerticalDivider(),
             ],
           ),
           title: Text(conditionModel.getReadableConditionStr()),
-          subtitle: conditionModel.description?.isNotEmpty ?? false ? Text(conditionModel.description!) : null,
+          subtitle: conditionModel.description?.isNotEmpty ?? false
+              ? Text(conditionModel.description!)
+              : null,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SwitchIconWidget(
-                icon: Icons.loop_rounded,
-                enabled: conditionModel.loop,
-                onPressed: () {
-                  signals.updateCondition(widget.conditionId, conditionModel.copyWith(loop: !conditionModel.loop));
-                }
-              ),
               IconButton(
                 icon: const Icon(Icons.clear_rounded),
                 onPressed: () {
-                  signals.removeCondition(widget.conditionId);
+                  signals.removeCondition(actor.id, phase.id, widget.conditionId);
                 },
               ),
             ],
@@ -140,50 +122,69 @@ class _ConditionItemState extends State<ConditionItem> {
                               return treatEnumName(value);
                             },
                             onChanged: (newValue) {
-                              conditionModel.changeType(newValue);
-                              signals.updateCondition(widget.conditionId, conditionModel);
+                              conditionModel.changeType(newValue!);
+                              final updatedCondition =
+                                  conditionModel.action == null
+                                      ? conditionModel.copyWith(
+                                          action: TriggerActionModel(
+                                              type: "transitionPhase",
+                                              target: defaultActionTarget),
+                                        )
+                                      : conditionModel;
+
+                              signals.updateCondition(
+                                              actor.id,
+                                              phase.id,
+                                  widget.conditionId,
+                                  updatedCondition);
                             },
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
-                          child: Opacity(opacity: 0.5, child: Center(child: Icon(Icons.keyboard_double_arrow_right_outlined))),
-                        ),
+                        const SizedBox(width: 18.0),
                         SizedBox(
-                          width: 240,
-                          child: GenericItemPickerWidget<ActorModel>(
-                            label: "Target Actor",
-                            items: timeline.actors,
-                            initialValue: timeline.actors.firstWhereOrNull((e) => e.name == conditionModel.targetActor),
-                            onChanged: (newValue) {
-                              _selectedActor = newValue as ActorModel;
-                              
-                              final newTargetActor = _selectedActor.name;
-                              String? newTargetSchedule;
-                              
-                              if(_selectedActor.schedules.isEmpty) {
-                                newTargetSchedule = null;
-                              }
-                              else {
-                                newTargetSchedule = _selectedActor.schedules.first.name;
-                              }
-                              
-                              signals.updateCondition(widget.conditionId, conditionModel.copyWith(
-                                targetActor: newTargetActor,
-                                targetSchedule: newTargetSchedule,
-                              ));
-                            },
-                          )
-                        ),
-                        const SizedBox(width: 18.0,),
-                        SizedBox(
-                          width: 240,
+                          width: 220,
                           child: GenericItemPickerWidget<String>(
-                            label: "Schedule",
-                            items: selectedTargetActor.schedules.map((e) => e.name).toList(),
-                            initialValue: conditionModel.targetSchedule,
-                            onChanged: (value) {
-                              signals.updateCondition(widget.conditionId, conditionModel.copyWith(targetSchedule: value));
+                            label: "Action",
+                            items: const ["transitionPhase"],
+                            initialValue: actionModel.type,
+                            propertyBuilder: (value) => value,
+                            onChanged: (newValue) {
+                              final updatedAction =
+                                  actionModel.copyWith(type: newValue);
+                              signals.updateCondition(
+                                actor.id,
+                                phase.id,
+                                widget.conditionId,
+                                conditionModel.copyWith(action: updatedAction),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 18.0),
+                        SizedBox(
+                          width: 260,
+                          child: GenericItemPickerWidget<String>(
+                            label: "Target Phase",
+                            items: actionTargetItems,
+                            initialValue:
+                                actionTargetItems.contains(actionModel.target)
+                                    ? actionModel.target
+                                    : defaultActionTarget,
+                            propertyBuilder: (value) {
+                              final targetPhase = phaseTargets
+                                      .firstWhereOrNull((phaseItem) => phaseItem.id == value) ??
+                                  phase;
+                              return targetPhase.name;
+                            },
+                            onChanged: (newValue) {
+                              final updatedAction =
+                                  actionModel.copyWith(target: newValue);
+                              signals.updateCondition(
+                                actor.id,
+                                phase.id,
+                                widget.conditionId,
+                                conditionModel.copyWith(action: updatedAction),
+                              );
                             },
                           ),
                         ),
@@ -191,15 +192,24 @@ class _ConditionItemState extends State<ConditionItem> {
                     ),
                   ),
                   Container(
-                    color: Colors.black12,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: _getCondDataWidget(conditionModel),
-                    )
-                  )
+                      color: Colors.black12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ConditionEditorScope(
+                          signals: signals,
+                          actorId: actor.id,
+                          phaseId: phase.id,
+                          conditionId: widget.conditionId,
+                          child: ConditionEditorRegistry.buildEditor(
+                            ConditionEditorContext(
+                              conditionModel: conditionModel,
+                            ),
+                          ),
+                        ),
+                      ))
                 ],
               ),
-            ),
+            )
           ],
         ),
       );

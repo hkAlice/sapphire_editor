@@ -56,7 +56,7 @@ class BnpcLayerRepository {
     for(var group in zoneMap.values) {
       if(group is Map<String, dynamic> && group.containsKey('bnpcs')) {
         final bnpcs = group['bnpcs'] as Map<String, dynamic>;
-        for (var entry in bnpcs.entries) {
+        for(var entry in bnpcs.entries) {
           final instanceIdStr = entry.key;
           final value = entry.value as Map<String, dynamic>;
           final baseInfo = value['baseInfo'] as Map<String, dynamic>?;

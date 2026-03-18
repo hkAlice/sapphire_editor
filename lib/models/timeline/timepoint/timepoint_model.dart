@@ -14,7 +14,7 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point
 import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/setcondition_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/settrigger_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/statuseffect_point_model.dart';
@@ -70,7 +70,6 @@ class TimepointModel {
     return newTimepoint;
   }
 
-  // Simplified changeType using a factory map instead of giant if-else
   void changeType(TimepointType pointType) {
     if(type != pointType) {
       data = <String, dynamic>{};
@@ -100,7 +99,7 @@ class TimepointModel {
       TimepointType.directorFlags => DirectorFlagsPointModel.fromJson(json),
       TimepointType.directorSeq => DirectorSeqPointModel.fromJson(json),
       TimepointType.directorVar => DirectorVarPointModel.fromJson(json),
-      TimepointType.setCondition => SetConditionPointModel.fromJson(json),
+      TimepointType.setTrigger => SetTriggerPointModel.fromJson(json),
       TimepointType.snapshot => SnapshotPointModel.fromJson(json),
       TimepointType.actionTimeline => ActionTimelinePointModel.fromJson(json),
       TimepointType.interruptAction => InterruptActionPointModel.fromJson(json),
@@ -109,17 +108,13 @@ class TimepointModel {
     };
   }
 
-  // Color getter using extension method
   Color get color => type.color;
 
-  // Display name getter using extension method
   String get displayName => type.displayName;
 
-  // Keep old method name for backwards compatibility with widgets
   Color getColorForTimepointType() => type.color;
 }
 
-// Extension methods for type metadata - keeps enums but adds rich behavior
 extension TimepointTypeExtension on TimepointType {
   Color get color {
     switch (this) {
@@ -143,7 +138,7 @@ extension TimepointTypeExtension on TimepointType {
       case TimepointType.bNpcSpawn:
         return Colors.deepPurpleAccent;
       case TimepointType.snapshot:
-      case TimepointType.setCondition:
+      case TimepointType.setTrigger:
         return Colors.brown;
       case TimepointType.interruptAction:
       case TimepointType.rollRNG:
@@ -179,8 +174,8 @@ extension TimepointTypeExtension on TimepointType {
         return "Log Message";
       case TimepointType.setBGM:
         return "Set BGM";
-      case TimepointType.setCondition:
-        return "Set Condition";
+      case TimepointType.setTrigger:
+        return "Set Trigger";
       case TimepointType.setPos:
         return "Set Position";
       case TimepointType.snapshot:
@@ -224,8 +219,8 @@ enum TimepointType {
   rollRNG,
   @JsonValue("setBGM")
   setBGM,
-  @JsonValue("setCondition")
-  setCondition,
+  @JsonValue("setTrigger")
+  setTrigger,
   @JsonValue("setPos")
   setPos,
   @JsonValue("snapshot")

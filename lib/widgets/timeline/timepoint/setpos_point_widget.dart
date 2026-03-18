@@ -8,15 +8,14 @@ import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_scope.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SetPosPointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
-  final TimelineEditorSignal signals;
-  final int actorId;
-  final int scheduleId;
 
-  const SetPosPointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
+  const SetPosPointWidget({super.key, required this.timepointModel});
 
   @override
   State<SetPosPointWidget> createState() => _SetPosPointWidgetState();
@@ -43,11 +42,17 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final signals = widget.signals;
-
     return Watch((context) {
-      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
-      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
+      final scope = TimepointEditorScope.of(context);
+      final signals = scope.signals;
+      final lookup = TimelineNodeLookup.findActorSchedule(
+          signals, scope.actorId, scope.scheduleId, scope.phaseId);
+      if(lookup == null) {
+        return const SizedBox.shrink();
+      }
+
+      final actor = lookup.actor;
+      final schedule = lookup.schedule;
       final timeline = signals.timeline.value;
 
       var validActors = List<String>.from(timeline.actors.map((e) => e.name))..remove(pointData.actorName);
@@ -150,9 +155,9 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
           ),
           const SizedBox(height: 18.0,),
           if(pointData.positionType == PositionType.absolute && pointData.targetType == ActorTargetType.self)
-            _SetPosAbsoluteWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData, signals: signals, actor: actor, schedule: schedule,)
+            _SetPosAbsoluteWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData)
           else
-            _SetPosRelativeWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData, signals: signals, actor: actor, schedule: schedule,),
+            _SetPosRelativeWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData),
 
         ],
       );
@@ -160,7 +165,11 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
   }
 
   void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
-    final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);
+    final oldTimepoint =
+        TimelineNodeLookup.findTimepointInSchedule(schedule, widget.timepointModel.id);
+    if(oldTimepoint == null) {
+      return;
+    }
 
     final newTimepoint = TimepointModel(
       id: oldTimepoint.id,
@@ -176,11 +185,8 @@ class _SetPosAbsoluteWidget extends StatefulWidget {
   // todo: hax, this should not be like this at all
   final Function() onUpdate;
   final SetPosPointModel pointData;
-  final TimelineEditorSignal signals;
-  final ActorModel actor;
-  final TimelineScheduleModel schedule;
 
-  const _SetPosAbsoluteWidget({required this.onUpdate, required this.pointData, required this.signals, required this.actor, required this.schedule});
+  const _SetPosAbsoluteWidget({required this.onUpdate, required this.pointData});
 
   @override
   State<_SetPosAbsoluteWidget> createState() => _SetPosAbsoluteWidgetState();
@@ -287,11 +293,8 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
 class _SetPosRelativeWidget extends StatefulWidget {
   final Function onUpdate;
   final SetPosPointModel pointData;
-  final TimelineEditorSignal signals;
-  final ActorModel actor;
-  final TimelineScheduleModel schedule;
 
-  const _SetPosRelativeWidget({required this.onUpdate, required this.pointData, required this.signals, required this.actor, required this.schedule});
+  const _SetPosRelativeWidget({required this.onUpdate, required this.pointData});
 
   @override
   State<_SetPosRelativeWidget> createState() => _SetPosRelativeWidgetState();

@@ -43,7 +43,7 @@ class TimelineList extends StatelessWidget {
                   children: [
                     Icon(Icons.g_mobiledata, size: 28.0),
                     SizedBox(width: 8.0),
-                    Text("Condition"),
+                    Text("Trigger"),
                   ],
                 )),
                 Tab(icon: Row(

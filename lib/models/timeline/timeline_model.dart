@@ -1,10 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
-import 'timeline_schedule_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 
 part 'timeline_model.g.dart';
 
@@ -14,21 +13,28 @@ class TimelineModel {
   int version;
 
   List<ActorModel> actors;
-  List<ConditionModel> conditions;
   List<SelectorModel> selectors;
 
-  TimelineModel({
-    required this.name,
-    this.version = TimelineModel.VERSION_MODEL,
-    scheduleList,
-    conditionList,
-    actorList,
-    selectorList
-  }) : conditions = conditionList ?? [], actors = actorList ?? [], selectors = selectorList ?? [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<TriggerModel> get conditions {
+    return actors
+        .expand((actor) => actor.phases)
+        .expand((phase) => phase.triggers)
+        .toList();
+  }
 
-  static const VERSION_MODEL = 21;
+  TimelineModel(
+      {required this.name,
+      this.version = TimelineModel.VERSION_MODEL,
+      actorList,
+      selectorList})
+      : actors = actorList ?? [],
+        selectors = selectorList ?? [];
 
-  factory TimelineModel.fromJson(Map<String, dynamic> json) => _$TimelineModelFromJson(json);
+  static const VERSION_MODEL = 22;
+
+  factory TimelineModel.fromJson(Map<String, dynamic> json) =>
+      _$TimelineModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
 
@@ -36,26 +42,26 @@ class TimelineModel {
     String? name,
     int? version,
     List<ActorModel>? actors,
-    List<ConditionModel>? conditions,
     List<SelectorModel>? selectors,
   }) {
     return TimelineModel(
       name: name ?? this.name,
       version: version ?? this.version,
       actorList: actors ?? this.actors,
-      conditionList: conditions ?? this.conditions,
       selectorList: selectors ?? this.selectors,
     );
   }
 
   // todo: move this to timelinesvc ideally
-  ActorModel addNewActor({String bnpcName = "Unknown", int layoutId = 0, int hp = 0xFF14}) {
+  ActorModel addNewActor(
+      {String bnpcName = "Unknown", int layoutId = 0, int hp = 0xFF14}) {
     var actorModel = ActorModel(
       id: actors.length + 1,
       hp: hp,
       layoutId: layoutId,
       name: bnpcName,
       type: "bnpc",
+      phaseList: [TimelinePhaseModel(id: "phase_1", name: "Initial Phase")],
     );
 
     actors.add(actorModel);
@@ -63,51 +69,34 @@ class TimelineModel {
     return actorModel;
   }
 
-  // todo: move this to timelinesvc ideally
-  TimelineScheduleModel addNewSchedule(ActorModel? actor) {
+  TimelinePhaseModel addNewPhase(ActorModel? actor) {
     actor ??= actors.first;
-    // todo: enable adding phases to other actors
 
-    var newSchedule = TimelineScheduleModel(id: actor.schedules.length + 1, name: "Schedule ${actor.schedules.length + 1}");
-    actor.schedules.add(newSchedule);
-
-    return newSchedule;
-  }
-
-  ConditionModel addNewCondition([ConditionModel? condition]) {
-    condition ??= ConditionModel(
-      id: conditions.length + 1,
-      condition: ConditionType.combatState,
-      paramData: CombatStateConditionModel(combatState: ActorCombatState.combat, sourceActor: actors.first.name),
-      targetActor: actors.first.name,
-      targetSchedule: actors.first.schedules.isEmpty ? "" : actors.first.schedules.first.name,
-      description: "",
-      loop: true,
+    final newPhase = TimelinePhaseModel(
+      id: "phase_${actor.phases.length + 1}",
+      name: "Phase ${actor.phases.length + 1}",
     );
 
-    conditions.add(condition);
+    actor.phases.add(newPhase);
 
-    return condition;
+    return newPhase;
   }
 
   SelectorModel addNewSelector([SelectorModel? selector]) {
     selector ??= SelectorModel(
-      id: selectors.length + 1,
-      name: "Selector ${selectors.length + 1}",
-      count: 1,
-      description: "",
-      fillRandomEntries: false,
-      filterList: [
-        SelectorFilterModel(type: SelectorFilterType.player),
-      ]
-    );
-    
+        id: selectors.length + 1,
+        name: "Selector ${selectors.length + 1}",
+        count: 1,
+        description: "",
+        fillRandomEntries: false,
+        filterList: [
+          SelectorFilterModel(type: SelectorFilterType.player),
+        ]);
+
     selectors.add(selector);
-    
+
     return selector;
   }
 
-  void checkSanity() {
-
-  }
+  void checkSanity() {}
 }

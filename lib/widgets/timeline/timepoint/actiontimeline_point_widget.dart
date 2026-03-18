@@ -7,16 +7,15 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_p
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_scope.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ActionTimelinePointWidget extends StatefulWidget {
   final TimepointModel timepointModel;
-  final TimelineEditorSignal signals;
-  final int actorId;
-  final int scheduleId;
 
-  const ActionTimelinePointWidget({super.key, required this.timepointModel, required this.signals, required this.actorId, required this.scheduleId});
+  const ActionTimelinePointWidget({super.key, required this.timepointModel});
 
   @override
   State<ActionTimelinePointWidget> createState() => _ActionTimelinePointWidgetState();
@@ -28,9 +27,16 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      final signals = widget.signals;
-      final actor = signals.timeline.value.actors.firstWhere((a) => a.id == widget.actorId);
-      final schedule = actor.schedules.firstWhere((s) => s.id == widget.scheduleId);
+      final scope = TimepointEditorScope.of(context);
+      final signals = scope.signals;
+      final lookup = TimelineNodeLookup.findActorSchedule(
+          signals, scope.actorId, scope.scheduleId, scope.phaseId);
+      if(lookup == null) {
+        return const SizedBox.shrink();
+      }
+
+      final actor = lookup.actor;
+      final schedule = lookup.schedule;
       var validActors = List<String>.from(signals.timeline.value.actors.map((e) => e.name));
 
       return Row(
@@ -70,7 +76,12 @@ class _ActionTimelinePointWidgetState extends State<ActionTimelinePointWidget> {
   }
   
   void _updateTimepoint(TimelineEditorSignal signals, ActorModel actor, TimelineScheduleModel schedule) {
-    final oldTimepoint = schedule.timepoints.firstWhere((t) => t.id == widget.timepointModel.id);
+    final oldTimepoint =
+        TimelineNodeLookup.findTimepointInSchedule(schedule, widget.timepointModel.id);
+    if(oldTimepoint == null) {
+      return;
+    }
+
     final newTimepoint = TimepointModel(
       id: oldTimepoint.id,
       type: oldTimepoint.type,

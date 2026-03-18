@@ -3,18 +3,20 @@ import 'package:flutter/widgets.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/varequals_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
-import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/condition_editor_scope.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals/signals_flutter.dart';
 
 class VarEqualsConditionWidget extends StatefulWidget {
-  final int conditionId;
   final VarEqualsConditionModel paramData;
 
-  const VarEqualsConditionWidget({super.key, required this.conditionId, required this.paramData});
+  const VarEqualsConditionWidget(
+  {super.key, required this.paramData});
 
   @override
-  State<VarEqualsConditionWidget> createState() => _VarEqualsConditionWidgetState();
+  State<VarEqualsConditionWidget> createState() =>
+      _VarEqualsConditionWidgetState();
 }
 
 class _VarEqualsConditionWidgetState extends State<VarEqualsConditionWidget> {
@@ -22,14 +24,22 @@ class _VarEqualsConditionWidgetState extends State<VarEqualsConditionWidget> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    final signals = SignalsProvider.of(context);
-    
     return Watch((context) {
-      final timeline = signals.timeline.value;
-      final conditionModel = timeline.conditions.firstWhere((c) => c.id == widget.conditionId);
-      
+      final scope = ConditionEditorScope.of(context);
+      final signals = scope.signals;
+      final conditionModel = TimelineNodeLookup.findCondition(
+        signals,
+        scope.actorId,
+        scope.phaseId,
+        scope.conditionId,
+      );
+      if(conditionModel == null) {
+        return const SizedBox.shrink();
+      }
+
       return Row(
         children: [
           SizedBox(
@@ -41,34 +51,45 @@ class _VarEqualsConditionWidgetState extends State<VarEqualsConditionWidget> {
               propertyBuilder: (value) => treatEnumName(value),
               onChanged: (newValue) {
                 widget.paramData.type = newValue;
-                signals.updateCondition(widget.conditionId, conditionModel);
+                signals.updateCondition(
+                  scope.actorId,
+                  scope.phaseId,
+                  scope.conditionId,
+                  conditionModel,
+                );
               },
             ),
           ),
           SizedBox(width: 18.0),
           SizedBox(
-            width: 180,
-            child: SimpleNumberField(
-              label: "Index",
-              initialValue: widget.paramData.index,
-              onChanged: (newValue) {
-                widget.paramData.index = newValue;
-                signals.updateCondition(widget.conditionId, conditionModel);
-              }
-            )
-          ),
+              width: 180,
+              child: SimpleNumberField(
+                  label: "Index",
+                  initialValue: widget.paramData.index,
+                  onChanged: (newValue) {
+                    widget.paramData.index = newValue;
+                    signals.updateCondition(
+                      scope.actorId,
+                      scope.phaseId,
+                      scope.conditionId,
+                      conditionModel,
+                    );
+                  })),
           SizedBox(width: 18.0),
           SizedBox(
-            width: 180,
-            child: SimpleNumberField(
-              label: "Value",
-              initialValue: widget.paramData.val,
-              onChanged: (newValue) {
-                widget.paramData.val = newValue;
-                signals.updateCondition(widget.conditionId, conditionModel);
-              }
-            )
-          ),
+              width: 180,
+              child: SimpleNumberField(
+                  label: "Value",
+                  initialValue: widget.paramData.val,
+                  onChanged: (newValue) {
+                    widget.paramData.val = newValue;
+                    signals.updateCondition(
+                      scope.actorId,
+                      scope.phaseId,
+                      scope.conditionId,
+                      conditionModel,
+                    );
+                  })),
         ],
       );
     });

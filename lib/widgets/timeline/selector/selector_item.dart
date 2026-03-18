@@ -151,98 +151,98 @@ Widget build(BuildContext context) {
                             ),
                           ),
                         ),
-        const SizedBox(height: 8.0,),
-        for(var filter in selectorModel.filters) ...[
-          Column(
-            children: [
-              Row(
-                children: [
-                  SmallFilterLogicWidget(
-                    first: selectorModel.filters.indexOf(filter) == 0,
-                    logic: "And",
-                    negate: filter.negate,
-                  ),
-                  SwitchIconWidget(
-                    enabled: filter.negate,
-                    icon: Icons.not_interested,
-                    onPressed: () {
-                      // Create updated filter and update the selector
-                      final updatedFilter = filter.copyWith(negate: !filter.negate);
-                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
-                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
-                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-                    },
-                  ),
-                  SwitchIconWidget(
-                    enabled: filter.enforceOnRandom,
-                    icon: Icons.gavel_rounded,
-                    onPressed: () {
-                      // Create updated filter and update the selector
-                      final updatedFilter = filter.copyWith(enforceOnRandom: !filter.enforceOnRandom);
-                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
-                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
-                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-                    },
-                  ),
-                  SizedBox(
-                    width: 180,
-                    child: GenericItemPickerWidget<SelectorFilterType>(
-                      label: "Filter",
-                      items: SelectorFilterType.values,
-                      initialValue: filter.type,
-                      propertyBuilder: (value) {
-                        return treatEnumName(value);
-                      },
-                      onChanged: (newValue) {
-                        // Create updated filter and update the selector
-                        final updatedFilter = filter.copyWith(type: newValue);
-                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
-                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
-                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 9.0,),
-                  Flexible(
-                    child: SimpleNumberField(
-                      label: "Param",
-                      initialValue: filter.param == null ? 0 : filter.param as int,
-                      onChanged: (value) {
-                        // Create updated filter and update the selector
-                        final updatedFilter = filter.copyWith(param: value);
-                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
-                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
-                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-                      }
-                    ),
-                  ),
-                  const SizedBox(width: 4.0,),
-                  SizedBox(
-                    width: 32.0,
-                    height: 32.0,
-                    child: IconButton(
-                      icon: const Icon(Icons.clear_rounded),
-                      splashRadius: 24.0,
-                      padding: const EdgeInsets.all(2.0),
-                      onPressed: () {
-                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..remove(filter);
-                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 9.0,),
-            ],
-          ),
-        ],
-        AddGenericWidget(
-          text: "Add new filter",
-          onTap: () {
-            final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..add(SelectorFilterModel());
-            signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
-          }
-        )
+                        const SizedBox(height: 8.0,),
+                        for(var filter in selectorModel.filters) ...[
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  SmallFilterLogicWidget(
+                                    first: selectorModel.filters.indexOf(filter) == 0,
+                                    logic: "And",
+                                    negate: filter.negate,
+                                  ),
+                                  SwitchIconWidget(
+                                    enabled: filter.negate,
+                                    icon: Icons.not_interested,
+                                    onPressed: () {
+                                      // Create updated filter and update the selector
+                                      final updatedFilter = filter.copyWith(negate: !filter.negate);
+                                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                                    },
+                                  ),
+                                  SwitchIconWidget(
+                                    enabled: filter.enforceOnRandom,
+                                    icon: Icons.gavel_rounded,
+                                    onPressed: () {
+                                      // Create updated filter and update the selector
+                                      final updatedFilter = filter.copyWith(enforceOnRandom: !filter.enforceOnRandom);
+                                      final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                                      newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                                      signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 180,
+                                    child: GenericItemPickerWidget<SelectorFilterType>(
+                                      label: "Filter",
+                                      items: SelectorFilterType.values,
+                                      initialValue: filter.type,
+                                      propertyBuilder: (value) {
+                                        return treatEnumName(value);
+                                      },
+                                      onChanged: (newValue) {
+                                        // Create updated filter and update the selector
+                                        final updatedFilter = filter.copyWith(type: newValue);
+                                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 9.0,),
+                                  Flexible(
+                                    child: SimpleNumberField(
+                                      label: "Param",
+                                      initialValue: filter.param == null ? 0 : filter.param as int,
+                                      onChanged: (value) {
+                                        // Create updated filter and update the selector
+                                        final updatedFilter = filter.copyWith(param: value);
+                                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters);
+                                        newFilters[selectorModel.filters.indexOf(filter)] = updatedFilter;
+                                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                                      }
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4.0,),
+                                  SizedBox(
+                                    width: 32.0,
+                                    height: 32.0,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.clear_rounded),
+                                      splashRadius: 24.0,
+                                      padding: const EdgeInsets.all(2.0),
+                                      onPressed: () {
+                                        final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..remove(filter);
+                                        signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 9.0,),
+                            ],
+                          ),
+                        ],
+                        AddGenericWidget(
+                          text: "Add new filter",
+                          onTap: () {
+                            final newFilters = List<SelectorFilterModel>.from(selectorModel.filters)..add(SelectorFilterModel());
+                            signals.updateSelector(widget.selectorId, selectorModel.copyWith(filters: newFilters));
+                          }
+                        )
                       ],
                     ),
                   ),

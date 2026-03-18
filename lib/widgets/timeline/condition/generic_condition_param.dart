@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sapphire_editor/models/timeline/condition/condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 
 class GenericConditionParam extends StatefulWidget {
-  final ConditionModel conditionModel;
+  final TriggerModel conditionModel;
   final List<ConditionParamParser> paramData;
   final Function() onUpdate;
 
-  const GenericConditionParam({super.key, required this.conditionModel, required this.paramData, required this.onUpdate});
+  const GenericConditionParam(
+      {super.key,
+      required this.conditionModel,
+      required this.paramData,
+      required this.onUpdate});
 
   @override
   State<GenericConditionParam> createState() => _GenericConditionParamState();
@@ -48,7 +52,8 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
       // todo: add actor, phase select, etc
       // for now every param is a boring text input
       var paramParser = widget.paramData[i];
-      var paramTextController = TextEditingController(text: paramParser.initialValue.toString());
+      var paramTextController =
+          TextEditingController(text: paramParser.initialValue.toString());
       _paramTextControllers.add(paramTextController);
 
       _paramWidgets.add(
@@ -56,10 +61,11 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
           width: 150,
           child: TextFormField(
             maxLines: 1,
-            keyboardType: paramParser.isHex ? TextInputType.text : TextInputType.number,
-            inputFormatters: paramParser.isHex ? null : <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
+            keyboardType:
+                paramParser.isHex ? TextInputType.text : TextInputType.number,
+            inputFormatters: paramParser.isHex
+                ? null
+                : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
             controller: paramTextController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -68,22 +74,24 @@ class _GenericConditionParamState extends State<GenericConditionParam> {
             onChanged: (value) {
               int newParamValue = 0;
               try {
-                newParamValue = int.tryParse(value, radix: paramParser.isHex ? 16 : null) ?? 0;
-              }
-              catch(e) {
+                newParamValue =
+                    int.tryParse(value, radix: paramParser.isHex ? 16 : null) ??
+                        0;
+              } catch (e) {
                 // failed to parse, ignore
                 return;
               }
 
-              paramTextController.text = paramParser.isHex ? newParamValue.toRadixString(16) : newParamValue.toString();
-              paramTextController.selection = TextSelection.collapsed(offset: paramTextController.text.length);
-          
+              paramTextController.text = paramParser.isHex
+                  ? newParamValue.toRadixString(16)
+                  : newParamValue.toString();
+              paramTextController.selection = TextSelection.collapsed(
+                  offset: paramTextController.text.length);
+
               //widget.phaseConditionModel.params[i] = newParamValue;
               widget.onUpdate();
 
-              setState(() {
-                
-              });
+              setState(() {});
             },
           ),
         ),

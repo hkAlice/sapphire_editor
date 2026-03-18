@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'setcondition_point_model.dart';
+part of 'settrigger_point_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SetConditionPointModel _$SetConditionPointModelFromJson(
+SetTriggerPointModel _$SetTriggerPointModelFromJson(
         Map<String, dynamic> json) =>
-    SetConditionPointModel(
+    SetTriggerPointModel(
       conditionId: (json['conditionId'] as num?)?.toInt() ?? 1,
       enabled: json['enabled'] as bool? ?? true,
       conditionStr: json['conditionStr'] as String? ?? "<unknown>",
     );
 
-Map<String, dynamic> _$SetConditionPointModelToJson(
-        SetConditionPointModel instance) =>
+Map<String, dynamic> _$SetTriggerPointModelToJson(
+        SetTriggerPointModel instance) =>
     <String, dynamic>{
       'conditionId': instance.conditionId,
       'conditionStr': instance.conditionStr,

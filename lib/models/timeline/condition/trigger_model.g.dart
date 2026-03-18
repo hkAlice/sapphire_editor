@@ -1,37 +1,33 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'condition_model.dart';
+part of 'trigger_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ConditionModel _$ConditionModelFromJson(Map<String, dynamic> json) =>
-    ConditionModel(
+TriggerModel _$TriggerModelFromJson(Map<String, dynamic> json) => TriggerModel(
       id: (json['id'] as num).toInt(),
       condition: $enumDecode(_$ConditionTypeEnumMap, json['condition']),
-      loop: json['loop'] as bool,
       paramData: json['paramData'],
-      enabled: json['enabled'] as bool? ?? true,
       description: json['description'] as String? ?? "",
-      targetActor: json['targetActor'] as String?,
-      targetSchedule: json['targetSchedule'] as String?,
+      action: json['action'] == null
+          ? null
+          : TriggerActionModel.fromJson(json['action'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$ConditionModelToJson(ConditionModel instance) =>
+Map<String, dynamic> _$TriggerModelToJson(TriggerModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
       'condition': _$ConditionTypeEnumMap[instance.condition]!,
       'paramData': instance.paramData,
-      'loop': instance.loop,
-      'enabled': instance.enabled,
-      'targetActor': instance.targetActor,
-      'targetSchedule': instance.targetSchedule,
+      'action': instance.action,
     };
 
 const _$ConditionTypeEnumMap = {
   ConditionType.combatState: 'combatState',
+  ConditionType.eObjInteract: 'eObjInteract',
   ConditionType.directorVarGreaterThan: 'directorVarGreaterThan',
   ConditionType.elapsedTimeGreaterThan: 'elapsedTimeGreaterThan',
   ConditionType.getAction: 'getAction',

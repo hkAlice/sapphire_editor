@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/eobjinteract_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
@@ -8,53 +10,67 @@ import 'package:sapphire_editor/models/timeline/condition/types/varequals_condit
 import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
-part 'condition_model.g.dart';
+part 'trigger_model.g.dart';
 
-// todo: wish generics would work well here instead of infinite cast for paramData
 @JsonSerializable()
-class ConditionModel {
+class TriggerModel {
   int id;
   String? description;
   ConditionType condition;
   dynamic paramData = {};
+  TriggerActionModel? action;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool loop;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool enabled;
-  
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String? targetActor;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String? targetSchedule;
 
-  ConditionModel({
+  TriggerModel({
     required this.id,
-    required this.condition,
-    required this.loop,
+    required this.condition, // todo: this needs to be an array, use chained AND/OR etc
     this.paramData,
-    this.enabled = true,
     this.description = "",
+    this.action,
+    this.loop = false,
+    this.enabled = true,
     this.targetActor,
-    this.targetSchedule
+    this.targetSchedule,
   }) {
     changeType(condition);
   }
 
-  factory ConditionModel.fromJson(Map<String, dynamic> json) => _$ConditionModelFromJson(json);
+  factory TriggerModel.fromJson(Map<String, dynamic> json) {
+    final normalized = <String, dynamic>{...json};
+    normalized['condition'] ??= normalized['conditionType'];
+    return _$TriggerModelFromJson(normalized);
+  }
 
-  Map<String, dynamic> toJson() => _$ConditionModelToJson(this);
+  Map<String, dynamic> toJson() => _$TriggerModelToJson(this);
 
-  ConditionModel copyWith({
+  TriggerModel copyWith({
     int? id,
     String? description,
     ConditionType? condition,
     dynamic paramData,
+    TriggerActionModel? action,
     bool? loop,
     bool? enabled,
     String? targetActor,
     String? targetSchedule,
   }) {
-    return ConditionModel(
+    return TriggerModel(
       id: id ?? this.id,
       description: description ?? this.description,
       condition: condition ?? this.condition,
       paramData: paramData ?? this.paramData,
+      action: action ?? this.action,
       loop: loop ?? this.loop,
       enabled: enabled ?? this.enabled,
       targetActor: targetActor ?? this.targetActor,
@@ -77,22 +93,24 @@ class ConditionModel {
     }
   }
 
-  static dynamic _conditionDataFactory(ConditionType type, Map<String, dynamic> json) {
+  static dynamic _conditionDataFactory(
+      ConditionType type, Map<String, dynamic> json) {
     return switch (type) {
       ConditionType.combatState => CombatStateConditionModel.fromJson(json),
+      ConditionType.eObjInteract => EObjInteractConditionModel.fromJson(json),
       ConditionType.getAction => GetActionConditionModel.fromJson(json),
       ConditionType.hpPctBetween => HPPctBetweenConditionModel.fromJson(json),
-      ConditionType.scheduleActive => ScheduleActiveConditionModel.fromJson(json),
-      ConditionType.interruptedAction => InterruptedActionConditionModel.fromJson(json),
+      ConditionType.scheduleActive =>
+        ScheduleActiveConditionModel.fromJson(json),
+      ConditionType.interruptedAction =>
+        InterruptedActionConditionModel.fromJson(json),
       ConditionType.varEquals => VarEqualsConditionModel.fromJson(json),
-      _ => json, // Keep as is for types without specific models
+      _ => json, // keep as is for types without specific models
     };
   }
 
-  // Color getter using extension method
   Color get color => condition.color;
-  
-  // Display name getter using extension method
+
   String get displayName => condition.displayName;
 
   String getReadableConditionStr() {
@@ -100,13 +118,18 @@ class ConditionModel {
 
     if(condition == ConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
-      summary += "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
+      summary +=
+          "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
     } else if(condition == ConditionType.getAction) {
       var param = paramData as GetActionConditionModel;
       summary += "${param.sourceActor} casts Action#${param.actionId}";
     } else if(condition == ConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
-      summary += "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
+      summary +=
+          "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
+    } else if(condition == ConditionType.eObjInteract) {
+      var param = paramData as EObjInteractConditionModel;
+        summary += "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
     } else if(condition == ConditionType.scheduleActive) {
       var param = paramData as ScheduleActiveConditionModel;
       summary += "${param.sourceActor}->${param.scheduleName} is active";
@@ -115,26 +138,29 @@ class ConditionModel {
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
     } else if(condition == ConditionType.varEquals) {
       var param = paramData as VarEqualsConditionModel;
-      summary += "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
+      summary +=
+          "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
     }
 
-    summary += ", ${loop ? "loop" : "push"} $targetActor->$targetSchedule";
+    if(action != null) {
+      summary += ", action ${action!.type} -> ${action!.target}";
+    }
     return summary;
   }
-  
+
   List<ConditionParamParser> getConditionParamParser() {
     return condition.paramParser;
   }
 }
 
-// Extension methods for ConditionType metadata
 extension ConditionTypeExtension on ConditionType {
   Color get color {
     return switch (this) {
       ConditionType.combatState => Colors.red,
+      ConditionType.eObjInteract => Colors.lightBlue,
       ConditionType.getAction => Colors.orange,
       ConditionType.hpPctBetween => Colors.green,
       ConditionType.hpPctLessThan => Colors.green,
@@ -149,6 +175,7 @@ extension ConditionTypeExtension on ConditionType {
   String get displayName {
     return switch (this) {
       ConditionType.combatState => "Combat State",
+      ConditionType.eObjInteract => "EObj Interact",
       ConditionType.getAction => "Get Action",
       ConditionType.hpPctBetween => "HP % Between",
       ConditionType.hpPctLessThan => "HP % Less Than",
@@ -164,11 +191,17 @@ extension ConditionTypeExtension on ConditionType {
     return switch (this) {
       ConditionType.combatState => [
           ConditionParamParser(label: "Actor", initialValue: 0),
-          ConditionParamParser(label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
+          ConditionParamParser(
+              label: "Idle, Combat, Retreat", initialValue: 1, isHex: false),
+        ],
+      ConditionType.eObjInteract => [
+          ConditionParamParser(label: "EObj Actor", initialValue: 0),
         ],
       ConditionType.directorVarGreaterThan => [
-          ConditionParamParser(label: "Director (hex)", initialValue: 0x8, isHex: true),
-          ConditionParamParser(label: "Greater than", initialValue: 1, isHex: false),
+          ConditionParamParser(
+              label: "Director (hex)", initialValue: 0x8, isHex: true),
+          ConditionParamParser(
+              label: "Greater than", initialValue: 1, isHex: false),
         ],
       ConditionType.elapsedTimeGreaterThan => [
           ConditionParamParser(label: "Elapsed time (ms)", initialValue: 30000),
@@ -195,6 +228,8 @@ extension ConditionTypeExtension on ConditionType {
 enum ConditionType {
   @JsonValue("combatState")
   combatState,
+  @JsonValue("eObjInteract")
+  eObjInteract,
   @JsonValue("directorVarGreaterThan")
   directorVarGreaterThan,
   @JsonValue("elapsedTimeGreaterThan")
@@ -224,10 +259,9 @@ class ConditionParamParser {
   final int initialValue;
   final bool isHex;
 
-  ConditionParamParser({
-    required this.label,
-    this.type = "input",
-    this.initialValue = 50,
-    this.isHex = false
-  });
+  ConditionParamParser(
+      {required this.label,
+      this.type = "input",
+      this.initialValue = 50,
+      this.isHex = false});
 }

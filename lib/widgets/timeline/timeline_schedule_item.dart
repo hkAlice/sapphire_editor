@@ -8,16 +8,23 @@ import 'package:sapphire_editor/utils/schedule_duration_cache.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class TimelineScheduleItem extends StatelessWidget {
+  final int actorId;
+  final String phaseId;
   final int scheduleIndex;
   final int scheduleId;
 
-  const TimelineScheduleItem({
-    super.key,
-    required this.scheduleIndex,
-    required this.scheduleId
-  });
+  const TimelineScheduleItem(
+      {super.key,
+      required this.actorId,
+      required this.phaseId,
+      required this.scheduleIndex,
+      required this.scheduleId});
 
-  void _showEditDialog(BuildContext context, String headerText, String initialText, {int minLines = 5, int? maxLines, required ValueChanged<String> onChanged}) {
+  void _showEditDialog(
+      BuildContext context, String headerText, String initialText,
+      {int minLines = 5,
+      int? maxLines,
+      required ValueChanged<String> onChanged}) {
     final controller = TextEditingController(text: initialText);
     showDialog<void>(
       context: context,
@@ -57,8 +64,10 @@ class TimelineScheduleItem extends StatelessWidget {
     );
   }
 
-  void _showContextMenu(BuildContext context, Offset globalPosition, dynamic signals, dynamic actor, dynamic schedule) {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+  void _showContextMenu(BuildContext context, Offset globalPosition,
+      dynamic signals, dynamic actor, dynamic phase, dynamic schedule) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
     showMenu<String>(
       context: context,
       position: RelativeRect.fromRect(
@@ -66,39 +75,84 @@ class TimelineScheduleItem extends StatelessWidget {
         Offset.zero & overlay.size,
       ),
       items: [
-        const PopupMenuItem(value: 'edit_name', child: Row(children: [Icon(Icons.edit_rounded, size: 16), SizedBox(width: 8), Text('Edit name')])),
-        const PopupMenuItem(value: 'edit_desc', child: Row(children: [Icon(Icons.comment_rounded, size: 16), SizedBox(width: 8), Text('Edit description')])),
+        const PopupMenuItem(
+            value: 'edit_name',
+            child: Row(children: [
+              Icon(Icons.edit_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Edit name')
+            ])),
+        const PopupMenuItem(
+            value: 'edit_desc',
+            child: Row(children: [
+              Icon(Icons.comment_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Edit description')
+            ])),
         const PopupMenuDivider(),
-        PopupMenuItem(value: 'move_up', enabled: scheduleIndex > 0, child: const Row(children: [Icon(Icons.arrow_upward_rounded, size: 16), SizedBox(width: 8), Text('Move up')])),
-        PopupMenuItem(value: 'move_down', enabled: scheduleIndex < actor.schedules.length - 1, child: const Row(children: [Icon(Icons.arrow_downward_rounded, size: 16), SizedBox(width: 8), Text('Move down')])),
+        PopupMenuItem(
+            value: 'move_up',
+            enabled: scheduleIndex > 0,
+            child: const Row(children: [
+              Icon(Icons.arrow_upward_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Move up')
+            ])),
+        PopupMenuItem(
+            value: 'move_down',
+            enabled: scheduleIndex < phase.schedules.length - 1,
+            child: const Row(children: [
+              Icon(Icons.arrow_downward_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Move down')
+            ])),
         const PopupMenuDivider(),
-        const PopupMenuItem(value: 'duplicate', child: Row(children: [Icon(Icons.copy_rounded, size: 16), SizedBox(width: 8), Text('Duplicate')])),
-        const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_rounded, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Delete', style: TextStyle(color: Colors.redAccent))])),
+        const PopupMenuItem(
+            value: 'duplicate',
+            child: Row(children: [
+              Icon(Icons.copy_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Duplicate')
+            ])),
+        const PopupMenuItem(
+            value: 'delete',
+            child: Row(children: [
+              Icon(Icons.delete_rounded, size: 16, color: Colors.redAccent),
+              SizedBox(width: 8),
+              Text('Delete', style: TextStyle(color: Colors.redAccent))
+            ])),
       ],
     ).then((value) {
       if(value == null) return;
-      switch(value) {
+      switch (value) {
         case 'edit_name':
-          _showEditDialog(context, 'Edit schedule name', schedule.name, minLines: 1, maxLines: 1, onChanged: (newName) {
-            signals.updateSchedule(schedule, schedule.copyWith(name: newName), actor.id);
+          _showEditDialog(context, 'Edit schedule name', schedule.name,
+              minLines: 1, maxLines: 1, onChanged: (newName) {
+            signals.updateSchedule(
+                phase.id, schedule, schedule.copyWith(name: newName), actor.id);
           });
           break;
         case 'edit_desc':
-          _showEditDialog(context, 'Edit schedule description', schedule.description, onChanged: (newDesc) {
-            signals.updateSchedule(schedule, schedule.copyWith(description: newDesc), actor.id);
+          _showEditDialog(
+              context, 'Edit schedule description', schedule.description,
+              onChanged: (newDesc) {
+            signals.updateSchedule(phase.id, schedule,
+                schedule.copyWith(description: newDesc), actor.id);
           });
           break;
         case 'move_up':
-          signals.reorderSchedule(actor, scheduleIndex, scheduleIndex - 1);
+          signals.reorderScheduleInPhase(
+              phase.id, actor.id, scheduleIndex, scheduleIndex - 1);
           break;
         case 'move_down':
-          signals.reorderSchedule(actor, scheduleIndex, scheduleIndex + 2);
+          signals.reorderScheduleInPhase(
+              phase.id, actor.id, scheduleIndex, scheduleIndex + 2);
           break;
         case 'duplicate':
-          signals.duplicateSchedule(schedule, actor.id);
+          signals.duplicateScheduleInPhase(phase.id, schedule, actor.id);
           break;
         case 'delete':
-          signals.removeSchedule(schedule, actor.id);
+          signals.removeScheduleFromPhase(phase.id, schedule, actor.id);
           break;
       }
     });
@@ -110,19 +164,37 @@ class TimelineScheduleItem extends StatelessWidget {
 
     // Create a computed signal for this specific schedule to avoid rebuilds when other schedules change
     final scheduleSignal = computed(() {
-      final actor = signals.selectedActor.value;
-      return actor.schedules.firstWhere(
+      final actors = signals.timeline.value.actors;
+      final actor = actors.firstWhere(
+        (a) => a.id == actorId,
+        orElse: () => actors.first,
+      );
+      final phase = actor.phases.firstWhere(
+        (p) => p.id == phaseId,
+        orElse: () => actor.phases.first,
+      );
+
+      return phase.schedules.firstWhere(
         (s) => s.id == scheduleId,
-        orElse: () => actor.schedules.first,
+        orElse: () => phase.schedules.first,
       );
     });
 
     return Watch((context) {
-      final actor = signals.selectedActor.value;
+      final actors = signals.timeline.value.actors;
+      final actor = actors.firstWhere(
+        (a) => a.id == actorId,
+        orElse: () => actors.first,
+      );
+      final phase = actor.phases.firstWhere(
+        (p) => p.id == phaseId,
+        orElse: () => actor.phases.first,
+      );
       final schedule = scheduleSignal.value;
-      
+
       final cache = ScheduleDurationCache.calculate(schedule);
-      final timepointCountStr = "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
+      final timepointCountStr =
+          "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
 
       double scheduleLastTimepoint = 0.0;
       if(schedule.timepoints.isNotEmpty) {
@@ -131,7 +203,8 @@ class TimelineScheduleItem extends StatelessWidget {
 
       return DisableWebContextMenu(
         child: GestureDetector(
-          onSecondaryTapUp: (details) => _showContextMenu(context, details.globalPosition, signals, actor, schedule),
+          onSecondaryTapUp: (details) => _showContextMenu(
+              context, details.globalPosition, signals, actor, phase, schedule),
           child: Card(
             margin: const EdgeInsets.only(bottom: 12.0),
             borderOnForeground: false,
@@ -142,7 +215,9 @@ class TimelineScheduleItem extends StatelessWidget {
               ),
               initiallyExpanded: true,
               title: Text(schedule.name),
-              subtitle: Text(schedule.description.isNotEmpty ? schedule.description : timepointCountStr),
+              subtitle: Text(schedule.description.isNotEmpty
+                  ? schedule.description
+                  : timepointCountStr),
               trailing: SizedBox(
                 width: 48.0,
                 child: Text(
@@ -153,31 +228,48 @@ class TimelineScheduleItem extends StatelessWidget {
               ),
               children: [
                 ReorderableListView.builder(
-                  buildDefaultDragHandles: false,
-                  onReorder: (int oldindex, int newindex) {
-                    signals.reorderTimepoint(schedule, oldindex, newindex, actor.id);
-                  },
-                  itemCount: schedule.timepoints.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, i) {
-                    var timepointModel = schedule.timepoints[i];
-        
-                    return GenericTimepointItem(
-                      key: ValueKey(timepointModel.id),
-                      timepointId: timepointModel.id,
-                      scheduleIndex: scheduleIndex,
-                      scheduleId: scheduleId,
-                      timepointIndex: i,
-                      timeElapsedMs: cache.timeElapsedList[i],
-                      actorId: actor.id,
-                    );
-                  }
-                ),
+                    buildDefaultDragHandles: false,
+                    onReorder: (int oldindex, int newindex) {
+                      signals.reorderTimepointInPhase(
+                        actor.id,
+                        phase.id,
+                        schedule.id,
+                        oldindex,
+                        newindex,
+                      );
+                    },
+                    itemCount: schedule.timepoints.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, i) {
+                      var timepointModel = schedule.timepoints[i];
+
+                      return GenericTimepointItem(
+                        key: ValueKey(timepointModel.id),
+                        phaseId: phase.id,
+                        timepointId: timepointModel.id,
+                        scheduleIndex: scheduleIndex,
+                        scheduleId: scheduleId,
+                        timepointIndex: i,
+                        timeElapsedMs: cache.timeElapsedList[i],
+                        actorId: actor.id,
+                      );
+                    }),
                 SmallAddGenericWidget(
                   onTap: () {
                     Future.delayed(Duration.zero, () {
-                      signals.addTimepoint(actor.id, schedule.id, TimepointModel(id: schedule.generateTimepointId(), type: TimepointType.idle));
+                      final nextTimepointId =
+                          signals.generateNextTimepointIdForPhase(
+                              actor.id, phase.id);
+
+                      signals.addTimepointInPhase(
+                        actor.id,
+                        phase.id,
+                        schedule.id,
+                        TimepointModel(
+                            id: nextTimepointId,
+                            type: TimepointType.idle),
+                      );
                     });
                   },
                   text: "Add new timepoint",
