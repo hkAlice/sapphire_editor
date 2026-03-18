@@ -31,7 +31,7 @@ class TimelineModel {
       : actors = actorList ?? [],
         selectors = selectorList ?? [];
 
-  static const VERSION_MODEL = 22;
+  static const VERSION_MODEL = 30;
 
   factory TimelineModel.fromJson(Map<String, dynamic> json) =>
       _$TimelineModelFromJson(json);
