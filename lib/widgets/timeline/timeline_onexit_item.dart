@@ -6,11 +6,11 @@ import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
-class TimelineOnEnterItem extends StatelessWidget {
+class TimelineOnExitItem extends StatelessWidget {
   final int actorId;
   final String phaseId;
 
-  const TimelineOnEnterItem({
+  const TimelineOnExitItem({
     super.key,
     required this.actorId,
     required this.phaseId,
@@ -36,10 +36,10 @@ class TimelineOnEnterItem extends StatelessWidget {
       final phase = phaseSignal.value;
 
       final timepointCountStr =
-          "${phase.onEnter.length} timepoint${(phase.onEnter.length != 1 ? 's' : '')}";
+          "${phase.onExit.length} timepoint${(phase.onExit.length != 1 ? 's' : '')}";
       double lastTimepoint = 0.0;
-      if(phase.onEnter.isNotEmpty) {
-        lastTimepoint = phase.onEnter.last.startTime / 1000.0;
+      if(phase.onExit.isNotEmpty) {
+        lastTimepoint = phase.onExit.last.startTime / 1000.0;
       }
 
       return Card(
@@ -51,7 +51,7 @@ class TimelineOnEnterItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(4.0),
           ),
           initiallyExpanded: true,
-          title: const Text("On Enter (Triggers)"),
+          title: const Text("On Exit (Triggers)"),
           subtitle: Text(timepointCountStr),
           trailing: SizedBox(
             width: 48.0,
@@ -62,25 +62,25 @@ class TimelineOnEnterItem extends StatelessWidget {
           ),
           childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: [
-            if(phase.onEnter.isEmpty)
+            if(phase.onExit.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 4.0),
                 child: Text(
-                    "Timepoints here will trigger immediately when the phase starts."),
+                    "Timepoints here will trigger immediately when the phase ends."),
               )
             else
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: phase.onEnter.length,
+                itemCount: phase.onExit.length,
                 itemBuilder: (context, i) {
                   return GenericTimepointItem(
-                    key: ValueKey("${phase.id}_onEnter_${phase.onEnter[i].id}"),
+                    key: ValueKey("${phase.id}_onExit_${phase.onExit[i].id}"),
                     actorId: actorId,
                     phaseId: phase.id,
-                    timepointId: phase.onEnter[i].id,
+                    timepointId: phase.onExit[i].id,
                     scheduleIndex: -1,
-                    scheduleId: TimelineNodeLookup.onEnterScheduleId,
+                    scheduleId: TimelineNodeLookup.onExitScheduleId,
                     timepointIndex: i,
                     timeElapsedMs: 0,
                   );
@@ -89,7 +89,7 @@ class TimelineOnEnterItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
               child: AddGenericWidget(
-                text: "New Entry Timepoint",
+                text: "New Exit Timepoint",
                 onTap: () {
                   final nextTimepointId = signals
                       .generateNextTimepointIdForPhase(actorId, phase.id);
@@ -97,7 +97,7 @@ class TimelineOnEnterItem extends StatelessWidget {
                   signals.addTimepointInPhase(
                     actorId,
                     phase.id,
-                    TimelineNodeLookup.onEnterScheduleId,
+                    TimelineNodeLookup.onExitScheduleId,
                     TimepointModel(
                       id: nextTimepointId,
                       type: TimepointType.logMessage,

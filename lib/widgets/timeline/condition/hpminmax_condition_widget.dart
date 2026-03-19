@@ -43,7 +43,7 @@ class _HPMinMaxConditionWidgetState extends State<HPMinMaxConditionWidget> {
       return Row(
         children: [
           SizedBox(
-              width: 150,
+              width: 250,
               child: GenericItemPickerWidget<String>(
                 label: "Source Actor",
                 items: timeline.actors.map((e) => e.name).toList(),

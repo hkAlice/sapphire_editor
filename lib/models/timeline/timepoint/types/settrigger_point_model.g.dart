@@ -9,15 +9,17 @@ part of 'settrigger_point_model.dart';
 SetTriggerPointModel _$SetTriggerPointModelFromJson(
         Map<String, dynamic> json) =>
     SetTriggerPointModel(
-      conditionId: (json['conditionId'] as num?)?.toInt() ?? 1,
+      targetActor: json['targetActor'] as String? ?? "",
+      triggerId: (json['triggerId'] as num?)?.toInt() ?? 1,
       enabled: json['enabled'] as bool? ?? true,
-      conditionStr: json['conditionStr'] as String? ?? "<unknown>",
+      triggerStr: json['triggerStr'] as String? ?? "<unknown>",
     );
 
 Map<String, dynamic> _$SetTriggerPointModelToJson(
         SetTriggerPointModel instance) =>
     <String, dynamic>{
-      'conditionId': instance.conditionId,
-      'conditionStr': instance.conditionStr,
+      'targetActor': instance.targetActor,
+      'triggerId': instance.triggerId,
       'enabled': instance.enabled,
+      'triggerStr': instance.triggerStr,
     };

@@ -9,11 +9,15 @@ part of 'trigger_action_model.dart';
 TriggerActionModel _$TriggerActionModelFromJson(Map<String, dynamic> json) =>
     TriggerActionModel(
       type: json['type'] as String,
-      target: json['target'] as String,
+      phaseId: json['phaseId'] as String?,
+      timepoint: json['timepoint'] == null
+          ? null
+          : TimepointModel.fromJson(json['timepoint'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TriggerActionModelToJson(TriggerActionModel instance) =>
     <String, dynamic>{
       'type': instance.type,
-      'target': instance.target,
+      'phaseId': instance.phaseId,
+      'timepoint': instance.timepoint?.toJson(),
     };

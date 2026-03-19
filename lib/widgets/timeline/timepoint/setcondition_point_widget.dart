@@ -45,15 +45,15 @@ class _SetTriggerPointWidgetState extends State<SetTriggerPointWidget> {
           SizedBox(
             width: 500,
             child: GenericItemPickerWidget<TriggerModel>(
-              label: "Condition",
+              label: "Trigger",
               items: timeline.conditions,
-              initialValue: timeline.conditions.firstWhereOrNull((e) => e.id == pointData.conditionId) ?? timeline.conditions.first,
+              initialValue: timeline.conditions.firstWhereOrNull((e) => e.id == pointData.triggerId) ?? timeline.conditions.first,
               propertyBuilder: (value) {
                 return "(ID: ${value.id}) ${value.getReadableConditionStr()}";
               },
               onChanged: (newValue) {
-                pointData.conditionId = newValue.id;
-                pointData.conditionStr = newValue.getReadableConditionStr();
+                pointData.triggerId = newValue.id;
+                pointData.triggerStr = newValue.getReadableConditionStr();
                 _updateTimepoint(signals, actor, schedule);
                 },
             ),

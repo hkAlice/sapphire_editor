@@ -6,10 +6,11 @@ import 'package:sapphire_editor/widgets/timeline/condition/eobjinteract_conditio
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/interruptedaction_condition_widget.dart';
-import 'package:sapphire_editor/widgets/timeline/condition/scheduleactive_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/phaseactive_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/varequals_condition_widget.dart';
 
-typedef ConditionEditorBuilder = Widget Function(ConditionEditorContext context);
+typedef ConditionEditorBuilder = Widget Function(
+    ConditionEditorContext context);
 
 class ConditionEditorContext {
   final TriggerModel conditionModel;
@@ -25,7 +26,8 @@ class ConditionEditorRegistry {
           paramData: context.conditionModel.paramData,
         ),
     ConditionType.eObjInteract: (context) => EObjInteractConditionWidget(
-          paramData: context.conditionModel.paramData as EObjInteractConditionModel,
+          paramData:
+              context.conditionModel.paramData as EObjInteractConditionModel,
         ),
     ConditionType.getAction: (context) => GetActionConditionWidget(
           paramData: context.conditionModel.paramData,
@@ -33,10 +35,11 @@ class ConditionEditorRegistry {
     ConditionType.hpPctBetween: (context) => HPMinMaxConditionWidget(
           paramData: context.conditionModel.paramData,
         ),
-    ConditionType.scheduleActive: (context) => ScheduleActiveConditionWidget(
+    ConditionType.phaseActive: (context) => PhaseActiveConditionWidget(
           paramData: context.conditionModel.paramData,
         ),
-    ConditionType.interruptedAction: (context) => InterruptedActionConditionWidget(
+    ConditionType.interruptedAction: (context) =>
+        InterruptedActionConditionWidget(
           paramData: context.conditionModel.paramData,
         ),
     ConditionType.varEquals: (context) => VarEqualsConditionWidget(

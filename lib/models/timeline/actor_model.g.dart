@@ -12,6 +12,7 @@ ActorModel _$ActorModelFromJson(Map<String, dynamic> json) => ActorModel(
       type: json['type'] as String,
       layoutId: (json['layoutId'] as num).toInt(),
       hp: (json['hp'] as num).toInt(),
+      initialPhaseId: (json['initialPhaseId'] as num?)?.toInt() ?? 1,
     )
       ..phases = (json['phases'] as List<dynamic>)
           .map((e) => TimelinePhaseModel.fromJson(e as Map<String, dynamic>))
@@ -26,6 +27,7 @@ Map<String, dynamic> _$ActorModelToJson(ActorModel instance) =>
       'type': instance.type,
       'layoutId': instance.layoutId,
       'hp': instance.hp,
+      'initialPhaseId': instance.initialPhaseId,
       'phases': instance.phases,
       'subactors': instance.subactors,
     };

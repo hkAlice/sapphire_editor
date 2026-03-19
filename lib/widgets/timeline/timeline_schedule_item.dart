@@ -1,7 +1,9 @@
 import 'package:disable_web_context_menu/disable_web_context_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/utils/schedule_duration_cache.dart';
@@ -19,6 +21,134 @@ class TimelineScheduleItem extends StatelessWidget {
       required this.phaseId,
       required this.scheduleIndex,
       required this.scheduleId});
+
+  String _loopTypeLabel(TimelineScheduleLoopType loopType) {
+    return switch (loopType) {
+      TimelineScheduleLoopType.none => 'None',
+      TimelineScheduleLoopType.infinite => 'Infinite',
+      TimelineScheduleLoopType.finite => 'Finite',
+    };
+  }
+
+  String _loopSummary(TimelineScheduleModel schedule) {
+    return switch (schedule.loopType) {
+      TimelineScheduleLoopType.none => 'No loop',
+      TimelineScheduleLoopType.infinite => 'Loop ∞',
+      TimelineScheduleLoopType.finite => 'Loop x${schedule.loopCount}',
+    };
+  }
+
+  void _showLoopDialog(
+    BuildContext context,
+    dynamic signals,
+    dynamic actor,
+    dynamic phase,
+    TimelineScheduleModel schedule,
+  ) {
+    var selectedLoopType = schedule.loopType;
+    var selectedLoopCount = schedule.loopCount;
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Schedule loop settings'),
+                  SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: IconButton.outlined(
+                      padding: const EdgeInsets.all(0.0),
+                      icon: const Icon(Icons.close),
+                      splashRadius: 28.0,
+                      onPressed: () => Navigator.of(ctx).pop(),
+                    ),
+                  ),
+                ],
+              ),
+              content: Container(
+                constraints: const BoxConstraints(minWidth: 420),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<TimelineScheduleLoopType>(
+                      initialValue: selectedLoopType,
+                      decoration: const InputDecoration(
+                        filled: false,
+                        labelText: 'Loop type',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.all(10.5),
+                      ),
+                      items: TimelineScheduleLoopType.values
+                          .map((loopType) =>
+                              DropdownMenuItem<TimelineScheduleLoopType>(
+                                value: loopType,
+                                child: Text(_loopTypeLabel(loopType)),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if(value == null) {
+                          return;
+                        }
+
+                        setState(() {
+                          selectedLoopType = value;
+                        });
+                      },
+                    ),
+                    if(selectedLoopType == TimelineScheduleLoopType.finite)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: NumberButton(
+                          min: 1,
+                          max: 999,
+                          value: selectedLoopCount,
+                          label: 'Loop count',
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedLoopCount = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final loopCount =
+                        selectedLoopCount < 1 ? 1 : selectedLoopCount;
+
+                    signals.updateSchedule(
+                      phase.id,
+                      schedule,
+                      schedule.copyWith(
+                        loopType: selectedLoopType,
+                        loopCount: loopCount,
+                      ),
+                      actor.id,
+                    );
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('Apply'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   void _showEditDialog(
       BuildContext context, String headerText, String initialText,
@@ -64,8 +194,13 @@ class TimelineScheduleItem extends StatelessWidget {
     );
   }
 
-  void _showContextMenu(BuildContext context, Offset globalPosition,
-      dynamic signals, dynamic actor, dynamic phase, dynamic schedule) {
+  void _showContextMenu(
+      BuildContext context,
+      Offset globalPosition,
+      dynamic signals,
+      dynamic actor,
+      dynamic phase,
+      TimelineScheduleModel schedule) {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
     showMenu<String>(
@@ -88,6 +223,13 @@ class TimelineScheduleItem extends StatelessWidget {
               Icon(Icons.comment_rounded, size: 16),
               SizedBox(width: 8),
               Text('Edit description')
+            ])),
+        const PopupMenuItem(
+            value: 'edit_loop',
+            child: Row(children: [
+              Icon(Icons.repeat_rounded, size: 16),
+              SizedBox(width: 8),
+              Text('Edit loop')
             ])),
         const PopupMenuDivider(),
         PopupMenuItem(
@@ -139,6 +281,9 @@ class TimelineScheduleItem extends StatelessWidget {
             signals.updateSchedule(phase.id, schedule,
                 schedule.copyWith(description: newDesc), actor.id);
           });
+          break;
+        case 'edit_loop':
+          _showLoopDialog(context, signals, actor, phase, schedule);
           break;
         case 'move_up':
           signals.reorderScheduleInPhase(
@@ -195,6 +340,7 @@ class TimelineScheduleItem extends StatelessWidget {
       final cache = ScheduleDurationCache.calculate(schedule);
       final timepointCountStr =
           "${schedule.timepoints.length} timepoint${(schedule.timepoints.length != 1 ? 's' : '')}";
+      final loopSummary = _loopSummary(schedule);
 
       double scheduleLastTimepoint = 0.0;
       if(schedule.timepoints.isNotEmpty) {
@@ -216,8 +362,8 @@ class TimelineScheduleItem extends StatelessWidget {
               initiallyExpanded: true,
               title: Text(schedule.name),
               subtitle: Text(schedule.description.isNotEmpty
-                  ? schedule.description
-                  : timepointCountStr),
+                  ? '${schedule.description} • $loopSummary'
+                  : '$timepointCountStr • $loopSummary'),
               trailing: SizedBox(
                 width: 48.0,
                 child: Text(
@@ -258,17 +404,15 @@ class TimelineScheduleItem extends StatelessWidget {
                 SmallAddGenericWidget(
                   onTap: () {
                     Future.delayed(Duration.zero, () {
-                      final nextTimepointId =
-                          signals.generateNextTimepointIdForPhase(
-                              actor.id, phase.id);
+                      final nextTimepointId = signals
+                          .generateNextTimepointIdForPhase(actor.id, phase.id);
 
                       signals.addTimepointInPhase(
                         actor.id,
                         phase.id,
                         schedule.id,
                         TimepointModel(
-                            id: nextTimepointId,
-                            type: TimepointType.idle),
+                            id: nextTimepointId, type: TimepointType.idle),
                       );
                     });
                   },

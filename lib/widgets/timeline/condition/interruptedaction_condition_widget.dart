@@ -44,7 +44,7 @@ class _InterruptedActionConditionWidgetState
       return Row(
         children: [
           SizedBox(
-              width: 180,
+              width: 250,
               child: GenericItemPickerWidget<String>(
                 label: "Source Actor",
                 items: timeline.actors.map((e) => e.name).toList(),

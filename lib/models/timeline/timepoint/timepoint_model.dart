@@ -53,19 +53,17 @@ class TimepointModel {
     int? startTime,
     dynamic data,
   }) {
+    final isTypeChange = type != null && type != this.type;
+    final nextData =
+        isTypeChange ? (data ?? <String, dynamic>{}) : (data ?? this.data);
+
     final newTimepoint = TimepointModel(
       id: id ?? this.id,
       type: type ?? this.type,
       description: description ?? this.description,
       startTime: startTime ?? this.startTime,
-      data: data ?? this.data,
+      data: nextData,
     );
-
-    if(type != null && type != this.type) {
-      newTimepoint.changeType(type);
-    } else {
-      newTimepoint.data = data ?? this.data;
-    }
 
     return newTimepoint;
   }

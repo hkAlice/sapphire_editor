@@ -10,10 +10,13 @@ import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_model.dart';
 import 'package:sapphire_editor/models/timeline/selector/selector_filter_model.dart';
+import 'package:sapphire_editor/models/timeline/phase_timepoint_hook.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
 
 class TimelineEditorSignal {
+  static const int _triggerActionScheduleOffset = 1000000;
+
   final Signal<TimelineModel> timeline;
 
   final Signal<int?> selectedActorId;
@@ -191,6 +194,29 @@ class TimelineEditorSignal {
     return _resolvePhaseIdForActor(actorId, fallbackPhaseId);
   }
 
+  PhaseTimepointHook? _resolveHook(int? scheduleId) {
+    return PhaseHookScheduleIds.hookFromScheduleId(scheduleId);
+  }
+
+  List<TimepointModel> _hookTimepoints(
+      TimelinePhaseModel phase, PhaseTimepointHook hook) {
+    return switch (hook) {
+      PhaseTimepointHook.onEnter => phase.onEnter,
+      PhaseTimepointHook.onExit => phase.onExit,
+    };
+  }
+
+  TimelinePhaseModel _phaseWithHookTimepoints(
+    TimelinePhaseModel phase,
+    PhaseTimepointHook hook,
+    List<TimepointModel> timepoints,
+  ) {
+    return switch (hook) {
+      PhaseTimepointHook.onEnter => phase.copyWith(onEnter: timepoints),
+      PhaseTimepointHook.onExit => phase.copyWith(onExit: timepoints),
+    };
+  }
+
   int generateNextTimepointIdForPhase(int actorId, String phaseId) {
     if(timeline.value.actors.isEmpty) {
       return 1;
@@ -213,6 +239,7 @@ class TimelineEditorSignal {
 
     final allTimepointIds = [
       ...phase.onEnter.map((tp) => tp.id),
+      ...phase.onExit.map((tp) => tp.id),
       ...phase.schedules
           .expand((schedule) => schedule.timepoints)
           .map((tp) => tp.id),
@@ -243,11 +270,17 @@ class TimelineEditorSignal {
     _saveToHistory();
   }
 
-  void updateTimepoint(
-      int actorId, int scheduleId, int timepointId, TimepointModel newTimepoint) {
-    if(scheduleId < 0) {
+  void updateTimepoint(int actorId, int scheduleId, int timepointId,
+      TimepointModel newTimepoint) {
+    if(scheduleId <= -_triggerActionScheduleOffset) {
+      _updateConditionActionTimepoint(actorId, scheduleId, newTimepoint);
+      return;
+    }
+
+    if(PhaseHookScheduleIds.isPhaseHookScheduleId(scheduleId)) {
       final phaseId = _resolvePhaseIdForActor(actorId, selectedPhaseId.peek());
-      updateTimepointInPhase(actorId, phaseId, null, timepointId, newTimepoint);
+      updateTimepointInPhase(
+          actorId, phaseId, scheduleId, timepointId, newTimepoint);
       return;
     }
 
@@ -255,6 +288,48 @@ class TimelineEditorSignal {
         actorId, scheduleId, selectedPhaseId.peek());
     updateTimepointInPhase(
         actorId, phaseId, scheduleId, timepointId, newTimepoint);
+  }
+
+  void _updateConditionActionTimepoint(
+      int actorId, int triggerActionScheduleId, TimepointModel newTimepoint) {
+    final conditionId = -triggerActionScheduleId - _triggerActionScheduleOffset;
+    final resolvedPhaseId =
+        _resolvePhaseIdForActor(actorId, selectedPhaseId.peek());
+
+    batch(() {
+      final actorIndex =
+          timeline.value.actors.indexWhere((a) => a.id == actorId);
+      if(actorIndex == -1) {
+        return;
+      }
+
+      final actor = timeline.value.actors[actorIndex];
+      final phaseIndex =
+          actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
+      if(phaseIndex == -1) {
+        return;
+      }
+
+      final phase = actor.phases[phaseIndex];
+      final conditionIndex =
+          phase.triggers.indexWhere((condition) => condition.id == conditionId);
+      if(conditionIndex == -1) {
+        return;
+      }
+
+      final condition = phase.triggers[conditionIndex];
+      final updatedAction =
+          (condition.action ?? TriggerActionModel(type: 'timepoint'))
+              .copyWith(type: 'timepoint', timepoint: newTimepoint);
+      final updatedCondition = condition.copyWith(action: updatedAction);
+
+      final newConditions = [...phase.triggers];
+      newConditions[conditionIndex] = updatedCondition;
+      final newPhase = phase.copyWith(triggers: newConditions);
+      updatePhase(phase, newPhase, actorId);
+    });
+
+    _saveToHistory();
   }
 
   void addTimepointInPhase(
@@ -267,10 +342,12 @@ class TimelineEditorSignal {
     if(phaseIndex == -1) return;
     final phase = actor.phases[phaseIndex];
 
-    if(scheduleId == null) {
-      final newTimepoints = [...phase.onEnter, timepoint];
+    final hook = _resolveHook(scheduleId);
+
+    if(hook != null) {
+      final newTimepoints = [..._hookTimepoints(phase, hook), timepoint];
       newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
-      final newPhase = phase.copyWith(onEnter: newTimepoints);
+      final newPhase = _phaseWithHookTimepoints(phase, hook, newTimepoints);
       updatePhase(phase, newPhase, actorId);
     } else {
       final scheduleIndex =
@@ -286,6 +363,12 @@ class TimelineEditorSignal {
   }
 
   void addTimepoint(int actorId, int scheduleId, TimepointModel timepoint) {
+    if(PhaseHookScheduleIds.isPhaseHookScheduleId(scheduleId)) {
+      final phaseId = _resolvePhaseIdForActor(actorId, selectedPhaseId.peek());
+      addTimepointInPhase(actorId, phaseId, scheduleId, timepoint);
+      return;
+    }
+
     final phaseId = _resolvePhaseIdByScheduleId(
         actorId, scheduleId, selectedPhaseId.peek());
     addTimepointInPhase(actorId, phaseId, scheduleId, timepoint);
@@ -301,9 +384,12 @@ class TimelineEditorSignal {
     if(phaseIndex == -1) return;
     final phase = actor.phases[phaseIndex];
 
-    if(scheduleId == null) {
-      final newPhase = phase.copyWith(
-          onEnter: phase.onEnter.where((t) => t != timepoint).toList());
+    final hook = _resolveHook(scheduleId);
+
+    if(hook != null) {
+      final newHookTimepoints =
+          _hookTimepoints(phase, hook).where((t) => t != timepoint).toList();
+      final newPhase = _phaseWithHookTimepoints(phase, hook, newHookTimepoints);
       updatePhase(phase, newPhase, actorId);
     } else {
       final scheduleIndex =
@@ -334,7 +420,8 @@ class TimelineEditorSignal {
           timeline.value.actors.indexWhere((a) => a.id == actorId);
       if(actorIndex == -1) return;
       final actor = timeline.value.actors[actorIndex];
-      final phaseIndex = actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
+      final phaseIndex =
+          actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
       if(phaseIndex == -1) return;
       final phase = actor.phases[phaseIndex];
 
@@ -345,10 +432,12 @@ class TimelineEditorSignal {
           generateNextTimepointIdForPhase(actorId, resolvedPhaseId);
       newTimepoint.id = nextTimepointId;
 
-      if(scheduleId == null) {
-        final newTimepoints = [...phase.onEnter, newTimepoint];
+      final hook = _resolveHook(scheduleId);
+
+      if(hook != null) {
+        final newTimepoints = [..._hookTimepoints(phase, hook), newTimepoint];
         newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
-        final newPhase = phase.copyWith(onEnter: newTimepoints);
+        final newPhase = _phaseWithHookTimepoints(phase, hook, newTimepoints);
         updatePhase(phase, newPhase, actorId);
       } else {
         final scheduleIndex =
@@ -371,8 +460,8 @@ class TimelineEditorSignal {
     duplicateTimepointInPhase(actorId, phaseId, schedule.id, timepoint);
   }
 
-  void reorderTimepointInPhase(
-      int actorId, String phaseId, int? scheduleId, int oldIndex, int newIndex) {
+  void reorderTimepointInPhase(int actorId, String phaseId, int? scheduleId,
+      int oldIndex, int newIndex) {
     final resolvedPhaseId = _resolvePhaseIdForActor(actorId, phaseId);
 
     batch(() {
@@ -380,7 +469,8 @@ class TimelineEditorSignal {
           timeline.value.actors.indexWhere((a) => a.id == actorId);
       if(actorIndex == -1) return;
       final actor = timeline.value.actors[actorIndex];
-      final phaseIndex = actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
+      final phaseIndex =
+          actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
       if(phaseIndex == -1) return;
       final phase = actor.phases[phaseIndex];
 
@@ -388,11 +478,13 @@ class TimelineEditorSignal {
         newIndex -= 1;
       }
 
-      if(scheduleId == null) {
-        final timepoints = [...phase.onEnter];
+      final hook = _resolveHook(scheduleId);
+
+      if(hook != null) {
+        final timepoints = [..._hookTimepoints(phase, hook)];
         final item = timepoints.removeAt(oldIndex);
         timepoints.insert(newIndex, item);
-        final newPhase = phase.copyWith(onEnter: timepoints);
+        final newPhase = _phaseWithHookTimepoints(phase, hook, timepoints);
         updatePhase(phase, newPhase, actorId);
       } else {
         final scheduleIndex =
@@ -476,8 +568,21 @@ class TimelineEditorSignal {
       final actorIndex =
           timeline.value.actors.indexWhere((a) => a.id == actorId);
       if(actorIndex == -1) return;
+
+      final uniqueName = TimelineModel.makeUniqueActorName(
+        newActor.name,
+        timeline.value.actors
+            .where((actor) => actor.id != actorId)
+            .map((actor) => actor.name),
+        layoutId: newActor.layoutId,
+      );
+
+      final normalizedActor = uniqueName == newActor.name
+          ? newActor
+          : newActor.copyWith(name: uniqueName);
+
       final newActors = [...timeline.value.actors];
-      newActors[actorIndex] = newActor;
+      newActors[actorIndex] = normalizedActor;
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
   }
@@ -494,9 +599,16 @@ class TimelineEditorSignal {
     if(newActors.isNotEmpty) {
       nextId = newActors.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1;
     }
+
+    final uniqueActorName = TimelineModel.makeUniqueActorName(
+      bnpcName,
+      newActors.map((a) => a.name),
+      layoutId: layoutId,
+    );
+
     final actorModel = ActorModel(
         id: nextId,
-        name: bnpcName,
+        name: uniqueActorName,
         type: "bnpc",
         layoutId: layoutId,
         hp: hp,
@@ -510,7 +622,7 @@ class TimelineEditorSignal {
     actor ??= selectedActor.value;
     int uniqueSuffix = actor.phases.length + 1;
     var phaseId = "phase_$uniqueSuffix";
-    while(actor.phases.any((phase) => phase.id == phaseId)) {
+    while (actor.phases.any((phase) => phase.id == phaseId)) {
       uniqueSuffix += 1;
       phaseId = "phase_$uniqueSuffix";
     }
@@ -549,7 +661,7 @@ class TimelineEditorSignal {
       final actor = timeline.value.actors[actorIndex];
       int uniqueSuffix = actor.phases.length + 1;
       var newId = "phase_$uniqueSuffix";
-      while(actor.phases.any((phaseItem) => phaseItem.id == newId)) {
+      while (actor.phases.any((phaseItem) => phaseItem.id == newId)) {
         uniqueSuffix += 1;
         newId = "phase_$uniqueSuffix";
       }
@@ -763,7 +875,7 @@ class TimelineEditorSignal {
     final json = jsonEncode(timeline.value.toJson());
     _history.add(json);
     _historyIndex.value++;
-    while(_history.length > 50) {
+    while (_history.length > 50) {
       _history.removeAt(0);
       _historyIndex.value--;
     }
@@ -785,14 +897,17 @@ class TimelineEditorSignal {
     final phaseIndex = actor.phases.indexWhere((p) => p.id == phaseId);
     if(phaseIndex == -1) return actor;
     final phase = actor.phases[phaseIndex];
-    if(scheduleId == null) {
+    final hook = _resolveHook(scheduleId);
+
+    if(hook != null) {
+      final existingTimepoints = _hookTimepoints(phase, hook);
       final timepointIndex =
-          phase.onEnter.indexWhere((t) => t.id == timepointId);
+          existingTimepoints.indexWhere((t) => t.id == timepointId);
       if(timepointIndex == -1) return actor;
-      final newTimepoints = [...phase.onEnter];
+      final newTimepoints = [...existingTimepoints];
       newTimepoints[timepointIndex] = newTp;
       newTimepoints.sort((a, b) => a.startTime.compareTo(b.startTime));
-      final newPhase = phase.copyWith(onEnter: newTimepoints);
+      final newPhase = _phaseWithHookTimepoints(phase, hook, newTimepoints);
       final newPhases = [...actor.phases];
       newPhases[phaseIndex] = newPhase;
       return actor.copyWith(phases: newPhases);
@@ -839,7 +954,8 @@ class TimelineEditorSignal {
           timeline.value.actors.indexWhere((a) => a.id == actorId);
       if(actorIndex == -1) return;
       final actor = timeline.value.actors[actorIndex];
-      final phaseIndex = actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
+      final phaseIndex =
+          actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
       if(phaseIndex == -1) return;
       final phase = actor.phases[phaseIndex];
       final conditionIndex =
@@ -867,7 +983,8 @@ class TimelineEditorSignal {
           timeline.value.actors.indexWhere((a) => a.id == actorId);
       if(actorIndex == -1) return;
       final actor = timeline.value.actors[actorIndex];
-      final phaseIndex = actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
+      final phaseIndex =
+          actor.phases.indexWhere((p) => p.id == resolvedPhaseId);
       if(phaseIndex == -1) return;
       final phase = actor.phases[phaseIndex];
       final newConditions =
@@ -907,14 +1024,14 @@ class TimelineEditorSignal {
       condition: ConditionType.combatState,
       paramData: CombatStateConditionModel(
           combatState: ActorCombatState.combat, sourceActor: actor.name),
-      action: TriggerActionModel(type: 'transitionPhase', target: nextPhaseId),
+      action: TriggerActionModel(type: 'transitionPhase', phaseId: nextPhaseId),
       description: "",
     );
 
     if(condition.action == null) {
       condition = condition.copyWith(
         action:
-            TriggerActionModel(type: 'transitionPhase', target: nextPhaseId),
+            TriggerActionModel(type: 'transitionPhase', phaseId: nextPhaseId),
       );
     }
 

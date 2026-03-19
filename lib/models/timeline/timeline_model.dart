@@ -33,8 +33,65 @@ class TimelineModel {
 
   static const VERSION_MODEL = 30;
 
-  factory TimelineModel.fromJson(Map<String, dynamic> json) =>
-      _$TimelineModelFromJson(json);
+  static String _nextUniqueActorName(
+    String requestedName,
+    Set<String> usedNames, {
+    required int layoutId,
+  }) {
+    final baseName =
+        requestedName.trim().isEmpty ? "Actor" : requestedName.trim();
+
+    if(!usedNames.contains(baseName)) {
+      return baseName;
+    }
+
+    var candidate = "$baseName (LID $layoutId)";
+    var suffix = 1;
+
+    while (usedNames.contains(candidate)) {
+      candidate = "$baseName (LID $layoutId, $suffix)";
+      suffix += 1;
+    }
+
+    return candidate;
+  }
+
+  static String makeUniqueActorName(
+    String requestedName,
+    Iterable<String> existingNames, {
+    required int layoutId,
+  }) {
+    final usedNames = existingNames.toSet();
+    return _nextUniqueActorName(
+      requestedName,
+      usedNames,
+      layoutId: layoutId,
+    );
+  }
+
+  static List<ActorModel> ensureUniqueActorNames(List<ActorModel> actors) {
+    final usedNames = <String>{};
+    final normalizedActors = <ActorModel>[];
+
+    for(final actor in actors) {
+      final uniqueName = _nextUniqueActorName(
+        actor.name,
+        usedNames,
+        layoutId: actor.layoutId,
+      );
+      normalizedActors.add(
+          uniqueName == actor.name ? actor : actor.copyWith(name: uniqueName));
+      usedNames.add(uniqueName);
+    }
+
+    return normalizedActors;
+  }
+
+  factory TimelineModel.fromJson(Map<String, dynamic> json) {
+    final timeline = _$TimelineModelFromJson(json);
+    timeline.actors = ensureUniqueActorNames(timeline.actors);
+    return timeline;
+  }
 
   Map<String, dynamic> toJson() => _$TimelineModelToJson(this);
 
@@ -55,11 +112,17 @@ class TimelineModel {
   // todo: move this to timelinesvc ideally
   ActorModel addNewActor(
       {String bnpcName = "Unknown", int layoutId = 0, int hp = 0xFF14}) {
+    final uniqueName = makeUniqueActorName(
+      bnpcName,
+      actors.map((a) => a.name),
+      layoutId: layoutId,
+    );
+
     var actorModel = ActorModel(
       id: actors.length + 1,
       hp: hp,
       layoutId: layoutId,
-      name: bnpcName,
+      name: uniqueName,
       type: "bnpc",
       phaseList: [TimelinePhaseModel(id: "phase_1", name: "Initial Phase")],
     );

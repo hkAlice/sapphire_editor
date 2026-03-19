@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
+import 'package:sapphire_editor/models/timeline/phase_timepoint_hook.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
@@ -26,12 +27,42 @@ class TimepointLookup {
 }
 
 class TimelineNodeLookup {
+  static const int _triggerActionScheduleOffset = 1000000;
+
+  static int get onEnterScheduleId => PhaseHookScheduleIds.onEnter;
+  static int get onExitScheduleId => PhaseHookScheduleIds.onExit;
+
+  static int triggerActionScheduleIdForCondition(int conditionId) {
+    return -(_triggerActionScheduleOffset + conditionId);
+  }
+
+  static bool isTriggerActionScheduleId(int scheduleId) {
+    return scheduleId <= -_triggerActionScheduleOffset;
+  }
+
+  static bool isPhaseHookScheduleId(int scheduleId) {
+    return PhaseHookScheduleIds.isPhaseHookScheduleId(scheduleId);
+  }
+
+  static PhaseTimepointHook? hookFromScheduleId(int? scheduleId) {
+    return PhaseHookScheduleIds.hookFromScheduleId(scheduleId);
+  }
+
+  static int? conditionIdFromTriggerActionScheduleId(int scheduleId) {
+    if(!isTriggerActionScheduleId(scheduleId)) {
+      return null;
+    }
+
+    return -scheduleId - _triggerActionScheduleOffset;
+  }
+
   static ActorModel? findActor(TimelineEditorSignal signals, int? actorId) {
     if(actorId == null) {
       return null;
     }
 
-    return signals.timeline.value.actors.firstWhereOrNull((a) => a.id == actorId);
+    return signals.timeline.value.actors
+        .firstWhereOrNull((a) => a.id == actorId);
   }
 
   static TimelinePhaseModel? findPhase(
@@ -52,11 +83,8 @@ class TimelineNodeLookup {
   }
 
   static ActorScheduleLookup? findActorSchedule(
-    TimelineEditorSignal signals,
-    int? actorId,
-    int? scheduleId,
-    [String? phaseId]
-  ) {
+      TimelineEditorSignal signals, int? actorId, int? scheduleId,
+      [String? phaseId]) {
     if(scheduleId == null) {
       return null;
     }
@@ -66,7 +94,12 @@ class TimelineNodeLookup {
       return null;
     }
 
-    if(scheduleId < 0) {
+    if(isTriggerActionScheduleId(scheduleId)) {
+      final conditionId = conditionIdFromTriggerActionScheduleId(scheduleId);
+      if(conditionId == null) {
+        return null;
+      }
+
       TimelinePhaseModel? phase;
       if(phaseId != null) {
         phase = actor.phases.firstWhereOrNull((p) => p.id == phaseId);
@@ -82,16 +115,55 @@ class TimelineNodeLookup {
         return null;
       }
 
-      final onEnterSchedule = TimelineScheduleModel(
+      final condition =
+          phase.triggers.firstWhereOrNull((c) => c.id == conditionId);
+      final triggerTimepoint = condition?.action?.timepoint;
+      if(triggerTimepoint == null) {
+        return null;
+      }
+
+      final triggerActionSchedule = TimelineScheduleModel(
         id: scheduleId,
-        name: 'On Enter',
-        timepointList: phase.onEnter,
+        name: 'Trigger Action',
+        timepointList: [triggerTimepoint],
       );
 
-      return ActorScheduleLookup(actor: actor, schedule: onEnterSchedule);
+      return ActorScheduleLookup(actor: actor, schedule: triggerActionSchedule);
     }
 
-    final schedule = actor.schedules.firstWhereOrNull((s) => s.id == scheduleId);
+    if(isPhaseHookScheduleId(scheduleId)) {
+      TimelinePhaseModel? phase;
+      if(phaseId != null) {
+        phase = actor.phases.firstWhereOrNull((p) => p.id == phaseId);
+      }
+
+      final selectedPhaseId = signals.selectedPhaseId.value;
+      if(phase == null && selectedPhaseId != null) {
+        phase = actor.phases.firstWhereOrNull((p) => p.id == selectedPhaseId);
+      }
+
+      phase ??= actor.phases.firstWhereOrNull((_) => true);
+      if(phase == null) {
+        return null;
+      }
+
+      final hook = hookFromScheduleId(scheduleId);
+      if(hook == null) {
+        return null;
+      }
+
+      final hookSchedule = TimelineScheduleModel(
+        id: scheduleId,
+        name: hook == PhaseTimepointHook.onEnter ? 'On Enter' : 'On Exit',
+        timepointList:
+            hook == PhaseTimepointHook.onEnter ? phase.onEnter : phase.onExit,
+      );
+
+      return ActorScheduleLookup(actor: actor, schedule: hookSchedule);
+    }
+
+    final schedule =
+        actor.schedules.firstWhereOrNull((s) => s.id == scheduleId);
     if(schedule == null) {
       return null;
     }
@@ -110,12 +182,35 @@ class TimelineNodeLookup {
     String? phaseId,
     int timepointId,
   ) {
+    return findPhaseHookTimepoint(
+      signals,
+      actorId,
+      phaseId,
+      onEnterScheduleId,
+      timepointId,
+    );
+  }
+
+  static TimepointModel? findPhaseHookTimepoint(
+    TimelineEditorSignal signals,
+    int? actorId,
+    String? phaseId,
+    int scheduleId,
+    int timepointId,
+  ) {
     final phase = findPhase(signals, actorId, phaseId);
     if(phase == null) {
       return null;
     }
 
-    return phase.onEnter.firstWhereOrNull((t) => t.id == timepointId);
+    final hook = hookFromScheduleId(scheduleId);
+    if(hook == null) {
+      return null;
+    }
+
+    final hookTimepoints =
+        hook == PhaseTimepointHook.onEnter ? phase.onEnter : phase.onExit;
+    return hookTimepoints.firstWhereOrNull((t) => t.id == timepointId);
   }
 
   static TimepointLookup? resolveTimepoint(
@@ -129,7 +224,8 @@ class TimelineNodeLookup {
       return null;
     }
 
-    final timepoint = findTimepointInSchedule(actorSchedule.schedule, timepointId);
+    final timepoint =
+        findTimepointInSchedule(actorSchedule.schedule, timepointId);
     if(timepoint == null) {
       return null;
     }

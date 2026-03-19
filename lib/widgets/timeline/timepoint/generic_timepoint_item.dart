@@ -49,12 +49,13 @@ class GenericTimepointItem extends StatelessWidget {
     final signals = SignalsProvider.of(context);
 
     final timepointSignal = computed(() {
-      if(scheduleId < 0) {
+      if(TimelineNodeLookup.isPhaseHookScheduleId(scheduleId)) {
         final resolvedPhaseId = phaseId ?? signals.selectedPhaseId.value;
-        return TimelineNodeLookup.findOnEnterTimepoint(
+        return TimelineNodeLookup.findPhaseHookTimepoint(
           signals,
           actorId,
           resolvedPhaseId,
+          scheduleId,
           timepointId,
         );
       }
@@ -73,17 +74,32 @@ class GenericTimepointItem extends StatelessWidget {
       return DisableWebContextMenu(
         child: GestureDetector(
           onSecondaryTapUp: (details) {
-            final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
             showMenu<String>(
               context: context,
               position: RelativeRect.fromRect(
-                Rect.fromLTWH(details.globalPosition.dx, details.globalPosition.dy, 0, 0),
+                Rect.fromLTWH(
+                    details.globalPosition.dx, details.globalPosition.dy, 0, 0),
                 Offset.zero & overlay.size,
               ),
               items: [
-                const PopupMenuItem(value: 'duplicate', child: Row(children: [Icon(Icons.copy_rounded, size: 16), SizedBox(width: 8), Text('Duplicate')])),
+                const PopupMenuItem(
+                    value: 'duplicate',
+                    child: Row(children: [
+                      Icon(Icons.copy_rounded, size: 16),
+                      SizedBox(width: 8),
+                      Text('Duplicate')
+                    ])),
                 const PopupMenuDivider(),
-                const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_rounded, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Delete', style: TextStyle(color: Colors.redAccent))])),
+                const PopupMenuItem(
+                    value: 'delete',
+                    child: Row(children: [
+                      Icon(Icons.delete_rounded,
+                          size: 16, color: Colors.redAccent),
+                      SizedBox(width: 8),
+                      Text('Delete', style: TextStyle(color: Colors.redAccent))
+                    ])),
               ],
             ).then((value) {
               if(value == null) return;
@@ -92,14 +108,13 @@ class GenericTimepointItem extends StatelessWidget {
                 return;
               }
 
-              final resolvedScheduleId = scheduleId < 0 ? null : scheduleId;
+              final resolvedScheduleId = scheduleId;
               if(value == 'duplicate') {
-                signals.duplicateTimepointInPhase(
-                    actorId, resolvedPhaseId, resolvedScheduleId, timepointModel);
-              }
-              else if(value == 'delete') {
-                signals.removeTimepointInPhase(
-                    actorId, resolvedPhaseId, resolvedScheduleId, timepointModel);
+                signals.duplicateTimepointInPhase(actorId, resolvedPhaseId,
+                    resolvedScheduleId, timepointModel);
+              } else if(value == 'delete') {
+                signals.removeTimepointInPhase(actorId, resolvedPhaseId,
+                    resolvedScheduleId, timepointModel);
               }
             });
           },
@@ -147,8 +162,9 @@ class GenericTimepointItem extends StatelessWidget {
                                     opacity: 0.7,
                                     child: Text(
                                       _formatTime(timepointModel.startTime),
-                                      style:
-                                          Theme.of(context).textTheme.labelSmall,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall,
                                       maxLines: 1,
                                       textAlign: TextAlign.right,
                                     )),
@@ -204,29 +220,31 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
   Widget build(BuildContext context) {
     return Watch((context) {
       final signals = SignalsProvider.of(context);
-      final isOnEnter = widget.scheduleId < 0;
+      final isPhaseHook =
+          TimelineNodeLookup.isPhaseHookScheduleId(widget.scheduleId);
       final resolvedPhaseId = widget.phaseId ?? signals.selectedPhaseId.value;
       final actor = TimelineNodeLookup.findActor(signals, widget.actorId);
-      final phase = isOnEnter
-          ? TimelineNodeLookup.findPhase(signals, widget.actorId, resolvedPhaseId)
+      final phase = isPhaseHook
+          ? TimelineNodeLookup.findPhase(
+              signals, widget.actorId, resolvedPhaseId)
           : null;
-      final lookup = isOnEnter
+      final lookup = isPhaseHook
           ? null
           : TimelineNodeLookup.resolveTimepoint(
               signals, widget.actorId, widget.scheduleId, widget.timepointId);
-      final timepointModel = isOnEnter
-          ? TimelineNodeLookup.findOnEnterTimepoint(
-              signals, widget.actorId, resolvedPhaseId, widget.timepointId)
+      final timepointModel = isPhaseHook
+          ? TimelineNodeLookup.findPhaseHookTimepoint(signals, widget.actorId,
+              resolvedPhaseId, widget.scheduleId, widget.timepointId)
           : lookup?.timepoint;
       final schedule = lookup?.schedule;
-          final updatePhaseId =
-            widget.phaseId ?? phase?.id ?? signals.selectedPhaseId.value;
+      final updatePhaseId =
+          widget.phaseId ?? phase?.id ?? signals.selectedPhaseId.value;
 
-          if(updatePhaseId == null ||
-            actor == null ||
+      if(updatePhaseId == null ||
+          actor == null ||
           timepointModel == null ||
-          (!isOnEnter && schedule == null) ||
-          (isOnEnter && phase == null)) {
+          (!isPhaseHook && schedule == null) ||
+          (isPhaseHook && phase == null)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if(!mounted) {
             return;
@@ -290,7 +308,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                           signals.updateTimepointInPhase(
                               actor.id,
                               updatePhaseId,
-                              isOnEnter ? null : schedule!.id,
+                              isPhaseHook ? widget.scheduleId : schedule!.id,
                               timepointModel.id,
                               newTp);
                         }),
@@ -317,7 +335,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                             signals.updateTimepointInPhase(
                                 actor.id,
                                 updatePhaseId,
-                                isOnEnter ? null : schedule!.id,
+                                isPhaseHook ? widget.scheduleId : schedule!.id,
                                 timepointModel.id,
                                 timepointModel);
                           },
@@ -351,7 +369,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                             signals.updateTimepointInPhase(
                                 actor.id,
                                 updatePhaseId,
-                                isOnEnter ? null : schedule!.id,
+                                isPhaseHook ? widget.scheduleId : schedule!.id,
                                 timepointModel.id,
                                 newTp);
                           }),
@@ -368,7 +386,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
                     signals: signals,
                     actorId: actor.id,
                     phaseId: updatePhaseId,
-                    scheduleId: schedule?.id ?? -1,
+                    scheduleId: schedule?.id ?? widget.scheduleId,
                     timepointId: timepointModel.id,
                     child: TimepointEditorRegistry.buildEditor(
                       TimepointEditorContext(

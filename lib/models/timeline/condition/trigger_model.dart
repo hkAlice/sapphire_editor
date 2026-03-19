@@ -7,7 +7,7 @@ import 'package:sapphire_editor/models/timeline/condition/types/getaction_condit
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/varequals_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/condition/types/scheduleactive_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/phaseactive_condition_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'trigger_model.g.dart';
@@ -49,6 +49,9 @@ class TriggerModel {
   factory TriggerModel.fromJson(Map<String, dynamic> json) {
     final normalized = <String, dynamic>{...json};
     normalized['condition'] ??= normalized['conditionType'];
+    if(normalized['condition'] == 'scheduleActive') {
+      normalized['condition'] = 'phaseActive';
+    }
     return _$TriggerModelFromJson(normalized);
   }
 
@@ -100,8 +103,7 @@ class TriggerModel {
       ConditionType.eObjInteract => EObjInteractConditionModel.fromJson(json),
       ConditionType.getAction => GetActionConditionModel.fromJson(json),
       ConditionType.hpPctBetween => HPPctBetweenConditionModel.fromJson(json),
-      ConditionType.scheduleActive =>
-        ScheduleActiveConditionModel.fromJson(json),
+      ConditionType.phaseActive => PhaseActiveConditionModel.fromJson(json),
       ConditionType.interruptedAction =>
         InterruptedActionConditionModel.fromJson(json),
       ConditionType.varEquals => VarEqualsConditionModel.fromJson(json),
@@ -129,10 +131,11 @@ class TriggerModel {
           "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
     } else if(condition == ConditionType.eObjInteract) {
       var param = paramData as EObjInteractConditionModel;
-        summary += "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
-    } else if(condition == ConditionType.scheduleActive) {
-      var param = paramData as ScheduleActiveConditionModel;
-      summary += "${param.sourceActor}->${param.scheduleName} is active";
+      summary +=
+          "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
+    } else if(condition == ConditionType.phaseActive) {
+      var param = paramData as PhaseActiveConditionModel;
+      summary += "${param.sourceActor}->${param.phaseId} is active";
     } else if(condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
@@ -146,7 +149,18 @@ class TriggerModel {
     }
 
     if(action != null) {
-      summary += ", action ${action!.type} -> ${action!.target}";
+      if(action!.type == 'transitionPhase' &&
+          action!.phaseId != null &&
+          action!.phaseId!.isNotEmpty) {
+        summary += ", action transitionPhase -> ${action!.phaseId}";
+      } else if(action!.type == 'timepoint' && action!.timepoint != null) {
+        final triggerTimepoint = action!.timepoint!;
+        final seconds = (triggerTimepoint.startTime / 1000).toStringAsFixed(1);
+        summary +=
+            ", action timepoint -> ${seconds}s ${treatEnumName(triggerTimepoint.type)} (${triggerTimepoint.data})";
+      } else {
+        summary += ", action ${action!.type}";
+      }
     }
     return summary;
   }
@@ -164,7 +178,7 @@ extension ConditionTypeExtension on ConditionType {
       ConditionType.getAction => Colors.orange,
       ConditionType.hpPctBetween => Colors.green,
       ConditionType.hpPctLessThan => Colors.green,
-      ConditionType.scheduleActive => Colors.blue,
+      ConditionType.phaseActive => Colors.blue,
       ConditionType.interruptedAction => Colors.purple,
       ConditionType.varEquals => Colors.teal,
       ConditionType.directorVarGreaterThan => Colors.amber,
@@ -179,7 +193,7 @@ extension ConditionTypeExtension on ConditionType {
       ConditionType.getAction => "Get Action",
       ConditionType.hpPctBetween => "HP % Between",
       ConditionType.hpPctLessThan => "HP % Less Than",
-      ConditionType.scheduleActive => "Schedule Active",
+      ConditionType.phaseActive => "Phase Active",
       ConditionType.interruptedAction => "Interrupted Action",
       ConditionType.varEquals => "Var Equals",
       ConditionType.directorVarGreaterThan => "Director Var >",
@@ -240,8 +254,8 @@ enum ConditionType {
   hpPctBetween,
   @JsonValue("hpPctLessThan")
   hpPctLessThan,
-  @JsonValue("scheduleActive")
-  scheduleActive,
+  @JsonValue("phaseActive")
+  phaseActive,
   @JsonValue("interruptedAction")
   interruptedAction,
   @JsonValue("varEquals")

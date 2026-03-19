@@ -11,6 +11,7 @@ class ActorModel {
   String type;
   int layoutId;
   int hp;
+  int initialPhaseId;
   List<TimelinePhaseModel> phases;
   List<String> subactors;
 
@@ -39,6 +40,7 @@ class ActorModel {
     required this.type,
     required this.layoutId,
     required this.hp,
+    this.initialPhaseId = 1,
     phaseList,
     subactorsList,
   })  : phases = phaseList ?? [],
@@ -54,6 +56,7 @@ class ActorModel {
     String? name,
     String? type,
     int? layoutId,
+    int? initialPhaseId,
     int? hp,
     List<TimelinePhaseModel>? phases,
     List<TimelineScheduleModel>? schedules,
@@ -78,6 +81,7 @@ class ActorModel {
       name: name ?? this.name,
       type: type ?? this.type,
       layoutId: layoutId ?? this.layoutId,
+      initialPhaseId: initialPhaseId ?? this.initialPhaseId,
       hp: hp ?? this.hp,
       phaseList: nextPhases,
       subactorsList: subactors ?? this.subactors,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_schedule_item.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_onenter_item.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_onexit_item.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
@@ -158,6 +159,12 @@ class ScheduleTabView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
               child: TimelineOnEnterItem(actorId: actorId, phaseId: phase.id),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: TimelineOnExitItem(actorId: actorId, phaseId: phase.id),
             ),
           ),
           SliverPadding(

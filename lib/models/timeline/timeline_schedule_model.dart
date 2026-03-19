@@ -3,11 +3,22 @@ import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 
 part 'timeline_schedule_model.g.dart';
 
+enum TimelineScheduleLoopType {
+  @JsonValue("none")
+  none,
+  @JsonValue("infinite")
+  infinite,
+  @JsonValue("finite")
+  finite,
+}
+
 @JsonSerializable(explicitToJson: true)
 class TimelineScheduleModel {
   final int id;
   String name;
   String description;
+  TimelineScheduleLoopType loopType;
+  int loopCount;
 
   List<TimepointModel> timepoints;
 
@@ -18,14 +29,24 @@ class TimelineScheduleModel {
     required this.id,
     required this.name,
     this.description = "",
+    this.loopType = TimelineScheduleLoopType.none,
+    this.loopCount = 1,
     List<TimepointModel>? timepointList,
   }) : timepoints = timepointList ?? [] {
+    if(loopCount < 1) {
+      loopCount = 1;
+    }
+
     _recalculateNextId();
   }
 
   factory TimelineScheduleModel.fromJson(Map<String, dynamic> json) {
     final schedule = _$TimelineScheduleModelFromJson(json);
-    
+
+    if(schedule.loopCount < 1) {
+      schedule.loopCount = 1;
+    }
+
     // assign IDs to timepoints loaded with default value (-1)
     // this handles older timeline json without timeline id (version < 20)
     for(final timepoint in schedule.timepoints) {
@@ -33,7 +54,7 @@ class TimelineScheduleModel {
         timepoint.id = schedule.generateTimepointId();
       }
     }
-    
+
     schedule._recalculateNextId();
     return schedule;
   }
@@ -43,8 +64,7 @@ class TimelineScheduleModel {
   void _recalculateNextId() {
     if(timepoints.isEmpty) {
       _nextTimepointId = 1;
-    }
-    else {
+    } else {
       _nextTimepointId =
           timepoints.map((t) => t.id).reduce((a, b) => a > b ? a : b) + 1;
     }
@@ -56,12 +76,16 @@ class TimelineScheduleModel {
     int? id,
     String? name,
     String? description,
+    TimelineScheduleLoopType? loopType,
+    int? loopCount,
     List<TimepointModel>? timepoints,
   }) {
     final schedule = TimelineScheduleModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      loopType: loopType ?? this.loopType,
+      loopCount: loopCount ?? this.loopCount,
       timepointList: timepoints ?? this.timepoints,
     );
 

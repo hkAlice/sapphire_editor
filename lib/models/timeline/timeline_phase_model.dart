@@ -11,6 +11,7 @@ class TimelinePhaseModel {
   String name;
 
   List<TimepointModel> onEnter;
+  List<TimepointModel> onExit;
   List<TimelineScheduleModel> schedules;
   List<TriggerModel> triggers;
 
@@ -18,9 +19,11 @@ class TimelinePhaseModel {
     required this.id,
     required this.name,
     List<TimepointModel>? onEnter,
+    List<TimepointModel>? onExit,
     List<TimelineScheduleModel>? schedules,
     List<TriggerModel>? triggers,
   })  : onEnter = onEnter ?? [],
+        onExit = onExit ?? [],
         schedules = schedules ?? [],
         triggers = triggers ?? [];
 
@@ -33,6 +36,7 @@ class TimelinePhaseModel {
     String? id,
     String? name,
     List<TimepointModel>? onEnter,
+    List<TimepointModel>? onExit,
     List<TimelineScheduleModel>? schedules,
     List<TriggerModel>? triggers,
   }) {
@@ -40,6 +44,7 @@ class TimelinePhaseModel {
       id: id ?? this.id,
       name: name ?? this.name,
       onEnter: onEnter ?? this.onEnter,
+      onExit: onExit ?? this.onExit,
       schedules: schedules ?? this.schedules,
       triggers: triggers ?? this.triggers,
     );

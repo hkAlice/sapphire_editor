@@ -1,29 +1,37 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 
 part 'trigger_action_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class TriggerActionModel {
   String type;
-  String target;
+  String? phaseId;
+  TimepointModel? timepoint;
 
   TriggerActionModel({
     required this.type,
-    required this.target,
+    this.phaseId,
+    this.timepoint,
   });
 
-  factory TriggerActionModel.fromJson(Map<String, dynamic> json) =>
-      _$TriggerActionModelFromJson(json);
+  factory TriggerActionModel.fromJson(Map<String, dynamic> json) {
+    final normalized = <String, dynamic>{...json};
+    normalized['phaseId'] ??= normalized['target'];
+    return _$TriggerActionModelFromJson(normalized);
+  }
 
   Map<String, dynamic> toJson() => _$TriggerActionModelToJson(this);
 
   TriggerActionModel copyWith({
     String? type,
-    String? target,
+    String? phaseId,
+    TimepointModel? timepoint,
   }) {
     return TriggerActionModel(
       type: type ?? this.type,
-      target: target ?? this.target,
+      phaseId: phaseId ?? this.phaseId,
+      timepoint: timepoint ?? this.timepoint,
     );
   }
 }

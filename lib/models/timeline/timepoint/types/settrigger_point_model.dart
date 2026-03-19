@@ -4,11 +4,12 @@ part 'settrigger_point_model.g.dart';
 
 @JsonSerializable()
 class SetTriggerPointModel {
-  int conditionId;
-  String conditionStr;
+  String targetActor;
+  int triggerId;
   bool enabled;
+  String triggerStr;
 
-  SetTriggerPointModel({this.conditionId = 1, this.enabled = true, this.conditionStr = "<unknown>"});
+  SetTriggerPointModel({this.targetActor = "", this.triggerId = 1, this.enabled = true, this.triggerStr = "<unknown>"});
 
   factory SetTriggerPointModel.fromJson(Map<String, dynamic> json) => _$SetTriggerPointModelFromJson(json);
 
@@ -16,6 +17,6 @@ class SetTriggerPointModel {
 
   @override
   String toString() {
-    return "${enabled ? 'Enable' : 'Disable'} Condition#$conditionId ($conditionStr)";
+    return "${enabled ? 'Enable' : 'Disable'} Actor{$targetActor} => Trigger#$triggerId ($triggerStr)";
   }
 }
