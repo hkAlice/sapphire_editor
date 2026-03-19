@@ -65,6 +65,85 @@ class TimelineNodeLookup {
         .firstWhereOrNull((a) => a.id == actorId);
   }
 
+  static ActorModel? findActorByName(
+    TimelineEditorSignal signals,
+    String? actorName,
+  ) {
+    if(actorName == null || actorName.trim().isEmpty) {
+      return null;
+    }
+
+    return signals.timeline.value.actors
+        .firstWhereOrNull((a) => a.name == actorName);
+  }
+
+  static int phaseNumberForActorPhase(
+    ActorModel actor,
+    TimelinePhaseModel phase,
+  ) {
+    final match = RegExp(r'(\d+)$').firstMatch(phase.id);
+    final parsed = match == null ? null : int.tryParse(match.group(1)!);
+    if(parsed != null && parsed > 0) {
+      return parsed;
+    }
+
+    final index = actor.phases.indexWhere((entry) => entry.id == phase.id);
+    return index >= 0 ? index + 1 : 0;
+  }
+
+  static TimelinePhaseModel? findPhaseByTargetPhaseId(
+    ActorModel actor,
+    int targetPhaseId,
+  ) {
+    if(targetPhaseId <= 0) {
+      return null;
+    }
+
+    return actor.phases.firstWhereOrNull(
+      (phase) => phaseNumberForActorPhase(actor, phase) == targetPhaseId,
+    );
+  }
+
+  static TimelinePhaseModel? resolveSetTriggerTargetPhase(
+    ActorModel actor,
+    int targetPhaseId,
+    int triggerId,
+  ) {
+    final explicitPhase = findPhaseByTargetPhaseId(actor, targetPhaseId);
+    if(explicitPhase != null) {
+      return explicitPhase;
+    }
+
+    if(triggerId > 0) {
+      final inferredPhase = actor.phases.firstWhereOrNull(
+        (phase) => phase.triggers.any((trigger) => trigger.id == triggerId),
+      );
+      if(inferredPhase != null) {
+        return inferredPhase;
+      }
+    }
+
+    return actor.phases.firstWhereOrNull((_) => true);
+  }
+
+  static TriggerModel? resolveSetTriggerTarget(
+    ActorModel actor,
+    int targetPhaseId,
+    int triggerId,
+  ) {
+    final phase = resolveSetTriggerTargetPhase(
+      actor,
+      targetPhaseId,
+      triggerId,
+    );
+    if(phase == null) {
+      return null;
+    }
+
+    return phase.triggers
+        .firstWhereOrNull((trigger) => trigger.id == triggerId);
+  }
+
   static TimelinePhaseModel? findPhase(
     TimelineEditorSignal signals,
     int? actorId,

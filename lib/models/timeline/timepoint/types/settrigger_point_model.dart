@@ -5,11 +5,12 @@ part 'settrigger_point_model.g.dart';
 @JsonSerializable()
 class SetTriggerPointModel {
   String targetActor;
+  int targetPhaseId;
   int triggerId;
   bool enabled;
   String triggerStr;
 
-  SetTriggerPointModel({this.targetActor = "", this.triggerId = 1, this.enabled = true, this.triggerStr = "<unknown>"});
+  SetTriggerPointModel({this.targetActor = "", this.targetPhaseId = 0, this.triggerId = 1, this.enabled = true, this.triggerStr = "<unknown>"});
 
   factory SetTriggerPointModel.fromJson(Map<String, dynamic> json) => _$SetTriggerPointModelFromJson(json);
 
@@ -17,6 +18,7 @@ class SetTriggerPointModel {
 
   @override
   String toString() {
-    return "${enabled ? 'Enable' : 'Disable'} Actor{$targetActor} => Trigger#$triggerId ($triggerStr)";
+    final phaseLabel = targetPhaseId > 0 ? targetPhaseId.toString() : '?';
+    return "${enabled ? 'Enable' : 'Disable'} Actor{$targetActor} => Phase{$phaseLabel} Trigger#$triggerId ($triggerStr)";
   }
 }
