@@ -24,7 +24,7 @@ class PhaseHookScheduleIds {
   }
 
   static int scheduleIdForHook(PhaseTimepointHook hook) {
-    return switch (hook) {
+    return switch(hook) {
       PhaseTimepointHook.onEnter => onEnter,
       PhaseTimepointHook.onExit => onExit,
     };

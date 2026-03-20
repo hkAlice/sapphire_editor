@@ -23,7 +23,7 @@ class TimelineScheduleItem extends StatelessWidget {
       required this.scheduleId});
 
   String _loopTypeLabel(TimelineScheduleLoopType loopType) {
-    return switch (loopType) {
+    return switch(loopType) {
       TimelineScheduleLoopType.none => 'None',
       TimelineScheduleLoopType.infinite => 'Infinite',
       TimelineScheduleLoopType.finite => 'Finite',
@@ -31,7 +31,7 @@ class TimelineScheduleItem extends StatelessWidget {
   }
 
   String _loopSummary(TimelineScheduleModel schedule) {
-    return switch (schedule.loopType) {
+    return switch(schedule.loopType) {
       TimelineScheduleLoopType.none => 'No loop',
       TimelineScheduleLoopType.infinite => 'Loop ∞',
       TimelineScheduleLoopType.finite => 'Loop x${schedule.loopCount}',
@@ -266,7 +266,7 @@ class TimelineScheduleItem extends StatelessWidget {
       ],
     ).then((value) {
       if(value == null) return;
-      switch (value) {
+      switch(value) {
         case 'edit_name':
           _showEditDialog(context, 'Edit schedule name', schedule.name,
               minLines: 1, maxLines: 1, onChanged: (newName) {

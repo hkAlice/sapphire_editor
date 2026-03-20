@@ -703,7 +703,7 @@ class TimelineSanitySvc {
     final context =
         '${_phasePath(ownerActor, ownerPhase)} trigger #${trigger.id}';
 
-    switch (trigger.condition) {
+    switch(trigger.condition) {
       case ConditionType.combatState:
         final data = _asConditionData<CombatStateConditionModel>(
           trigger,
@@ -952,7 +952,7 @@ class TimelineSanitySvc {
     final localActorNames = _localActorNames(actor);
     final context = '$scopeLabel timepoint #${point.id} (${point.type.name})';
 
-    switch (point.type) {
+    switch(point.type) {
       case TimepointType.actionTimeline:
         final data = _asTimepointData<ActionTimelinePointModel>(
           point,

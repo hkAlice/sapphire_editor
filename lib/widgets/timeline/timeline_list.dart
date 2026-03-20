@@ -45,43 +45,105 @@ class TimelineList extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 8.0),
               child: hasPhases
                   ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(
-                          width: 350,
+                          width: 300,
                           child: ActorDetailedSelect(
                             actors: actors,
                             actorId: actor.id,
                           ),
                         ),
+                        const SizedBox(width: 8.0),
                         const SizedBox(
                           height: 28.0,
                           child: VerticalDivider(),
                         ),
-                        const SizedBox(width: 14.0),
+                        const SizedBox(width: 8.0),
                         Expanded(
-                          child: DropdownButtonFormField<String>(
-                            value: selectedPhase!.id,
-                            decoration: const InputDecoration(
-                              labelText: "Phase",
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 10.0),
-                            ),
-                            items: actor.phases
-                                .map((phase) => DropdownMenuItem<String>(
-                                      value: phase.id,
-                                      child: Text(phase.name),
-                                    ))
-                                .toList(),
-                            onChanged: (value) {
-                              if(value == null) {
-                                return;
-                              }
+                          flex: 14,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  value: selectedPhase!.id,
+                                  decoration: const InputDecoration(
+                                    labelText: "Phase",
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 10.0),
+                                  ),
+                                  items: actor.phases
+                                      .map((phase) => DropdownMenuItem<String>(
+                                            value: phase.id,
+                                            child: Text(phase.name),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    if(value == null) {
+                                      return;
+                                    }
 
-                              signals.selectPhase(value);
-                            },
+                                    signals.selectPhase(value);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                              IconButton.outlined(
+                                tooltip: "Add phase",
+                                onPressed: () {
+                                  signals.addPhase(actor);
+                                },
+                                icon: const Icon(Icons.add_rounded),
+                              ),
+                              const SizedBox(width: 4.0),
+                              PopupMenuButton<String>(
+                                tooltip: "Phase actions",
+                                onSelected: (value) {
+                                  if(value == 'duplicate') {
+                                    signals.duplicatePhase(
+                                        selectedPhase!, actor.id);
+                                    return;
+                                  }
+
+                                  if(value == 'delete') {
+                                    signals.removePhase(
+                                        selectedPhase, actor.id);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  const PopupMenuItem(
+                                    value: 'duplicate',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.copy_rounded, size: 16),
+                                        SizedBox(width: 8),
+                                        Text('Duplicate phase'),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    enabled: actor.phases.length > 1,
+                                    child: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete_rounded,
+                                          size: 16,
+                                          color: Colors.redAccent,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'Delete phase',
+                                          style: TextStyle(
+                                              color: Colors.redAccent),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -91,7 +153,9 @@ class TimelineList extends StatelessWidget {
                       actorId: actor.id,
                     ),
             ),
-            Divider(thickness: 0.5,),
+            Divider(
+              thickness: 0.5,
+            ),
             TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,

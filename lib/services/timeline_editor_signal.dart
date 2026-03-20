@@ -200,7 +200,7 @@ class TimelineEditorSignal {
 
   List<TimepointModel> _hookTimepoints(
       TimelinePhaseModel phase, PhaseTimepointHook hook) {
-    return switch (hook) {
+    return switch(hook) {
       PhaseTimepointHook.onEnter => phase.onEnter,
       PhaseTimepointHook.onExit => phase.onExit,
     };
@@ -211,7 +211,7 @@ class TimelineEditorSignal {
     PhaseTimepointHook hook,
     List<TimepointModel> timepoints,
   ) {
-    return switch (hook) {
+    return switch(hook) {
       PhaseTimepointHook.onEnter => phase.copyWith(onEnter: timepoints),
       PhaseTimepointHook.onExit => phase.copyWith(onExit: timepoints),
     };

@@ -98,7 +98,7 @@ class TriggerModel {
 
   static dynamic _conditionDataFactory(
       ConditionType type, Map<String, dynamic> json) {
-    return switch (type) {
+    return switch(type) {
       ConditionType.combatState => CombatStateConditionModel.fromJson(json),
       ConditionType.eObjInteract => EObjInteractConditionModel.fromJson(json),
       ConditionType.getAction => GetActionConditionModel.fromJson(json),
@@ -172,7 +172,7 @@ class TriggerModel {
 
 extension ConditionTypeExtension on ConditionType {
   Color get color {
-    return switch (this) {
+    return switch(this) {
       ConditionType.combatState => Colors.red,
       ConditionType.eObjInteract => Colors.lightBlue,
       ConditionType.getAction => Colors.orange,
@@ -187,7 +187,7 @@ extension ConditionTypeExtension on ConditionType {
   }
 
   String get displayName {
-    return switch (this) {
+    return switch(this) {
       ConditionType.combatState => "Combat State",
       ConditionType.eObjInteract => "EObj Interact",
       ConditionType.getAction => "Get Action",
@@ -202,7 +202,7 @@ extension ConditionTypeExtension on ConditionType {
   }
 
   List<ConditionParamParser> get paramParser {
-    return switch (this) {
+    return switch(this) {
       ConditionType.combatState => [
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(

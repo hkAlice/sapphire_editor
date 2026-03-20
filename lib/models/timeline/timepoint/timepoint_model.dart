@@ -84,7 +84,7 @@ class TimepointModel {
 
   static dynamic _timepointDataFactory(
       TimepointType type, Map<String, dynamic> json) {
-    return switch (type) {
+    return switch(type) {
       TimepointType.setPos => SetPosPointModel.fromJson(json),
       TimepointType.idle => IdlePointModel.fromJson(json),
       TimepointType.setBGM => SetBgmPointModel.fromJson(json),
@@ -115,7 +115,7 @@ class TimepointModel {
 
 extension TimepointTypeExtension on TimepointType {
   Color get color {
-    switch (this) {
+    switch(this) {
       case TimepointType.idle:
         return Colors.grey;
       case TimepointType.directorVar:
@@ -147,7 +147,7 @@ extension TimepointTypeExtension on TimepointType {
   }
 
   String get displayName {
-    switch (this) {
+    switch(this) {
       case TimepointType.actionTimeline:
         return "Action Timeline";
       case TimepointType.battleTalk:
