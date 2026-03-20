@@ -102,8 +102,19 @@ class TimelineOnHookItem extends StatelessWidget {
             if (timepoints.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Text(_emptyDescription),
-              )
+                child: Center(
+                child: Text(
+                  _emptyDescription,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.color
+                          ?.withValues(alpha: 0.5)),
+                ),
+              ),
+            )
             else
               ListView.builder(
                 shrinkWrap: true,

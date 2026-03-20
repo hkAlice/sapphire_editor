@@ -1,5 +1,6 @@
 import 'package:disable_web_context_menu/disable_web_context_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
@@ -162,9 +163,12 @@ class GenericTimepointItem extends StatelessWidget {
                                     opacity: 0.7,
                                     child: Text(
                                       _formatTime(timepointModel.startTime),
-                                      style: Theme.of(context)
+                                      style: GoogleFonts.lilex(
+                                        textStyle: 
+                                        Theme.of(context)
                                           .textTheme
-                                          .labelSmall,
+                                          .labelSmall!.copyWith(fontFamily: "monospace"),
+                                      ),
                                       maxLines: 1,
                                       textAlign: TextAlign.right,
                                     )),
@@ -176,13 +180,17 @@ class GenericTimepointItem extends StatelessWidget {
                                 padding: const EdgeInsets.only(left: 4.0),
                                 child: Text(
                                   treatEnumName(timepointModel.type),
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: GoogleFonts.lilex(
+                                    textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontFamily: "monospace", fontSize: 12.0, fontWeight: FontWeight.w300)
+                                  ),
                                 )),
                             const VerticalDivider(),
                             Expanded(
                                 child: Text(
                               timepointModel.data.toString(),
-                              style: Theme.of(context).textTheme.bodySmall,
+                              style: GoogleFonts.lilex(
+                                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontFamily: "monospace", fontSize: 12.0, fontWeight: FontWeight.w300)
+                              ),
                             )),
                           ],
                         ),
@@ -262,7 +270,7 @@ class _TimepointEditorWidgetState extends State<TimepointEditorWidget> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Edit timepoint"),
+            Text(timepointModel.data.toString()),
             SizedBox(
               width: 32.0,
               height: 32.0,
