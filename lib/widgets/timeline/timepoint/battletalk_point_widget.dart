@@ -133,14 +133,14 @@ class _BattleTalkPointWidgetState extends State<BattleTalkPointWidget> {
             children: [
               SizedBox(
                 width: 180,
-                child: GenericItemPickerWidget<ActorModel>(
+                child: GenericItemPickerWidget<String>(
                   label: "Talker Actor",
-                  items: timeline.actors,
-                  initialValue: timeline.actors.firstWhereOrNull((e) => e.name == pointData.talkerActorName),
+                  items: timeline.actors.map((e) => e.name).toList(),
+                  initialValue: pointData.talkerActorName,
                   onChanged: (newValue) {
-                    pointData.talkerActorName = newValue.name;
+                    pointData.talkerActorName = newValue;
                     _updateTimepoint(signals, actor, schedule);
-                    },
+                  }
                 ),
               ),
               const SizedBox(width: 18.0,),

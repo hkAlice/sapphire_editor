@@ -45,17 +45,17 @@ class _BNpcDespawnPointWidgetState extends State<BNpcDespawnPointWidget> {
             children: [
               SizedBox(
                 width: 180,
-                child: GenericItemPickerWidget<ActorModel>(
-                  label: "Actor",
-                  items: timeline.actors,
-                  initialValue: timeline.actors.firstWhereOrNull((e) => e.name == pointData.despawnActor),
+                child: GenericItemPickerWidget<String>(
+                  label: "Despawn Actor",
+                  items: timeline.actors.map((e) => e.name).toList(),
+                  initialValue: pointData.despawnActor,
                   onChanged: (newValue) {
-                    pointData.despawnActor = newValue.name;
+                    pointData.despawnActor = newValue;
                     _updateTimepoint(signals, actor, schedule);
-                    },
+                  }
                 ),
-              )
-            ],
+              ),
+            ]
           ),
         ],
       );

@@ -53,18 +53,17 @@ class _BNpcSpawnPointWidgetState extends State<BNpcSpawnPointWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 180,
-                    child: GenericItemPickerWidget<ActorModel>(
-                      label: "Actor",
-                      items: timeline.actors,
-                      initialValue: timeline.actors.firstWhereOrNull(
-                          (e) => e.name == pointData.spawnActor),
-                      onChanged: (newValue) {
-                        pointData.spawnActor = newValue.name;
-                        _updateTimepoint(signals, actor, schedule);
-                      },
-                    ),
-                  )
+                width: 180,
+                child: GenericItemPickerWidget<String>(
+                  label: "Spawn Actor",
+                  items: timeline.actors.map((e) => e.name).toList(),
+                  initialValue: pointData.spawnActor,
+                  onChanged: (newValue) {
+                    pointData.spawnActor = newValue;
+                    _updateTimepoint(signals, actor, schedule);
+                  }
+                ),
+              ),
                 ],
               )
             ],

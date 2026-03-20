@@ -30,7 +30,7 @@ class StorageHelper {
   }
 
   Box getTable(StorageTable table) {
-    if (!_isInitialized) {
+    if(!_isInitialized) {
       throw Exception("StorageHelper has not been initialized. Call init() first.");
     }
     return _tableInstances[table]!;
