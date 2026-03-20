@@ -108,7 +108,7 @@ class _ConditionItemState extends State<ConditionItem> {
               const VerticalDivider(),
             ],
           ),
-          title: Text(conditionModel.getReadableConditionStr()),
+          title: Text(conditionModel.getReadableConditionStr(actor)),
           subtitle: conditionModel.description?.isNotEmpty ?? false
               ? Text(conditionModel.description!)
               : null,

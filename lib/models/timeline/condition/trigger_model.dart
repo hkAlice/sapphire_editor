@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/eobjinteract_condition_model.dart';
@@ -8,6 +9,8 @@ import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_con
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/varequals_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/phaseactive_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_model.dart';
+import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'trigger_model.g.dart';
@@ -115,7 +118,7 @@ class TriggerModel {
 
   String get displayName => condition.displayName;
 
-  String getReadableConditionStr() {
+  String getReadableConditionStr(ActorModel currentActor) {
     String summary = "If ";
 
     if(condition == ConditionType.hpPctBetween) {
@@ -135,7 +138,8 @@ class TriggerModel {
           "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
     } else if(condition == ConditionType.phaseActive) {
       var param = paramData as PhaseActiveConditionModel;
-      summary += "${param.sourceActor}->${param.phaseId ?? '<unset>'} is active";
+      final phaseName = currentActor.phases.where((p) => p.id == param.phaseId).firstOrNull?.name;
+      summary += "${param.sourceActor}->${phaseName ?? param.phaseId ?? '<unset>'} is active";
     } else if(condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
@@ -152,7 +156,8 @@ class TriggerModel {
       if(action!.type == 'transitionPhase' &&
           action!.phaseId != null &&
           action!.phaseId! > 0) {
-        summary += ", action transitionPhase -> ${action!.phaseId}";
+        final phaseName = currentActor.phases.where((p) => p.id == action!.phaseId).firstOrNull?.name;
+        summary += ", action transitionPhase -> ${phaseName ?? action!.phaseId}";
       } else if(action!.type == 'timepoint' && action!.timepoint != null) {
         final triggerTimepoint = action!.timepoint!;
         final seconds = (triggerTimepoint.startTime / 1000).toStringAsFixed(1);

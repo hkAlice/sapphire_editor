@@ -57,7 +57,7 @@ class _SetTriggerPointWidgetState extends State<SetTriggerPointWidget> {
 
     if(targetTrigger != null) {
       pointData.triggerId = targetTrigger.id;
-      pointData.triggerStr = targetTrigger.getReadableConditionStr();
+      pointData.triggerStr = targetTrigger.getReadableConditionStr(targetActor);
     }
   }
 
