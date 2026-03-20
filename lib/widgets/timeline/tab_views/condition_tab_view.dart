@@ -23,7 +23,6 @@ class _ConditionTabViewState extends State<ConditionTabView> {
             child: Text("Select a phase to view its triggers."));
       }
 
-      final actor = signals.selectedActor.value;
       final phase = signals.selectedPhase.value;
       final triggers = phase.triggers;
       int conditionCount = triggers.length;
@@ -32,89 +31,6 @@ class _ConditionTabViewState extends State<ConditionTabView> {
       return SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      value: phase.id,
-                      decoration: const InputDecoration(
-                        labelText: "Phase",
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 10.0),
-                      ),
-                      items: actor.phases
-                          .map((p) => DropdownMenuItem<String>(
-                                value: p.id,
-                                child: Text(p.name),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        if(value == null) {
-                          return;
-                        }
-
-                        signals.selectPhase(value);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  IconButton.outlined(
-                    tooltip: "Add phase",
-                    onPressed: () {
-                      signals.addPhase(actor);
-                    },
-                    icon: const Icon(Icons.add_rounded),
-                  ),
-                  const SizedBox(width: 4.0),
-                  PopupMenuButton<String>(
-                    tooltip: "Phase actions",
-                    onSelected: (value) {
-                      if(value == 'duplicate') {
-                        signals.duplicatePhase(phase, actor.id);
-                        return;
-                      }
-
-                      if(value == 'delete') {
-                        signals.removePhase(phase, actor.id);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'duplicate',
-                        child: Row(
-                          children: [
-                            Icon(Icons.copy_rounded, size: 16),
-                            SizedBox(width: 8),
-                            Text('Duplicate phase'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        enabled: actor.phases.length > 1,
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.delete_rounded,
-                              size: 16,
-                              color: Colors.redAccent,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Delete phase',
-                              style: TextStyle(color: Colors.redAccent),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.all(14.0),
               child: SmallHeadingWidget(
