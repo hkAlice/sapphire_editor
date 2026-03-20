@@ -41,7 +41,7 @@ class ImGuiScheduleContainer extends StatelessWidget {
           minTileHeight: 40.0,
           initiallyExpanded: true,
           title: DefaultTextStyle(
-            style: const TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600, color: Colors.white),
             child: title,
           ),
           subtitle: DefaultTextStyle(
