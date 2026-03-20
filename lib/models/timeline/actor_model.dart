@@ -18,7 +18,7 @@ class ActorModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<TimelineScheduleModel> get schedules {
     if(phases.isEmpty) {
-      phases.add(TimelinePhaseModel(id: 'phase_1', name: 'Initial Phase'));
+      phases.add(TimelinePhaseModel(id: 1, name: 'Initial Phase'));
     }
 
     return phases.expand((phase) => phase.schedules).toList();
@@ -27,7 +27,7 @@ class ActorModel {
   set schedules(List<TimelineScheduleModel> value) {
     if(phases.isEmpty) {
       phases.add(TimelinePhaseModel(
-          id: 'phase_1', name: 'Initial Phase', schedules: value));
+          id: 1, name: 'Initial Phase', schedules: value));
       return;
     }
 
@@ -69,7 +69,7 @@ class ActorModel {
                   this.phases.first.copyWith(schedules: schedules)
                 else
                   TimelinePhaseModel(
-                    id: 'phase_1',
+                    id: 1,
                     name: 'Initial Phase',
                     schedules: schedules,
                   )

@@ -64,7 +64,7 @@ class TimelineList extends StatelessWidget {
                           child: Row(
                             children: [
                               Expanded(
-                                child: DropdownButtonFormField<String>(
+                                  child: DropdownButtonFormField<int>(
                                   isExpanded: true,
                                   value: selectedPhase!.id,
                                   decoration: const InputDecoration(
@@ -74,7 +74,7 @@ class TimelineList extends StatelessWidget {
                                         horizontal: 12.0, vertical: 10.0),
                                   ),
                                   items: actor.phases
-                                      .map((phase) => DropdownMenuItem<String>(
+                                    .map((phase) => DropdownMenuItem<int>(
                                             value: phase.id,
                                             child: Text(phase.name),
                                           ))
@@ -102,7 +102,7 @@ class TimelineList extends StatelessWidget {
                                 onSelected: (value) {
                                   if(value == 'duplicate') {
                                     signals.duplicatePhase(
-                                        selectedPhase!, actor.id);
+                                        selectedPhase, actor.id);
                                     return;
                                   }
 

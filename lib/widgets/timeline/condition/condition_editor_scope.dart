@@ -4,7 +4,7 @@ import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 class ConditionEditorScope extends InheritedWidget {
   final TimelineEditorSignal signals;
   final int actorId;
-  final String phaseId;
+  final int phaseId;
   final int conditionId;
 
   const ConditionEditorScope({

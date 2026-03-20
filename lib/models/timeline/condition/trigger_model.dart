@@ -135,7 +135,7 @@ class TriggerModel {
           "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
     } else if(condition == ConditionType.phaseActive) {
       var param = paramData as PhaseActiveConditionModel;
-      summary += "${param.sourceActor}->${param.phaseId} is active";
+      summary += "${param.sourceActor}->${param.phaseId ?? '<unset>'} is active";
     } else if(condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
@@ -151,7 +151,7 @@ class TriggerModel {
     if(action != null) {
       if(action!.type == 'transitionPhase' &&
           action!.phaseId != null &&
-          action!.phaseId!.isNotEmpty) {
+          action!.phaseId! > 0) {
         summary += ", action transitionPhase -> ${action!.phaseId}";
       } else if(action!.type == 'timepoint' && action!.timepoint != null) {
         final triggerTimepoint = action!.timepoint!;

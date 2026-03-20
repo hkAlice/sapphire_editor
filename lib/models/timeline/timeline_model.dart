@@ -87,6 +87,24 @@ class TimelineModel {
     return normalizedActors;
   }
 
+  static int nextUniquePhaseId(ActorModel actor) {
+    if(actor.phases.isEmpty) {
+      return 1;
+    }
+
+    final existingIds = actor.phases.map((phase) => phase.id).toSet();
+    var nextId = actor.phases
+            .map((phase) => phase.id)
+            .reduce((left, right) => left > right ? left : right) +
+        1;
+
+    while (existingIds.contains(nextId)) {
+      nextId += 1;
+    }
+
+    return nextId;
+  }
+
   factory TimelineModel.fromJson(Map<String, dynamic> json) {
     final timeline = _$TimelineModelFromJson(json);
     timeline.actors = ensureUniqueActorNames(timeline.actors);
@@ -124,7 +142,7 @@ class TimelineModel {
       layoutId: layoutId,
       name: uniqueName,
       type: "bnpc",
-      phaseList: [TimelinePhaseModel(id: "phase_1", name: "Initial Phase")],
+      phaseList: [TimelinePhaseModel(id: 1, name: "Initial Phase")],
     );
 
     actors.add(actorModel);
@@ -136,7 +154,7 @@ class TimelineModel {
     actor ??= actors.first;
 
     final newPhase = TimelinePhaseModel(
-      id: "phase_${actor.phases.length + 1}",
+      id: nextUniquePhaseId(actor),
       name: "Phase ${actor.phases.length + 1}",
     );
 

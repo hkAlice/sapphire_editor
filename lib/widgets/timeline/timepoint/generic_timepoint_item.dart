@@ -12,7 +12,7 @@ import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class GenericTimepointItem extends StatelessWidget {
-  final String? phaseId;
+  final int? phaseId;
   final int timepointId;
   final int scheduleIndex;
   final int scheduleId;
@@ -211,7 +211,7 @@ class GenericTimepointItem extends StatelessWidget {
 }
 
 class TimepointEditorWidget extends StatefulWidget {
-  final String? phaseId;
+  final int? phaseId;
   final int scheduleId;
   final int timepointId;
   final int actorId;

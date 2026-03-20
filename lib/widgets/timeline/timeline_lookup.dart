@@ -81,10 +81,8 @@ class TimelineNodeLookup {
     ActorModel actor,
     TimelinePhaseModel phase,
   ) {
-    final match = RegExp(r'(\d+)$').firstMatch(phase.id);
-    final parsed = match == null ? null : int.tryParse(match.group(1)!);
-    if(parsed != null && parsed > 0) {
-      return parsed;
+    if(phase.id > 0) {
+      return phase.id;
     }
 
     final index = actor.phases.indexWhere((entry) => entry.id == phase.id);
@@ -147,7 +145,7 @@ class TimelineNodeLookup {
   static TimelinePhaseModel? findPhase(
     TimelineEditorSignal signals,
     int? actorId,
-    String? phaseId,
+    int? phaseId,
   ) {
     if(phaseId == null) {
       return null;
@@ -163,7 +161,7 @@ class TimelineNodeLookup {
 
   static ActorScheduleLookup? findActorSchedule(
       TimelineEditorSignal signals, int? actorId, int? scheduleId,
-      [String? phaseId]) {
+      [int? phaseId]) {
     if(scheduleId == null) {
       return null;
     }
@@ -258,7 +256,7 @@ class TimelineNodeLookup {
   static TimepointModel? findOnEnterTimepoint(
     TimelineEditorSignal signals,
     int? actorId,
-    String? phaseId,
+    int? phaseId,
     int timepointId,
   ) {
     return findPhaseHookTimepoint(
@@ -273,7 +271,7 @@ class TimelineNodeLookup {
   static TimepointModel? findPhaseHookTimepoint(
     TimelineEditorSignal signals,
     int? actorId,
-    String? phaseId,
+    int? phaseId,
     int scheduleId,
     int timepointId,
   ) {
@@ -330,7 +328,7 @@ class TimelineNodeLookup {
   static TriggerModel? findCondition(
     TimelineEditorSignal signals,
     int? actorId,
-    String? phaseId,
+    int? phaseId,
     int conditionId,
   ) {
     if(phaseId == null) {

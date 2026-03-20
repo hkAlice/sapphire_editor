@@ -62,7 +62,7 @@ class _PhaseActiveConditionWidgetState
 
                   if(_selectedActor == null ||
                       _selectedActor!.phases.isEmpty) {
-                    widget.paramData.phaseId = "<unset>";
+                    widget.paramData.phaseId = null;
                   } else {
                     widget.paramData.phaseId = _selectedActor!.phases.first.id;
                   }
@@ -80,7 +80,7 @@ class _PhaseActiveConditionWidgetState
           ),
           SizedBox(
             width: 240,
-            child: GenericItemPickerWidget<String>(
+            child: GenericItemPickerWidget<int>(
               label: "Phase",
               items: _selectedActor == null
                   ? []
@@ -88,13 +88,13 @@ class _PhaseActiveConditionWidgetState
               initialValue: widget.paramData.phaseId,
               propertyBuilder: (phaseId) {
                 if(_selectedActor == null) {
-                  return phaseId;
+                  return 'Phase $phaseId';
                 }
 
                 return _selectedActor!.phases
                         .firstWhereOrNull((phase) => phase.id == phaseId)
                         ?.name ??
-                    phaseId;
+                    'Phase $phaseId';
               },
               onChanged: (value) {
                 widget.paramData.phaseId = value;

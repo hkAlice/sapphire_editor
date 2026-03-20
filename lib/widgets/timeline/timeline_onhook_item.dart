@@ -13,7 +13,7 @@ enum TimelineHookType {
 
 class TimelineOnHookItem extends StatelessWidget {
   final int actorId;
-  final String phaseId;
+  final int phaseId;
   final TimelineHookType hookType;
 
   const TimelineOnHookItem({

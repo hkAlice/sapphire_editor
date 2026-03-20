@@ -10,7 +10,7 @@ PhaseActiveConditionModel _$PhaseActiveConditionModelFromJson(
         Map<String, dynamic> json) =>
     PhaseActiveConditionModel(
       sourceActor: json['sourceActor'] as String? ?? "<unknown>",
-      phaseId: json['phaseId'] as String? ?? "<unset>",
+      phaseId: (json['phaseId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$PhaseActiveConditionModelToJson(

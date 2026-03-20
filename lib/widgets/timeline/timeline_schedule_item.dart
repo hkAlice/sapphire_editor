@@ -11,7 +11,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 
 class TimelineScheduleItem extends StatelessWidget {
   final int actorId;
-  final String phaseId;
+  final int phaseId;
   final int scheduleIndex;
   final int scheduleId;
 

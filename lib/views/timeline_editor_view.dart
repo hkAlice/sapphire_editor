@@ -306,7 +306,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
       return actorStart;
     }
 
-    return _findObjectStartByStringId(lines, anchor.phaseId, phasesRange) ??
+    return _findObjectStartByNumericId(lines, anchor.phaseId, phasesRange) ??
         actorStart;
   }
 
@@ -475,20 +475,6 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
     return _findObjectStartByIdPattern(
       lines,
       RegExp('"id"\\s*:\\s*$id\\b'),
-      range,
-    );
-  }
-
-  int? _findObjectStartByStringId(
-      List<String> lines, String? id, _JsonLineRange range) {
-    if(id == null) {
-      return null;
-    }
-
-    final encodedId = jsonEncode(id);
-    return _findObjectStartByIdPattern(
-      lines,
-      RegExp('"id"\\s*:\\s*${RegExp.escape(encodedId)}\\s*,?'),
       range,
     );
   }

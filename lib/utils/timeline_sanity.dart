@@ -339,7 +339,7 @@ class TimelineSanitySvc {
       return;
     }
 
-    final phaseIdCounts = <String, int>{};
+    final phaseIdCounts = <int, int>{};
     final phaseNameCounts = <String, int>{};
     final scheduleIdCounts = <int, int>{};
 
@@ -353,10 +353,10 @@ class TimelineSanitySvc {
     }
 
     for(final entry in phaseIdCounts.entries) {
-      if(_isMissingRef(entry.key)) {
+      if(entry.key <= 0) {
         sink.error(
           'MissingPhaseId',
-          'Actor \'${actor.name}\' has a phase with an empty or placeholder id.',
+          'Actor \'${actor.name}\' has a phase with non-positive id ${entry.key}.',
         );
       }
 
@@ -637,10 +637,10 @@ class TimelineSanitySvc {
       if(action.type == 'transitionPhase') {
         hasTransitionAction = true;
 
-        if(_isMissingRef(action.phaseId)) {
+        if(action.phaseId == null || action.phaseId! <= 0) {
           sink.error(
             'MissingTransitionPhase',
-            '$triggerPath has transitionPhase action with an empty target phase id.',
+            '$triggerPath has transitionPhase action with a missing or invalid target phase id.',
           );
           continue;
         }
@@ -842,10 +842,10 @@ class TimelineSanitySvc {
           return;
         }
 
-        if(_isMissingRef(data.phaseId)) {
+        if(data.phaseId == null || data.phaseId! <= 0) {
           sink.error(
             'MissingPhaseRef',
-            '$context phaseActive condition has an empty phase reference.',
+            '$context phaseActive condition has a missing or invalid phase reference.',
           );
           return;
         }

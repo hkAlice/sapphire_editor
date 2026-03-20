@@ -9,7 +9,7 @@ part of 'trigger_action_model.dart';
 TriggerActionModel _$TriggerActionModelFromJson(Map<String, dynamic> json) =>
     TriggerActionModel(
       type: json['type'] as String,
-      phaseId: json['phaseId'] as String?,
+      phaseId: (json['phaseId'] as num?)?.toInt(),
       timepoint: json['timepoint'] == null
           ? null
           : TimepointModel.fromJson(json['timepoint'] as Map<String, dynamic>),

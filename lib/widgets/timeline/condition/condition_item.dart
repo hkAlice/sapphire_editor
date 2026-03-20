@@ -32,8 +32,8 @@ class ConditionItem extends StatefulWidget {
 }
 
 class _ConditionItemState extends State<ConditionItem> {
-  String _defaultTransitionPhaseForPhase(
-      String phaseId, List<TimelinePhaseModel> phases) {
+  int? _defaultTransitionPhaseForPhase(
+      int phaseId, List<TimelinePhaseModel> phases) {
     final currentIndex = phases.indexWhere((phase) => phase.id == phaseId);
     if(currentIndex != -1 && currentIndex + 1 < phases.length) {
       return phases[currentIndex + 1].id;
@@ -43,7 +43,7 @@ class _ConditionItemState extends State<ConditionItem> {
       return phases.first.id;
     }
 
-    return "";
+    return null;
   }
 
   TimepointModel _defaultTriggerTimepoint() {
@@ -201,7 +201,7 @@ class _ConditionItemState extends State<ConditionItem> {
                         if(actionModel.type == "transitionPhase")
                           SizedBox(
                             width: 260,
-                            child: GenericItemPickerWidget<String>(
+                            child: GenericItemPickerWidget<int>(
                               label: "Target Phase",
                               items: actionTargetItems,
                               initialValue: actionTargetItems
