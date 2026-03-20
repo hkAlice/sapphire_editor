@@ -55,9 +55,9 @@ class SmallAddGenericWidget extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add, size: 14,),
+                              Icon(Icons.add, size: 14, color: Theme.of(context).primaryColor),
                               SizedBox(width: 4.0, height: 24.0,),
-                              Text(text ?? "Add new", style: Theme.of(context).textTheme.bodySmall,),
+                              Text(text ?? "Add new", style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Theme.of(context).primaryColor),),
                             ],
                           ),
                         )

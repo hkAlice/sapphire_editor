@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_schedule_item.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_onenter_item.dart';
-import 'package:sapphire_editor/widgets/timeline/timeline_onexit_item.dart';
+import 'package:sapphire_editor/widgets/timeline/timeline_onhook_item.dart';
 import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
@@ -17,7 +16,7 @@ class ScheduleTabView extends StatelessWidget {
 
     return Watch((context) {
       final actors = signals.timeline.value.actors;
-      if(actors.isEmpty) {
+      if (actors.isEmpty) {
         return const SizedBox.shrink();
       }
 
@@ -26,7 +25,7 @@ class ScheduleTabView extends StatelessWidget {
         orElse: () => actors.first,
       );
 
-      if(actor.phases.isEmpty) {
+      if (actor.phases.isEmpty) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(14.0),
@@ -72,13 +71,21 @@ class ScheduleTabView extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: TimelineOnEnterItem(actorId: actorId, phaseId: phase.id),
+              child: TimelineOnHookItem(
+                actorId: actorId,
+                phaseId: phase.id,
+                hookType: TimelineHookType.onEnter,
+              ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: TimelineOnExitItem(actorId: actorId, phaseId: phase.id),
+              child: TimelineOnHookItem(
+                actorId: actorId,
+                phaseId: phase.id,
+                hookType: TimelineHookType.onExit,
+              ),
             ),
           ),
           SliverPadding(
