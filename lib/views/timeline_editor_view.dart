@@ -36,7 +36,7 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
 
   Future<void> _initializeSignal() async {
     final autosave = StorageHelper().getTable(StorageTable.autosaveTimeline);
-    final autosaveKeys = await autosave.getAllKeys();
+    final autosaveKeys = autosave.keys.map((k) => k.toString()).toList();
 
     TimelineModel? timeline;
     if(autosaveKeys.isNotEmpty) {

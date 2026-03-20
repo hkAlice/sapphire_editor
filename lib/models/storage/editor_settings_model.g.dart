@@ -8,17 +8,17 @@ part of 'editor_settings_model.dart';
 
 class EditorSettingsModelAdapter extends TypeAdapter<EditorSettingsModel> {
   @override
-  final int typeId = 0;
+  final typeId = 0;
 
   @override
   EditorSettingsModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
-      for(int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return EditorSettingsModel(
-      theme: fields[0] as String,
-      brightness: fields[1] as String,
+      theme: fields[0] == null ? "damask" : fields[0] as String,
+      brightness: fields[1] == null ? "dark" : fields[1] as String,
     );
   }
 

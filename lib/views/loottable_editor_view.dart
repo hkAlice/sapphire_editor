@@ -31,7 +31,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
 
   void _autosave(String json) async {
     var autosaveBox = StorageHelper().getTable(StorageTable.autosaveLootTable);
-    var autosaveKeys = await autosaveBox.getAllKeys();
+    var autosaveKeys = autosaveBox.keys.map((k) => k.toString()).toList();
 
     if(autosaveKeys.isNotEmpty) {
       // todo: i hate hive (can't save timestamp ms as key because it's "out of range of 0xFFFFFFFF")
@@ -50,7 +50,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
 
       _lastAutosave = timestamp;
 
-      autosaveKeys = await autosaveBox.getAllKeys();
+      autosaveKeys = autosaveBox.keys.map((k) => k.toString()).toList();
       
       int historySize = 15;
 
@@ -106,7 +106,7 @@ class _LootTableEditorViewState extends State<LootTableEditorView> with Automati
     
     try {
       var autosave = StorageHelper().getTable(StorageTable.autosaveLootTable);
-      var autosaveKeys = await autosave.getAllKeys();
+      var autosaveKeys = autosave.keys.map((k) => k.toString()).toList();
       
       if(autosaveKeys.isNotEmpty) {
         hasLootTable = _parseJSONToLootTable(await autosave.get(autosaveKeys.last));

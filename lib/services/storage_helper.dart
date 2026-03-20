@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:sapphire_editor/models/storage/editor_settings_model.dart';
 
 class StorageHelper {
@@ -11,34 +9,30 @@ class StorageHelper {
   }
 
   bool _isInitialized = false;
-  final Map<StorageTable, CollectionBox> _tableInstances = {};
-  late BoxCollection _dbInstance;
+  final Map<StorageTable, Box> _tableInstances = {};
   
   StorageHelper._internal();
 
   Future<bool> init() async {
-    // todo: objectbox works so much better than hive
-    // no objBox for web however (isar maybe)
-    Hive
-      ..init(kIsWeb ? "/storage" : (await getApplicationDocumentsDirectory()).path)
-      ..registerAdapter(EditorSettingsModelAdapter());
+    // Initialize Hive CE properly with platform specific directory handling
+    await Hive.initFlutter();
     
-    _dbInstance = await BoxCollection.open(
-      "editorDb",
-      path: "./storage/",
-      StorageTable.values.map((e) => e.name).toSet(),
-    );
-
+    // Register adapters
+    Hive.registerAdapter(EditorSettingsModelAdapter());
+    
+    // Open boxes for each table in our enum
     for(var table in StorageTable.values) {
-      _tableInstances[table] = await _dbInstance.openBox(table.name);
+      _tableInstances[table] = await Hive.openBox(table.name);
     }
 
     _isInitialized = true;
-
     return _isInitialized;
   }
 
-  CollectionBox getTable(StorageTable table) {
+  Box getTable(StorageTable table) {
+    if (!_isInitialized) {
+      throw Exception("StorageHelper has not been initialized. Call init() first.");
+    }
     return _tableInstances[table]!;
   }
 }

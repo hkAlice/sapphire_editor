@@ -54,7 +54,7 @@ dependencies:
   collection: ^1.18.0
   http: ^1.2.1
   tab_container: ^3.5.3
-  hive: ^2.2.3
+  hive_ce: ^2.19.3
   animate_do: ^3.3.4
   path_provider: ^2.1.3
   mask_text_input_formatter: ^2.9.0
@@ -63,6 +63,7 @@ dependencies:
   signals: ^6.3.0
   signals_flutter: ^6.3.0
   disable_web_context_menu: ^1.1.0
+  hive_ce_flutter: ^2.3.4
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +73,7 @@ dev_dependencies:
   json_serializable: ^6.8.0
   build_runner: ^2.4.9
   flutter_launcher_icons: ^0.14.2
-  hive_generator: ^2.0.1
+  hive_ce_generator: ^1.9.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
