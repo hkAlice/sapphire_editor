@@ -163,6 +163,7 @@ class TimelineList extends StatelessWidget {
                 color: Theme.of(context).hoverColor,
                 borderRadius: BorderRadius.circular(16.0),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
               labelStyle: Theme.of(context).textTheme.bodyLarge,
               unselectedLabelStyle: Theme.of(context).textTheme.bodyLarge,
               tabs: const [

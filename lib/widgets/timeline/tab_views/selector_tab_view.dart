@@ -59,6 +59,18 @@ class _SelectorTabViewState extends State<SelectorTabView> {
                 }
               ),
             ),
+            Center(
+              child: Text(
+                "Tip: Selectors are global and can be used anywhere in the timeline.",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color
+                        ?.withValues(alpha: 0.5)),
+              ),
+            ),
           ],
         ),
       );
