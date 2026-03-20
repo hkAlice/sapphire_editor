@@ -8,15 +8,32 @@ class AddGenericWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.add_rounded),
-          const SizedBox(height: 36.0, width: 4.0,),
-          Text(text)
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A2A2A),
+        border: Border.all(color: const Color(0xFF333333), width: 1.0),
+        borderRadius: BorderRadius.circular(2.0),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap as void Function()?,
+          hoverColor: const Color(0xFF3A3A3A),
+          splashColor: const Color(0xFF4A4A4A),
+          child: Container(
+            height: 32.0,
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: Text(
+              "+ $text",
+              style: const TextStyle(
+                fontSize: 12.0,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -30,46 +47,32 @@ class SmallAddGenericWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          border: Border(
-            top: BorderSide(color: Colors.grey.shade800.withAlpha(150), width: 1.0),
-          )
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              IntrinsicHeight(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Opacity(
-                          opacity: 0.8,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, size: 14, color: Theme.of(context).primaryColor),
-                              SizedBox(width: 4.0, height: 24.0,),
-                              Text(text ?? "Add new", style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Theme.of(context).primaryColor),),
-                            ],
-                          ),
-                        )
-                      )
-                    ),
-                    const SizedBox(width: 4.0,),
-                  ],
-                ),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A2A2A),
+        border: Border.all(color: const Color(0xFF333333), width: 1.0),
+        borderRadius: BorderRadius.circular(2.0),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap as void Function()?,
+          hoverColor: const Color(0xFF3A3A3A),
+          splashColor: const Color(0xFF4A4A4A),
+          child: Container(
+            height: 28.0,
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: Text(
+              "+ ${text ?? 'Add new'}",
+              style: const TextStyle(
+                fontSize: 12.0,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
               ),
-            ],
+            ),
           ),
-        )
+        ),
       ),
     );
   }

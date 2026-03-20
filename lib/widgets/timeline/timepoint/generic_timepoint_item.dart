@@ -119,87 +119,92 @@ class GenericTimepointItem extends StatelessWidget {
               }
             });
           },
-          child: InkWell(
-            onTap: () async {
-              showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return SignalsProvider(
-                    signals: signals,
-                    child: TimepointEditorWidget(
-                      phaseId: phaseId,
-                      scheduleId: scheduleId,
-                      timepointId: timepointModel.id,
-                      actorId: actorId,
-                    ),
-                  );
-                },
-              );
-            },
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    border: Border(
-                        left: BorderSide(
-                            color: timepointModel.getColorForTimepointType(),
-                            width: 2.0),
-                        top: BorderSide(
-                            color: Colors.grey.shade800.withAlpha(150),
-                            width: 1.0))),
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Material(
+            color: const Color(0xFF1E1E1E),
+            shape: Border(
+              left: BorderSide(
+                  color: timepointModel.getColorForTimepointType(),
+                  width: 2.0),
+              top: const BorderSide(color: Color(0xFF333333), width: 1.0),
+              right: const BorderSide(color: Color(0xFF333333), width: 1.0),
+              bottom: const BorderSide(color: Color(0xFF333333), width: 1.0),
+            ),
+            child: InkWell(
+              hoverColor: const Color(0xFF2C2C2C),
+              splashColor: const Color(0xFF444444),
+              onTap: () async {
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SignalsProvider(
+                      signals: signals,
+                      child: TimepointEditorWidget(
+                        phaseId: phaseId,
+                        scheduleId: scheduleId,
+                        timepointId: timepointModel.id,
+                        actorId: actorId,
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                child: IntrinsicHeight(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      IntrinsicHeight(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.5),
-                              child: SizedBox(
-                                width: 40,
-                                child: Opacity(
-                                    opacity: 0.7,
-                                    child: Text(
-                                      _formatTime(timepointModel.startTime),
-                                      style: GoogleFonts.lilex(
-                                        textStyle: 
-                                        Theme.of(context)
-                                          .textTheme
-                                          .labelSmall!.copyWith(fontFamily: "monospace"),
-                                      ),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.right,
-                                    )),
-                              ),
+                      Container(
+                        width: 45,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          _formatTime(timepointModel.startTime),
+                          style: GoogleFonts.lilex(
+                            textStyle: const TextStyle(
+                              color: Color(0xFFAAAAAA),
+                              fontSize: 12.0,
                             ),
-                            const VerticalDivider(),
-                            Container(
-                                width: 110,
-                                padding: const EdgeInsets.only(left: 4.0),
-                                child: Text(
-                                  treatEnumName(timepointModel.type),
-                                  style: GoogleFonts.lilex(
-                                    textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontFamily: "monospace", fontSize: 12.0, fontWeight: FontWeight.w300)
-                                  ),
-                                )),
-                            const VerticalDivider(),
-                            Expanded(
-                                child: Text(
-                              timepointModel.data.toString(),
-                              style: GoogleFonts.lilex(
-                                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontFamily: "monospace", fontSize: 12.0, fontWeight: FontWeight.w300)
-                              ),
-                            )),
-                          ],
+                          ),
+                          maxLines: 1,
+                        ),
+                      ),
+                      const VerticalDivider(width: 8.0, thickness: 1.0, color: Color(0xFF333333)),
+                      Container(
+                        width: 110,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          treatEnumName(timepointModel.type),
+                          style: GoogleFonts.lilex(
+                            textStyle: const TextStyle(
+                              color: Color(0xFFDDDDDD),
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const VerticalDivider(width: 8.0, thickness: 1.0, color: Color(0xFF333333)),
+                      Expanded(
+                        child: Text(
+                          timepointModel.data.toString(),
+                          style: GoogleFonts.lilex(
+                            textStyle: const TextStyle(
+                              color: Color(0xFFDDDDDD),
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
-        ),
+          ),
       );
     });
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/imgui_schedule_container.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
@@ -75,55 +75,54 @@ class TimelineOnHookItem extends StatelessWidget {
       final timepointCountStr =
           '${timepoints.length} timepoint${(timepoints.length != 1 ? 's' : '')}';
       double lastTimepoint = 0.0;
-      if (timepoints.isNotEmpty) {
+      if(timepoints.isNotEmpty) {
         lastTimepoint = timepoints.last.startTime / 1000.0;
       }
 
-      return Card(
-        margin: const EdgeInsets.only(bottom: 12.0),
-        borderOnForeground: false,
-        elevation: 1.0,
-        child: ExpansionTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          initiallyExpanded: true,
-          title: Text(_title),
-          subtitle: Text(timepointCountStr),
-          trailing: SizedBox(
-            width: 48.0,
-            child: Text(
-              '${lastTimepoint.toStringAsFixed(1)}s',
-              textAlign: TextAlign.end,
+      return ImGuiScheduleContainer(
+        title: Text(_title),
+        subtitle: Text(timepointCountStr),
+        trailingText: '${lastTimepoint.toStringAsFixed(1)}s',
+        addButtonText: '+ $_newTimepointText',
+        onAddTap: () {
+          final nextTimepointId =
+              signals.generateNextTimepointIdForPhase(actorId, phase.id);
+
+          signals.addTimepointInPhase(
+            actorId,
+            phase.id,
+            _scheduleId,
+            TimepointModel(
+              id: nextTimepointId,
+              type: TimepointType.logMessage,
+              startTime: 0,
             ),
-          ),
-          childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-          children: [
-            if (timepoints.isEmpty)
-              Padding(
+          );
+        },
+        child: timepoints.isEmpty
+            ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Center(
-                child: Text(
-                  _emptyDescription,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.color
-                          ?.withValues(alpha: 0.5)),
+                  child: Text(
+                    _emptyDescription,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color
+                            ?.withValues(alpha: 0.5)),
+                  ),
                 ),
-              ),
-            )
-            else
-              ListView.builder(
+              )
+            : ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: timepoints.length,
                 itemBuilder: (context, i) {
                   return GenericTimepointItem(
-                    key:
-                        ValueKey('${phase.id}_${_hookKey}_${timepoints[i].id}'),
+                    key: ValueKey(
+                        '${phase.id}_${_hookKey}_${timepoints[i].id}'),
                     actorId: actorId,
                     phaseId: phase.id,
                     timepointId: timepoints[i].id,
@@ -134,29 +133,6 @@ class TimelineOnHookItem extends StatelessWidget {
                   );
                 },
               ),
-            Padding(
-              padding: const EdgeInsets.only(top: 0.0, bottom: 16.0),
-              child: SmallAddGenericWidget(
-                text: _newTimepointText,
-                onTap: () {
-                  final nextTimepointId = signals
-                      .generateNextTimepointIdForPhase(actorId, phase.id);
-
-                  signals.addTimepointInPhase(
-                    actorId,
-                    phase.id,
-                    _scheduleId,
-                    TimepointModel(
-                      id: nextTimepointId,
-                      type: TimepointType.logMessage,
-                      startTime: 0,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
       );
     });
   }

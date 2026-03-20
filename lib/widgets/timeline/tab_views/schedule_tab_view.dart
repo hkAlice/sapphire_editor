@@ -16,7 +16,7 @@ class ScheduleTabView extends StatelessWidget {
 
     return Watch((context) {
       final actors = signals.timeline.value.actors;
-      if (actors.isEmpty) {
+      if(actors.isEmpty) {
         return const SizedBox.shrink();
       }
 
@@ -25,7 +25,7 @@ class ScheduleTabView extends StatelessWidget {
         orElse: () => actors.first,
       );
 
-      if (actor.phases.isEmpty) {
+      if(actor.phases.isEmpty) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(14.0),
@@ -78,16 +78,6 @@ class ScheduleTabView extends StatelessWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: TimelineOnHookItem(
-                actorId: actorId,
-                phaseId: phase.id,
-                hookType: TimelineHookType.onExit,
-              ),
-            ),
-          ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
             sliver: SliverList.builder(
@@ -101,6 +91,16 @@ class ScheduleTabView extends StatelessWidget {
                   scheduleIndex: i,
                 );
               },
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: TimelineOnHookItem(
+                actorId: actorId,
+                phaseId: phase.id,
+                hookType: TimelineHookType.onExit,
+              ),
             ),
           ),
           SliverToBoxAdapter(

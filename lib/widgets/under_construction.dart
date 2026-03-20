@@ -35,7 +35,7 @@ class _StripePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     const stripeWidth = 16.0;
-    for (double x = -size.height; x < size.width + size.height; x += stripeWidth * 2) {
+    for(double x = -size.height; x < size.width + size.height; x += stripeWidth * 2) {
       paint.color = stripeColor;
       final path = Path()
         ..moveTo(x, 0)

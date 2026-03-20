@@ -14,6 +14,37 @@ import 'package:sapphire_editor/models/timeline/phase_timepoint_hook.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
 
+enum TimelineJsonAnchorType {
+  actor,
+  phase,
+  schedule,
+  timepoint,
+  condition,
+  selector,
+}
+
+class TimelineJsonScrollAnchor {
+  final TimelineJsonAnchorType type;
+  final int revision;
+  final int? actorId;
+  final String? phaseId;
+  final int? scheduleId;
+  final int? timepointId;
+  final int? conditionId;
+  final int? selectorId;
+
+  const TimelineJsonScrollAnchor({
+    required this.type,
+    required this.revision,
+    this.actorId,
+    this.phaseId,
+    this.scheduleId,
+    this.timepointId,
+    this.conditionId,
+    this.selectorId,
+  });
+}
+
 class TimelineEditorSignal {
   static const int _triggerActionScheduleOffset = 1000000;
 
@@ -42,6 +73,9 @@ class TimelineEditorSignal {
   Timer? _jsonDebounceTimer;
   final Signal<String> _pendingJsonInput;
 
+  final Signal<TimelineJsonScrollAnchor?> pendingJsonScrollAnchor;
+  int _jsonScrollAnchorRevision = 0;
+
   TimelineEditorSignal([TimelineModel? initialTimeline])
       : timeline =
             signal<TimelineModel>(initialTimeline ?? _createDefaultTimeline()),
@@ -50,7 +84,8 @@ class TimelineEditorSignal {
         selectedScheduleId = signal(0),
         _historyIndex = signal(-1),
         lastAutosave = signal<DateTime?>(null),
-        _pendingJsonInput = signal('') {
+        _pendingJsonInput = signal(''),
+        pendingJsonScrollAnchor = signal<TimelineJsonScrollAnchor?>(null) {
     selectedActor = computed(() {
       final actors = timeline.value.actors;
       if(actors.isEmpty) {
@@ -217,6 +252,39 @@ class TimelineEditorSignal {
     };
   }
 
+  void _markJsonScrollAnchor({
+    required TimelineJsonAnchorType type,
+    int? actorId,
+    String? phaseId,
+    int? scheduleId,
+    int? timepointId,
+    int? conditionId,
+    int? selectorId,
+  }) {
+    _jsonScrollAnchorRevision += 1;
+    pendingJsonScrollAnchor.value = TimelineJsonScrollAnchor(
+      type: type,
+      revision: _jsonScrollAnchorRevision,
+      actorId: actorId,
+      phaseId: phaseId,
+      scheduleId: scheduleId,
+      timepointId: timepointId,
+      conditionId: conditionId,
+      selectorId: selectorId,
+    );
+  }
+
+  void clearPendingJsonScrollAnchor(int revision) {
+    final pendingAnchor = pendingJsonScrollAnchor.peek();
+    if(pendingAnchor != null && pendingAnchor.revision == revision) {
+      pendingJsonScrollAnchor.value = null;
+    }
+  }
+
+  void clearPendingJsonScrollAnchorNow() {
+    pendingJsonScrollAnchor.value = null;
+  }
+
   int generateNextTimepointIdForPhase(int actorId, String phaseId) {
     if(timeline.value.actors.isEmpty) {
       return 1;
@@ -268,6 +336,13 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.timepoint,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: scheduleId,
+      timepointId: newTimepoint.id,
+    );
   }
 
   void updateTimepoint(int actorId, int scheduleId, int timepointId,
@@ -330,6 +405,12 @@ class TimelineEditorSignal {
     });
 
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.condition,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      conditionId: conditionId,
+    );
   }
 
   void addTimepointInPhase(
@@ -360,6 +441,13 @@ class TimelineEditorSignal {
       updateSchedule(resolvedPhaseId, schedule, newSchedule, actorId);
     }
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.timepoint,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: scheduleId,
+      timepointId: timepoint.id,
+    );
   }
 
   void addTimepoint(int actorId, int scheduleId, TimepointModel timepoint) {
@@ -402,6 +490,13 @@ class TimelineEditorSignal {
       updateSchedule(resolvedPhaseId, schedule, newSchedule, actorId);
     }
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.timepoint,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: scheduleId,
+      timepointId: timepoint.id,
+    );
   }
 
   void removeTimepoint(
@@ -414,6 +509,7 @@ class TimelineEditorSignal {
   void duplicateTimepointInPhase(
       int actorId, String phaseId, int? scheduleId, TimepointModel timepoint) {
     final resolvedPhaseId = _resolvePhaseIdForActor(actorId, phaseId);
+    int? createdTimepointId;
 
     batch(() {
       final actorIndex =
@@ -431,6 +527,7 @@ class TimelineEditorSignal {
       final nextTimepointId =
           generateNextTimepointIdForPhase(actorId, resolvedPhaseId);
       newTimepoint.id = nextTimepointId;
+        createdTimepointId = nextTimepointId;
 
       final hook = _resolveHook(scheduleId);
 
@@ -451,6 +548,13 @@ class TimelineEditorSignal {
       }
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.timepoint,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: scheduleId,
+      timepointId: createdTimepointId ?? timepoint.id,
+    );
   }
 
   void duplicateTimepoint(
@@ -463,6 +567,7 @@ class TimelineEditorSignal {
   void reorderTimepointInPhase(int actorId, String phaseId, int? scheduleId,
       int oldIndex, int newIndex) {
     final resolvedPhaseId = _resolvePhaseIdForActor(actorId, phaseId);
+    int? movedTimepointId;
 
     batch(() {
       final actorIndex =
@@ -482,6 +587,9 @@ class TimelineEditorSignal {
 
       if(hook != null) {
         final timepoints = [..._hookTimepoints(phase, hook)];
+        if(oldIndex >= 0 && oldIndex < timepoints.length) {
+          movedTimepointId = timepoints[oldIndex].id;
+        }
         final item = timepoints.removeAt(oldIndex);
         timepoints.insert(newIndex, item);
         final newPhase = _phaseWithHookTimepoints(phase, hook, timepoints);
@@ -492,6 +600,9 @@ class TimelineEditorSignal {
         if(scheduleIndex == -1) return;
         final schedule = phase.schedules[scheduleIndex];
         final timepoints = [...schedule.timepoints];
+        if(oldIndex >= 0 && oldIndex < timepoints.length) {
+          movedTimepointId = timepoints[oldIndex].id;
+        }
         final item = timepoints.removeAt(oldIndex);
         timepoints.insert(newIndex, item);
         final newSchedule = schedule.copyWith(timepoints: timepoints);
@@ -499,6 +610,13 @@ class TimelineEditorSignal {
       }
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.timepoint,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: scheduleId,
+      timepointId: movedTimepointId,
+    );
   }
 
   void reorderTimepoint(
@@ -527,6 +645,7 @@ class TimelineEditorSignal {
     try {
       final json = jsonDecode(jsonStr);
       timeline.value = TimelineModel.fromJson(json);
+      clearPendingJsonScrollAnchorNow();
       _saveToHistory();
       return true;
     } catch (_) {
@@ -536,6 +655,7 @@ class TimelineEditorSignal {
 
   void setPendingJson(String json) {
     _jsonDebounceTimer?.cancel();
+    clearPendingJsonScrollAnchorNow();
     _pendingJsonInput.value = json;
     _jsonDebounceTimer = Timer(const Duration(milliseconds: 500), () {
       if(_pendingJsonInput.value.isNotEmpty) {
@@ -552,6 +672,7 @@ class TimelineEditorSignal {
       timeline.value =
           TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
     });
+    clearPendingJsonScrollAnchorNow();
   }
 
   void redo() {
@@ -561,6 +682,7 @@ class TimelineEditorSignal {
       timeline.value =
           TimelineModel.fromJson(jsonDecode(_history[_historyIndex.value]));
     });
+    clearPendingJsonScrollAnchorNow();
   }
 
   void updateActor(int actorId, ActorModel newActor) {
@@ -585,6 +707,10 @@ class TimelineEditorSignal {
       newActors[actorIndex] = normalizedActor;
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.actor,
+      actorId: actorId,
+    );
   }
 
   void addActor(
@@ -616,6 +742,10 @@ class TimelineEditorSignal {
     newActors.add(actorModel);
     timeline.value = timeline.value.copyWith(actors: newActors);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.actor,
+      actorId: actorModel.id,
+    );
   }
 
   void addPhase([ActorModel? actor]) {
@@ -636,6 +766,11 @@ class TimelineEditorSignal {
     newActors[actorIndex] = newActor;
     timeline.value = timeline.value.copyWith(actors: newActors);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.phase,
+      actorId: newActor.id,
+      phaseId: newPhase.id,
+    );
   }
 
   void removePhase(TimelinePhaseModel phase, int actorId) {
@@ -651,9 +786,15 @@ class TimelineEditorSignal {
     newActors[actorIndex] = newActor;
     timeline.value = timeline.value.copyWith(actors: newActors);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.phase,
+      actorId: actorId,
+      phaseId: phase.id,
+    );
   }
 
   void duplicatePhase(TimelinePhaseModel phase, int actorId) {
+    String? copiedPhaseId;
     batch(() {
       final actorIndex =
           timeline.value.actors.indexWhere((a) => a.id == actorId);
@@ -665,6 +806,7 @@ class TimelineEditorSignal {
         uniqueSuffix += 1;
         newId = "phase_$uniqueSuffix";
       }
+      copiedPhaseId = newId;
 
       final copy = TimelinePhaseModel.fromJson({
         ...jsonDecode(jsonEncode(phase.toJson())) as Map<String, dynamic>,
@@ -677,11 +819,20 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.phase,
+      actorId: actorId,
+      phaseId: copiedPhaseId,
+    );
   }
 
   void reorderPhase(ActorModel actor, int oldIndex, int newIndex) {
+    String? movedPhaseId;
     batch(() {
       final phases = [...actor.phases];
+      if(oldIndex >= 0 && oldIndex < phases.length) {
+        movedPhaseId = phases[oldIndex].id;
+      }
       if(newIndex > oldIndex) {
         newIndex -= 1;
       }
@@ -696,6 +847,11 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(actors: newActors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.phase,
+      actorId: actor.id,
+      phaseId: movedPhaseId,
+    );
   }
 
   void updatePhase(
@@ -728,6 +884,12 @@ class TimelineEditorSignal {
         phase.copyWith(schedules: [...phase.schedules, newSchedule]);
     updatePhase(phase, newPhase, actor.id);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.schedule,
+      actorId: actor.id,
+      phaseId: phaseId,
+      scheduleId: newSchedule.id,
+    );
   }
 
   void addSchedule([ActorModel? actor]) {
@@ -749,6 +911,12 @@ class TimelineEditorSignal {
     final newPhase = phase.copyWith(schedules: newSchedules);
     updatePhase(phase, newPhase, actorId);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.schedule,
+      actorId: actorId,
+      phaseId: phaseId,
+      scheduleId: schedule.id,
+    );
   }
 
   void removeSchedule(TimelineScheduleModel schedule, int actorId) {
@@ -759,6 +927,7 @@ class TimelineEditorSignal {
 
   void duplicateScheduleInPhase(
       String phaseId, TimelineScheduleModel schedule, int actorId) {
+    int? copiedScheduleId;
     batch(() {
       final actorIndex =
           timeline.value.actors.indexWhere((a) => a.id == actorId);
@@ -774,6 +943,7 @@ class TimelineEditorSignal {
               (maxId, scheduleItem) =>
                   scheduleItem.id > maxId ? scheduleItem.id : maxId);
       final newId = maxScheduleId + 1;
+      copiedScheduleId = newId;
       final copy = TimelineScheduleModel.fromJson({
         ...jsonDecode(jsonEncode(schedule.toJson())) as Map<String, dynamic>,
         'id': newId,
@@ -783,6 +953,12 @@ class TimelineEditorSignal {
       updatePhase(phase, newPhase, actorId);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.schedule,
+      actorId: actorId,
+      phaseId: phaseId,
+      scheduleId: copiedScheduleId,
+    );
   }
 
   void duplicateSchedule(TimelineScheduleModel schedule, int actorId) {
@@ -793,6 +969,7 @@ class TimelineEditorSignal {
 
   void reorderScheduleInPhase(
       String phaseId, int actorId, int oldIndex, int newIndex) {
+    int? movedScheduleId;
     batch(() {
       final actorIndex =
           timeline.value.actors.indexWhere((a) => a.id == actorId);
@@ -802,6 +979,9 @@ class TimelineEditorSignal {
       if(phaseIndex == -1) return;
       final phase = timeline.value.actors[actorIndex].phases[phaseIndex];
       final schedules = [...phase.schedules];
+      if(oldIndex >= 0 && oldIndex < schedules.length) {
+        movedScheduleId = schedules[oldIndex].id;
+      }
       if(newIndex > oldIndex) {
         newIndex -= 1;
       }
@@ -811,6 +991,12 @@ class TimelineEditorSignal {
       updatePhase(phase, newPhase, actorId);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.schedule,
+      actorId: actorId,
+      phaseId: phaseId,
+      scheduleId: movedScheduleId,
+    );
   }
 
   void reorderTriggersInPhase(
@@ -824,6 +1010,10 @@ class TimelineEditorSignal {
 
     final phase = actor.phases[phaseIndex];
     final triggers = [...phase.triggers];
+    int? movedConditionId;
+    if(oldIndex >= 0 && oldIndex < triggers.length) {
+      movedConditionId = triggers[oldIndex].id;
+    }
 
     if(newIndex > oldIndex) {
       newIndex -= 1;
@@ -835,6 +1025,12 @@ class TimelineEditorSignal {
     final newPhase = phase.copyWith(triggers: triggers);
     updatePhase(phase, newPhase, actorId);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.condition,
+      actorId: actorId,
+      phaseId: phaseId,
+      conditionId: movedConditionId,
+    );
   }
 
   void reorderSchedule(ActorModel actor, int oldIndex, int newIndex) {
@@ -859,6 +1055,12 @@ class TimelineEditorSignal {
     newSchedules[scheduleIndex] = newSchedule;
     final newPhase = phase.copyWith(schedules: newSchedules);
     updatePhase(phase, newPhase, actorId);
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.schedule,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      scheduleId: newSchedule.id,
+    );
   }
 
   void updateScheduleById(TimelineScheduleModel oldSchedule,
@@ -967,6 +1169,12 @@ class TimelineEditorSignal {
       updatePhase(phase, newPhase, actorId);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.condition,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      conditionId: newCondition.id,
+    );
   }
 
   void updateConditionForSelected(int conditionId, TriggerModel newCondition) {
@@ -993,6 +1201,12 @@ class TimelineEditorSignal {
       updatePhase(phase, newPhase, actorId);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.condition,
+      actorId: actorId,
+      phaseId: resolvedPhaseId,
+      conditionId: conditionId,
+    );
   }
 
   void removeConditionForSelected(int conditionId) {
@@ -1039,6 +1253,12 @@ class TimelineEditorSignal {
     final newPhase = phase.copyWith(triggers: newConditions);
     updatePhase(phase, newPhase, actorId);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.condition,
+      actorId: actorId,
+      phaseId: phaseId,
+      conditionId: condition.id,
+    );
   }
 
   int _generateSelectorId() {
@@ -1059,6 +1279,10 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(selectors: newSelectors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.selector,
+      selectorId: selectorId,
+    );
   }
 
   void removeSelector(int selectorId) {
@@ -1068,6 +1292,10 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(selectors: newSelectors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.selector,
+      selectorId: selectorId,
+    );
   }
 
   void addSelector([SelectorModel? selector]) {
@@ -1083,11 +1311,19 @@ class TimelineEditorSignal {
     final newSelectors = [...timeline.value.selectors, selector];
     timeline.value = timeline.value.copyWith(selectors: newSelectors);
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.selector,
+      selectorId: selector.id,
+    );
   }
 
   void reorderSelector(int oldIndex, int newIndex) {
+    int? movedSelectorId;
     batch(() {
       final selectors = [...timeline.value.selectors];
+      if(oldIndex >= 0 && oldIndex < selectors.length) {
+        movedSelectorId = selectors[oldIndex].id;
+      }
       if(newIndex > oldIndex) {
         newIndex -= 1;
       }
@@ -1096,6 +1332,10 @@ class TimelineEditorSignal {
       timeline.value = timeline.value.copyWith(selectors: selectors);
     });
     _saveToHistory();
+    _markJsonScrollAnchor(
+      type: TimelineJsonAnchorType.selector,
+      selectorId: movedSelectorId,
+    );
   }
 
   bool _validateTimeline(TimelineModel timeline) {
@@ -1111,6 +1351,7 @@ class TimelineEditorSignal {
 
   void createNewTimeline() {
     timeline.value = _createDefaultTimeline();
+    clearPendingJsonScrollAnchorNow();
     _history.clear();
     _historyIndex.value = -1;
     _saveToHistory();

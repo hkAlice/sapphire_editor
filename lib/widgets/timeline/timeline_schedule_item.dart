@@ -2,9 +2,9 @@ import 'package:disable_web_context_menu/disable_web_context_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
-import 'package:sapphire_editor/widgets/add_generic_widget.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/generic_timepoint_item.dart';
+import 'package:sapphire_editor/widgets/timeline/imgui_schedule_container.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/utils/schedule_duration_cache.dart';
 import 'package:signals_flutter/signals_flutter.dart';
@@ -351,74 +351,56 @@ class TimelineScheduleItem extends StatelessWidget {
         child: GestureDetector(
           onSecondaryTapUp: (details) => _showContextMenu(
               context, details.globalPosition, signals, actor, phase, schedule),
-          child: Card(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            borderOnForeground: false,
-            elevation: 1.0,
-            child: ExpansionTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              initiallyExpanded: true,
-              title: Text(schedule.name),
-              subtitle: Text(schedule.description.isNotEmpty
+          child: ImGuiScheduleContainer(
+            title: Text(schedule.name),
+            subtitle: Text(
+              schedule.description.isNotEmpty
                   ? '${schedule.description} • $loopSummary'
-                  : '$timepointCountStr • $loopSummary'),
-              trailing: SizedBox(
-                width: 48.0,
-                child: Text(
-                  "${scheduleLastTimepoint.toStringAsFixed(1)}s",
-                  style: Theme.of(context).textTheme.labelLarge,
-                  textAlign: TextAlign.right,
-                ),
-              ),
-              children: [
-                ReorderableListView.builder(
-                    buildDefaultDragHandles: false,
-                    onReorder: (int oldindex, int newindex) {
-                      signals.reorderTimepointInPhase(
-                        actor.id,
-                        phase.id,
-                        schedule.id,
-                        oldindex,
-                        newindex,
-                      );
-                    },
-                    itemCount: schedule.timepoints.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, i) {
-                      var timepointModel = schedule.timepoints[i];
+                  : '$timepointCountStr • $loopSummary',
+            ),
+            trailingText: "${scheduleLastTimepoint.toStringAsFixed(1)}s",
+            onAddTap: () {
+              Future.delayed(Duration.zero, () {
+                final nextTimepointId = signals
+                    .generateNextTimepointIdForPhase(actor.id, phase.id);
 
-                      return GenericTimepointItem(
-                        key: ValueKey(timepointModel.id),
-                        phaseId: phase.id,
-                        timepointId: timepointModel.id,
-                        scheduleIndex: scheduleIndex,
-                        scheduleId: scheduleId,
-                        timepointIndex: i,
-                        timeElapsedMs: cache.timeElapsedList[i],
-                        actorId: actor.id,
-                      );
-                    }),
-                SmallAddGenericWidget(
-                  onTap: () {
-                    Future.delayed(Duration.zero, () {
-                      final nextTimepointId = signals
-                          .generateNextTimepointIdForPhase(actor.id, phase.id);
+                signals.addTimepointInPhase(
+                  actor.id,
+                  phase.id,
+                  schedule.id,
+                  TimepointModel(
+                      id: nextTimepointId, type: TimepointType.idle),
+                );
+              });
+            },
+            child: ReorderableListView.builder(
+              buildDefaultDragHandles: false,
+              onReorder: (int oldindex, int newindex) {
+                signals.reorderTimepointInPhase(
+                  actor.id,
+                  phase.id,
+                  schedule.id,
+                  oldindex,
+                  newindex,
+                );
+              },
+              itemCount: schedule.timepoints.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, i) {
+                var timepointModel = schedule.timepoints[i];
 
-                      signals.addTimepointInPhase(
-                        actor.id,
-                        phase.id,
-                        schedule.id,
-                        TimepointModel(
-                            id: nextTimepointId, type: TimepointType.idle),
-                      );
-                    });
-                  },
-                  text: "Add new timepoint",
-                )
-              ],
+                return GenericTimepointItem(
+                  key: ValueKey(timepointModel.id),
+                  phaseId: phase.id,
+                  timepointId: timepointModel.id,
+                  scheduleIndex: scheduleIndex,
+                  scheduleId: scheduleId,
+                  timepointIndex: i,
+                  timeElapsedMs: cache.timeElapsedList[i],
+                  actorId: actor.id,
+                );
+              },
             ),
           ),
         ),
