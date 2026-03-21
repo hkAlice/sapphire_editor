@@ -738,7 +738,7 @@ class TimelineEditorSignal {
         type: "bnpc",
         layoutId: layoutId,
         hp: hp,
-      phaseList: [TimelinePhaseModel(id: 1, name: 'Initial Phase')]);
+    );
     newActors.add(actorModel);
     timeline.value = timeline.value.copyWith(actors: newActors);
     _saveToHistory();

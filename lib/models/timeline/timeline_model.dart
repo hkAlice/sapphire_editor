@@ -142,7 +142,6 @@ class TimelineModel {
       layoutId: layoutId,
       name: uniqueName,
       type: "bnpc",
-      phaseList: [TimelinePhaseModel(id: 1, name: "Initial Phase")],
     );
 
     actors.add(actorModel);

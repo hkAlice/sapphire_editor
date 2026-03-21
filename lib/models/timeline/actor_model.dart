@@ -1,4 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 
@@ -17,21 +20,36 @@ class ActorModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<TimelineScheduleModel> get schedules {
-    if(phases.isEmpty) {
-      phases.add(TimelinePhaseModel(id: 1, name: 'Initial Phase'));
-    }
-
     return phases.expand((phase) => phase.schedules).toList();
   }
 
   set schedules(List<TimelineScheduleModel> value) {
-    if(phases.isEmpty) {
-      phases.add(TimelinePhaseModel(
-          id: 1, name: 'Initial Phase', schedules: value));
-      return;
-    }
-
     phases[0] = phases[0].copyWith(schedules: value);
+  }
+
+  static List<TimelinePhaseModel> bootstrapPhaseList(String actorName) {
+    final setupPhase = TimelinePhaseModel(
+      id: 1,
+      name: 'Setup Phase',
+      schedules: [],
+    );
+
+    setupPhase.triggers.add(TriggerModel(
+      id: 1,
+      condition: ConditionType.combatState,
+      paramData: CombatStateConditionModel(
+          combatState: ActorCombatState.combat, sourceActor: actorName),
+      action: TriggerActionModel(type: 'transitionPhase', phaseId: 2),
+      description: "",
+    ));
+
+    final combatPhase = TimelinePhaseModel(
+      id: 2,
+      name: 'Combat Phase',
+      schedules: [],
+    );
+    
+    return [setupPhase, combatPhase];
   }
 
   ActorModel({
@@ -43,7 +61,7 @@ class ActorModel {
     this.initialPhaseId = 1,
     phaseList,
     subactorsList,
-  })  : phases = phaseList ?? [],
+  })  : phases = phaseList ?? bootstrapPhaseList(name),
         subactors = subactorsList ?? [];
 
   factory ActorModel.fromJson(Map<String, dynamic> json) =>
@@ -63,18 +81,9 @@ class ActorModel {
     List<String>? subactors,
   }) {
     final nextPhases = phases ??
-        (schedules != null
-            ? [
-                if(this.phases.isNotEmpty)
-                  this.phases.first.copyWith(schedules: schedules)
-                else
-                  TimelinePhaseModel(
-                    id: 1,
-                    name: 'Initial Phase',
-                    schedules: schedules,
-                  )
-              ]
-            : this.phases);
+      (schedules != null
+          ? [this.phases.first.copyWith(schedules: schedules)]
+          : this.phases);
 
     return ActorModel(
       id: id ?? this.id,
