@@ -9,8 +9,6 @@ import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_con
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/varequals_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/phaseactive_condition_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_model.dart';
-import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 
 part 'trigger_model.g.dart';
@@ -26,7 +24,7 @@ class TriggerModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool loop;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(defaultValue: true)
   bool enabled;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -52,7 +50,7 @@ class TriggerModel {
   factory TriggerModel.fromJson(Map<String, dynamic> json) {
     final normalized = <String, dynamic>{...json};
     normalized['condition'] ??= normalized['conditionType'];
-    if(normalized['condition'] == 'scheduleActive') {
+    if (normalized['condition'] == 'scheduleActive') {
       normalized['condition'] = 'phaseActive';
     }
     return _$TriggerModelFromJson(normalized);
@@ -86,7 +84,7 @@ class TriggerModel {
 
   // Refactored changeType using switch expression instead of if-else chain
   void changeType(ConditionType type) {
-    if(type != condition) {
+    if (type != condition) {
       paramData = <String, dynamic>{};
     }
 
@@ -94,14 +92,14 @@ class TriggerModel {
 
     paramData ??= <String, dynamic>{};
 
-    if(paramData is Map<String, dynamic>) {
+    if (paramData is Map<String, dynamic>) {
       paramData = _conditionDataFactory(type, paramData);
     }
   }
 
   static dynamic _conditionDataFactory(
       ConditionType type, Map<String, dynamic> json) {
-    return switch(type) {
+    return switch (type) {
       ConditionType.combatState => CombatStateConditionModel.fromJson(json),
       ConditionType.eObjInteract => EObjInteractConditionModel.fromJson(json),
       ConditionType.getAction => GetActionConditionModel.fromJson(json),
@@ -121,29 +119,33 @@ class TriggerModel {
   String getReadableConditionStr(ActorModel currentActor) {
     String summary = "If ";
 
-    if(condition == ConditionType.hpPctBetween) {
+    if (condition == ConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
       summary +=
           "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
-    } else if(condition == ConditionType.getAction) {
+    } else if (condition == ConditionType.getAction) {
       var param = paramData as GetActionConditionModel;
       summary += "${param.sourceActor} casts Action#${param.actionId}";
-    } else if(condition == ConditionType.combatState) {
+    } else if (condition == ConditionType.combatState) {
       var param = paramData as CombatStateConditionModel;
       summary +=
           "${param.sourceActor} state is ${treatEnumName(param.combatState!)}";
-    } else if(condition == ConditionType.eObjInteract) {
+    } else if (condition == ConditionType.eObjInteract) {
       var param = paramData as EObjInteractConditionModel;
       summary +=
           "${param.eObjName.isEmpty ? 'Eobj' : param.eObjName} is interacted with";
-    } else if(condition == ConditionType.phaseActive) {
+    } else if (condition == ConditionType.phaseActive) {
       var param = paramData as PhaseActiveConditionModel;
-      final phaseName = currentActor.phases.where((p) => p.id == param.phaseId).firstOrNull?.name;
-      summary += "${param.sourceActor}->${phaseName ?? param.phaseId ?? '<unset>'} is active";
-    } else if(condition == ConditionType.interruptedAction) {
+      final phaseName = currentActor.phases
+          .where((p) => p.id == param.phaseId)
+          .firstOrNull
+          ?.name;
+      summary +=
+          "${param.sourceActor}->${phaseName ?? param.phaseId ?? '<unset>'} is active";
+    } else if (condition == ConditionType.interruptedAction) {
       var param = paramData as InterruptedActionConditionModel;
       summary += "${param.sourceActor} interrupted on Action#${param.actionId}";
-    } else if(condition == ConditionType.varEquals) {
+    } else if (condition == ConditionType.varEquals) {
       var param = paramData as VarEqualsConditionModel;
       summary +=
           "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
@@ -152,13 +154,17 @@ class TriggerModel {
       summary += "condition ${treatEnumName(condition)}";
     }
 
-    if(action != null) {
-      if(action!.type == 'transitionPhase' &&
+    if (action != null) {
+      if (action!.type == 'transitionPhase' &&
           action!.phaseId != null &&
           action!.phaseId! > 0) {
-        final phaseName = currentActor.phases.where((p) => p.id == action!.phaseId).firstOrNull?.name;
-        summary += ", action transitionPhase -> ${phaseName ?? action!.phaseId}";
-      } else if(action!.type == 'timepoint' && action!.timepoint != null) {
+        final phaseName = currentActor.phases
+            .where((p) => p.id == action!.phaseId)
+            .firstOrNull
+            ?.name;
+        summary +=
+            ", action transitionPhase -> ${phaseName ?? action!.phaseId}";
+      } else if (action!.type == 'timepoint' && action!.timepoint != null) {
         final triggerTimepoint = action!.timepoint!;
         final seconds = (triggerTimepoint.startTime / 1000).toStringAsFixed(1);
         summary +=
@@ -177,7 +183,7 @@ class TriggerModel {
 
 extension ConditionTypeExtension on ConditionType {
   Color get color {
-    return switch(this) {
+    return switch (this) {
       ConditionType.combatState => Colors.red,
       ConditionType.eObjInteract => Colors.lightBlue,
       ConditionType.getAction => Colors.orange,
@@ -192,7 +198,7 @@ extension ConditionTypeExtension on ConditionType {
   }
 
   String get displayName {
-    return switch(this) {
+    return switch (this) {
       ConditionType.combatState => "Combat State",
       ConditionType.eObjInteract => "EObj Interact",
       ConditionType.getAction => "Get Action",
@@ -207,7 +213,7 @@ extension ConditionTypeExtension on ConditionType {
   }
 
   List<ConditionParamParser> get paramParser {
-    return switch(this) {
+    return switch (this) {
       ConditionType.combatState => [
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(

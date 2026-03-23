@@ -8,6 +8,7 @@ import 'package:sapphire_editor/models/timeline/timeline_phase_model.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
+import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/text_modal_editor_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/condition_editor_registry.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/condition_editor_scope.dart';
@@ -115,6 +116,19 @@ class _ConditionItemState extends State<ConditionItem> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              SwitchTextWidget(
+                enabled: conditionModel.enabled,
+                onPressed: () {
+                  signals.updateCondition(
+                    actor.id,
+                    phase.id,
+                    widget.conditionId,
+                    conditionModel.copyWith(
+                      enabled: !conditionModel.enabled,
+                    ),
+                  );
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.clear_rounded),
                 onPressed: () {
@@ -148,8 +162,7 @@ class _ConditionItemState extends State<ConditionItem> {
                             },
                             onChanged: (newValue) {
                               conditionModel.changeType(newValue!);
-                              final updatedCondition = conditionModel.action ==
-                                      null
+                              final updatedCondition = conditionModel.action == null
                                   ? conditionModel.copyWith(
                                       action: TriggerActionModel(
                                           type: "transitionPhase",

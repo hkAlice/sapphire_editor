@@ -14,6 +14,7 @@ TriggerModel _$TriggerModelFromJson(Map<String, dynamic> json) => TriggerModel(
       action: json['action'] == null
           ? null
           : TriggerActionModel.fromJson(json['action'] as Map<String, dynamic>),
+      enabled: json['enabled'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$TriggerModelToJson(TriggerModel instance) =>
@@ -23,6 +24,7 @@ Map<String, dynamic> _$TriggerModelToJson(TriggerModel instance) =>
       'condition': _$ConditionTypeEnumMap[instance.condition]!,
       'paramData': instance.paramData,
       'action': instance.action,
+      'enabled': instance.enabled,
     };
 
 const _$ConditionTypeEnumMap = {
