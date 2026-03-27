@@ -9,6 +9,7 @@ import 'package:json_text_field/json_text_field.dart';
 import 'package:sapphire_editor/models/timeline/phase_timepoint_hook.dart';
 import 'package:sapphire_editor/models/timeline/timeline_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
+import 'package:sapphire_editor/services/timeline_signal_registry.dart';
 import 'package:sapphire_editor/services/storage_helper.dart';
 import 'package:sapphire_editor/widgets/page_header_widget.dart';
 import 'package:sapphire_editor/widgets/sanity/sanity_call_widget.dart';
@@ -35,6 +36,14 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
   }
 
   Future<void> _initializeSignal() async {
+    final sharedSignal = TimelineSignalRegistry.instance.signal;
+    if(sharedSignal != null) {
+      setState(() {
+        _signal = sharedSignal;
+      });
+      return;
+    }
+
     final autosave = StorageHelper().getTable(StorageTable.autosaveTimeline);
     final autosaveKeys = autosave.keys.map((k) => k.toString()).toList();
 
@@ -43,13 +52,14 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
       try {
         final json = await autosave.get(autosaveKeys.last);
         timeline = TimelineModel.fromJson(jsonDecode(json));
-      }
-      catch(_) {}
+      } catch (_) {}
     }
 
     setState(() {
       _signal = TimelineEditorSignal(timeline);
     });
+
+    TimelineSignalRegistry.instance.attach(_signal!);
   }
 
   @override
@@ -77,16 +87,22 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
                     OutlinedButton.icon(
                       onPressed: () async {
                         final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text("New Timeline"),
-                            content: const Text("Are you sure you want to start a new timeline? Unsaved changes will be lost."),
-                            actions: [
-                              TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text("Cancel")),
-                              ElevatedButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("Confirm")),
-                            ],
-                          )
-                        );
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: const Text("New Timeline"),
+                                  content: const Text(
+                                      "Are you sure you want to start a new timeline? Unsaved changes will be lost."),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text("Cancel")),
+                                    ElevatedButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text("Confirm")),
+                                  ],
+                                ));
                         if(confirm == true) {
                           _signal?.createNewTimeline();
                         }
@@ -103,26 +119,25 @@ class _TimelineEditorViewState extends State<TimelineEditorView> {
               Expanded(
                 child: Center(
                   child: Watch((context) {
-                      final actorId = _signal!.selectedActorId.value ?? 1;
+                    final actorId = _signal!.selectedActorId.value ?? 1;
 
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            flex: 7,
-                            child: TimelineList(
-                              actorId: actorId,
-                            ),
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          flex: 7,
+                          child: TimelineList(
+                            actorId: actorId,
                           ),
-                          const VerticalDivider(),
-                          Expanded(
-                            flex: 4,
-                            child: _JsonEditorPanel(),
-                          ),
-                        ],
-                      );
-                    }
-                  ),
+                        ),
+                        const VerticalDivider(),
+                        Expanded(
+                          flex: 4,
+                          child: _JsonEditorPanel(),
+                        ),
+                      ],
+                    );
+                  }),
                 ),
               ),
             ],
@@ -232,8 +247,9 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
       return true;
     }
 
-    final centeredOffset =
-        (targetOffset - (position.viewportDimension / 2) + (_jsonLineHeight / 2))
+    final centeredOffset = (targetOffset -
+            (position.viewportDimension / 2) +
+            (_jsonLineHeight / 2))
         .clamp(0.0, position.maxScrollExtent)
         .toDouble();
 
@@ -300,8 +316,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
       return actorStart;
     }
 
-    final phasesRange = _findArrayRange(lines,
-        key: 'phases', within: actorRange);
+    final phasesRange =
+        _findArrayRange(lines, key: 'phases', within: actorRange);
     if(phasesRange == null) {
       return actorStart;
     }
@@ -324,7 +340,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
 
     final hookKey = _hookArrayKey(anchor.scheduleId);
     if(hookKey != null) {
-      final hookRange = _findArrayRange(lines, key: hookKey, within: phaseRange);
+      final hookRange =
+          _findArrayRange(lines, key: hookKey, within: phaseRange);
       return hookRange?.start ?? phaseStart;
     }
 
@@ -353,7 +370,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
 
     final hookKey = _hookArrayKey(anchor.scheduleId);
     if(hookKey != null) {
-      final hookRange = _findArrayRange(lines, key: hookKey, within: phaseRange);
+      final hookRange =
+          _findArrayRange(lines, key: hookKey, within: phaseRange);
       if(hookRange == null) {
         return phaseStart;
       }
@@ -446,8 +464,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
         continue;
       }
 
-      final closing =
-          _findClosingLine(lines, line, '[', ']', maxLine: end);
+      final closing = _findClosingLine(lines, line, '[', ']', maxLine: end);
       if(closing != null) {
         return _JsonLineRange(line, closing);
       }
@@ -458,8 +475,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
 
   _JsonLineRange? _findObjectRangeFromStart(List<String> lines, int startLine,
       {int? maxLine}) {
-    final closing = _findClosingLine(lines, startLine, '{', '}',
-        maxLine: maxLine);
+    final closing =
+        _findClosingLine(lines, startLine, '{', '}', maxLine: maxLine);
     if(closing == null) {
       return null;
     }
@@ -496,7 +513,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
     final objectRanges = <_JsonLineRange>[];
     var line = arrayRange.start + 1;
 
-    while(line < arrayRange.end) {
+    while (line < arrayRange.end) {
       if(_containsTokenOutsideString(lines[line], '{')) {
         final objectEnd = _findClosingLine(
           lines,
@@ -562,8 +579,9 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
     return count;
   }
 
-  int? _findClosingLine(List<String> lines, int startLine, String open,
-      String close, {int? maxLine}) {
+  int? _findClosingLine(
+      List<String> lines, int startLine, String open, String close,
+      {int? maxLine}) {
     final max = maxLine ?? (lines.length - 1);
     final openCode = open.codeUnitAt(0);
     final closeCode = close.codeUnitAt(0);
@@ -736,59 +754,57 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
             expands: true,
             showErrorMessage: true,
             decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).hoverColor,
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(16.0)
-              ),
-              hintText: "To load a timeline, paste the JSON here."
-            ),
+                filled: true,
+                fillColor: Theme.of(context).hoverColor,
+                border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(16.0)),
+                hintText: "To load a timeline, paste the JSON here."),
             onChanged: (value) {
               signals.setPendingJson(value);
             },
             commonTextStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Color(0xFFAAAAAA),
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Color(0xFFAAAAAA),
+                fontSize: 14.0,
+              ),
+            ),
             keyHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Color(0xFF7587A6),
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Color(0xFF7587A6),
+                fontSize: 14.0,
+              ),
+            ),
             stringHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Color(0xFF8F9D6A),
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Color(0xFF8F9D6A),
+                fontSize: 14.0,
+              ),
+            ),
             numberHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Color(0xFFCF6A4C),
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Color(0xFFCF6A4C),
+                fontSize: 14.0,
+              ),
+            ),
             boolHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Color(0xFFCF6A4C),
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Color(0xFFCF6A4C),
+                fontSize: 14.0,
+              ),
+            ),
             nullHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+            ),
             specialCharHighlightStyle: GoogleFonts.lilex(
-                            textStyle: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0,
-                            ),
-                          ),
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+            ),
             enableSuggestions: false,
             enableIMEPersonalizedLearning: false,
             textAlign: TextAlign.start,
@@ -802,7 +818,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                 IconButton(
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: _jsonController.text));
+                    Clipboard.setData(
+                        ClipboardData(text: _jsonController.text));
                     try {
                       toastification.show(
                         context: context,
@@ -811,22 +828,23 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                         title: const Text("Copied to clipboard."),
                         autoCloseDuration: const Duration(seconds: 3),
                       );
-                    }
-                    catch(_) {
-                    }
+                    } catch (_) {}
                   },
                   icon: const Icon(Icons.copy_rounded),
                   tooltip: "Copy",
                 ),
-                const SizedBox(width: 8.0,),
+                const SizedBox(
+                  width: 8.0,
+                ),
                 IconButton(
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: _jsonController.text));
+                    Clipboard.setData(
+                        ClipboardData(text: _jsonController.text));
                     try {
-                      exportStringAsJson(_jsonController.text, signals.timeline.value.name);
-                    }
-                    catch(e) {
+                      exportStringAsJson(
+                          _jsonController.text, signals.timeline.value.name);
+                    } catch (e) {
                       toastification.show(
                         context: context,
                         type: ToastificationType.error,
@@ -854,7 +872,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                   Opacity(
                     opacity: signals.canUndo.value ? 0.8 : 0.3,
                     child: IconButton.filled(
-                      onPressed: signals.canUndo.value ? () => signals.undo() : null,
+                      onPressed:
+                          signals.canUndo.value ? () => signals.undo() : null,
                       icon: const Icon(Icons.undo_rounded),
                       tooltip: "Undo",
                     ),
@@ -863,7 +882,8 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                   Opacity(
                     opacity: signals.canRedo.value ? 0.8 : 0.3,
                     child: IconButton.filled(
-                      onPressed: signals.canRedo.value ? () => signals.redo() : null,
+                      onPressed:
+                          signals.canRedo.value ? () => signals.redo() : null,
                       icon: const Icon(Icons.redo_rounded),
                       tooltip: "Redo",
                     ),
@@ -877,8 +897,11 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
                         child: Row(
                           children: [
                             const Icon(Icons.save),
-                            const SizedBox(width: 6.0,),
-                            Text(DateFormat("yyyy/MM/dd HH:mm").format(lastSave),
+                            const SizedBox(
+                              width: 6.0,
+                            ),
+                            Text(
+                              DateFormat("yyyy/MM/dd HH:mm").format(lastSave),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
