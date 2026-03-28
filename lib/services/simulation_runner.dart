@@ -110,11 +110,17 @@ class SimulationRunner {
       return;
     }
 
+    final previousHpPct = actor.hpPct;
     actor.hpPct = hpPct.clamp(0.0, 100.0);
     _appendEvent(
       actorState: actor,
       type: SimulatedEventType.manual,
       message: 'Manual HP set to ${actor.hpPct.toStringAsFixed(1)}%',
+    );
+
+    _applyAggroOnHpLoss(
+      actorState: actor,
+      previousHpPct: previousHpPct,
     );
   }
 
@@ -215,10 +221,10 @@ class SimulationRunner {
       return const <SimulatedEvent>[];
     }
 
-    _elapsedMs += adjustedDelta;
-    _applyAutoDps(adjustedDelta);
-
     final produced = <SimulatedEvent>[];
+
+    _elapsedMs += adjustedDelta;
+    _applyAutoDps(adjustedDelta, produced);
     for(final actorState in _actorsById.values) {
       _advanceActor(actorState, adjustedDelta, produced);
     }
@@ -282,15 +288,62 @@ class SimulationRunner {
     _events.addAll(bootstrapEvents);
   }
 
-  void _applyAutoDps(int deltaMs) {
+  void _applyAutoDps(int deltaMs, List<SimulatedEvent> produced) {
     if(_config.dpsPctPerSecond <= 0) {
       return;
     }
 
     final tickDrain = _config.dpsPctPerSecond * (deltaMs / 1000.0);
     for(final actorState in _actorsById.values) {
+      final previousHpPct = actorState.hpPct;
       actorState.hpPct = (actorState.hpPct - tickDrain).clamp(0.0, 100.0);
+      _applyAggroOnHpLoss(
+        actorState: actorState,
+        previousHpPct: previousHpPct,
+        produced: produced,
+      );
     }
+  }
+
+  void _applyAggroOnHpLoss({
+    required _ActorRuntimeState actorState,
+    required double previousHpPct,
+    List<SimulatedEvent>? produced,
+  }) {
+    if(actorState.hpPct <= 0) {
+      if(actorState.combatState != ActorCombatState.dead) {
+        actorState.combatState = ActorCombatState.dead;
+        _appendEvent(
+          actorState: actorState,
+          type: SimulatedEventType.info,
+          message: 'Combat state set to dead due to HP reaching 0%.',
+          produced: produced,
+        );
+      }
+      return;
+    }
+
+    final hpLoss = previousHpPct - actorState.hpPct;
+    if(hpLoss <= 0) {
+      return;
+    }
+
+    if(!_isBnpcActor(actorState.actor)) {
+      return;
+    }
+
+    if(actorState.combatState != ActorCombatState.idle) {
+      return;
+    }
+
+    actorState.combatState = ActorCombatState.combat;
+    _appendEvent(
+      actorState: actorState,
+      type: SimulatedEventType.info,
+      message:
+          'Aggro updated to combat due to HP loss (${hpLoss.toStringAsFixed(2)}%).',
+      produced: produced,
+    );
   }
 
   void _advanceActor(
@@ -365,7 +418,7 @@ class SimulationRunner {
   ) {
     var guard = 0;
 
-    while (guard < 10) {
+    while(guard < 10) {
       guard += 1;
       final phase = _phaseFor(actorState);
       var transitioned = false;
@@ -862,6 +915,10 @@ class SimulationRunner {
 
   String _triggerOverrideKey(int actorId, int phaseId, int triggerId) {
     return '$actorId:$phaseId:$triggerId';
+  }
+
+  bool _isBnpcActor(ActorModel actor) {
+    return actor.type.trim().toLowerCase() == 'bnpc';
   }
 
   String _keyActorName(String name) {

@@ -1067,7 +1067,7 @@ class TimelineEditorSignal {
     final json = jsonEncode(timeline.value.toJson());
     _history.add(json);
     _historyIndex.value++;
-    while (_history.length > 50) {
+    while(_history.length > 50) {
       _history.removeAt(0);
       _historyIndex.value--;
     }

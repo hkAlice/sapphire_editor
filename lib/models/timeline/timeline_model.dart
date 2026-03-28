@@ -48,7 +48,7 @@ class TimelineModel {
     var candidate = "$baseName (LID $layoutId)";
     var suffix = 1;
 
-    while (usedNames.contains(candidate)) {
+    while(usedNames.contains(candidate)) {
       candidate = "$baseName (LID $layoutId, $suffix)";
       suffix += 1;
     }
@@ -98,7 +98,7 @@ class TimelineModel {
             .reduce((left, right) => left > right ? left : right) +
         1;
 
-    while (existingIds.contains(nextId)) {
+    while(existingIds.contains(nextId)) {
       nextId += 1;
     }
 

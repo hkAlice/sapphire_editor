@@ -513,7 +513,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
     final objectRanges = <_JsonLineRange>[];
     var line = arrayRange.start + 1;
 
-    while (line < arrayRange.end) {
+    while(line < arrayRange.end) {
       if(_containsTokenOutsideString(lines[line], '{')) {
         final objectEnd = _findClosingLine(
           lines,
@@ -569,7 +569,7 @@ class _JsonEditorPanelState extends State<_JsonEditorPanel> {
 
   int _leadingWhitespace(String line) {
     var count = 0;
-    while (count < line.length) {
+    while(count < line.length) {
       final code = line.codeUnitAt(count);
       if(code != 32 && code != 9) {
         break;
