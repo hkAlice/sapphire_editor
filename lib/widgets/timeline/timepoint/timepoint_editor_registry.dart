@@ -15,9 +15,11 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/rollrng_point_widget.
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/settrigger_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setpos_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/setvar_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/snapshot_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/spawnbnpc_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/statuseffect_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/seteobjstate_point_widget.dart';
 
 typedef TimepointEditorBuilder = Widget Function(TimepointEditorContext context);
 
@@ -85,6 +87,12 @@ class TimepointEditorRegistry {
     TimepointType.statusEffect: (context) => StatusEffectPointWidget(
           timepointModel: context.timepointModel,
         ),
+    TimepointType.setVar: (context) => SetVarPointWidget(
+          timepointModel: context.timepointModel,
+        ),
+    TimepointType.setEObjState: (context) => SetEObjStatePointWidget(
+          timepointModel: context.timepointModel
+    )
   };
 
   static Widget buildEditor(TimepointEditorContext context) {

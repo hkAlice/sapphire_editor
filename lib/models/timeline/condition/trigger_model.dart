@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_action_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/eobjanimation_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/eobjinteract_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
@@ -108,6 +109,7 @@ class TriggerModel {
       ConditionType.interruptedAction =>
         InterruptedActionConditionModel.fromJson(json),
       ConditionType.varEquals => VarEqualsConditionModel.fromJson(json),
+      ConditionType.eobjAnimation => EObjAnimationConditionModel.fromJson(json),
       _ => json, // keep as is for types without specific models
     };
   }
@@ -149,6 +151,9 @@ class TriggerModel {
       var param = paramData as VarEqualsConditionModel;
       summary +=
           "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
+    } else if(condition == ConditionType.eobjAnimation){
+      var param = paramData as EObjAnimationConditionModel;
+      summary += "EObj ${param.eobjName} Animation is ${param.animation}";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
@@ -194,6 +199,7 @@ extension ConditionTypeExtension on ConditionType {
       ConditionType.varEquals => Colors.teal,
       ConditionType.directorVarGreaterThan => Colors.amber,
       ConditionType.elapsedTimeGreaterThan => Colors.grey,
+      ConditionType.eobjAnimation => Colors.teal
     };
   }
 
@@ -209,6 +215,7 @@ extension ConditionTypeExtension on ConditionType {
       ConditionType.varEquals => "Var Equals",
       ConditionType.directorVarGreaterThan => "Director Var >",
       ConditionType.elapsedTimeGreaterThan => "Elapsed Time >",
+      ConditionType.eobjAnimation => "EObj Animation"
     };
   }
 
@@ -240,6 +247,10 @@ extension ConditionTypeExtension on ConditionType {
           ConditionParamParser(label: "Actor", initialValue: 0),
           ConditionParamParser(label: "HP Less Than", initialValue: 70),
         ],
+      ConditionType.eobjAnimation => [
+          ConditionParamParser(label: "Name", initialValue: 0),
+          ConditionParamParser(label: "Animation", initialValue: 0),
+        ],
       _ => [
           ConditionParamParser(label: "Param1"),
           ConditionParamParser(label: "Param2"),
@@ -270,7 +281,9 @@ enum ConditionType {
   @JsonValue("interruptedAction")
   interruptedAction,
   @JsonValue("varEquals")
-  varEquals
+  varEquals,
+  @JsonValue("eobjAnimation")
+  eobjAnimation
 }
 
 /*

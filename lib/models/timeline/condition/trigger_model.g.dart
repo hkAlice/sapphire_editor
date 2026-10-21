@@ -38,4 +38,5 @@ const _$ConditionTypeEnumMap = {
   ConditionType.phaseActive: 'phaseActive',
   ConditionType.interruptedAction: 'interruptedAction',
   ConditionType.varEquals: 'varEquals',
+  ConditionType.eobjAnimation: 'eobjAnimation',
 };
