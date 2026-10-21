@@ -1,6 +1,7 @@
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/eobjanimation_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/interruptedaction_condition_model.dart';
@@ -898,6 +899,28 @@ class TimelineSanitySvc {
           );
         }
         break;
+      case ConditionType.eobjAnimation:
+        final data = _asConditionData<EObjAnimationConditionModel>(
+          trigger,
+          context,
+          sink
+        );
+        if(data == null) {
+          return;
+        }
+        if(data.animation < 0) {
+          sink.error(
+            'InvalidAnimationId', 
+            '$context eobjAnimation has negative Animation value',
+          );
+        }
+        if(!data.eobjName.trim().isNotEmpty) {
+          sink.error(
+            'InvalidEObjName',
+            '$context eobjName is blank or empty'
+          );
+        }
+        break;
     }
   }
 
@@ -1323,6 +1346,10 @@ class TimelineSanitySvc {
           );
         }
         break;
+        case TimepointType.setVar:
+        case TimepointType.setEObjState:
+        break;
+
     }
   }
 

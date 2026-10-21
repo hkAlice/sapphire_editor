@@ -43,4 +43,6 @@ const _$TimepointTypeEnumMap = {
   TimepointType.setPos: 'setPos',
   TimepointType.snapshot: 'snapshot',
   TimepointType.statusEffect: 'statusEffect',
+  TimepointType.setVar: 'setVar',
+  TimepointType.setEObjState: 'setEObjState',
 };

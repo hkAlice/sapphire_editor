@@ -7,6 +7,7 @@ import 'package:sapphire_editor/models/simulator/simulation_track_marker.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/combatstate_condition_model.dart';
+import 'package:sapphire_editor/models/timeline/condition/types/eobjanimation_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/eobjinteract_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/getaction_condition_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/hppctbetween_condition_model.dart';
@@ -756,6 +757,13 @@ class SimulationRunner {
         }
         final current = owner.varStore[data.type]?[data.index] ?? 0;
         return current == data.val;
+      case ConditionType.eobjAnimation:
+        final data = trigger.paramData;
+        if(data is! EObjAnimationConditionModel) {
+          return false;
+        }
+        // todo: make this work
+        return true;
     }
   }
 

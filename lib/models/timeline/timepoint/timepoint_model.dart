@@ -12,9 +12,11 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model
 import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/seteobjstate_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setbgm_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/settrigger_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/setvar_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/snapshot_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/statuseffect_point_model.dart';
@@ -103,6 +105,8 @@ class TimepointModel {
       TimepointType.interruptAction => InterruptActionPointModel.fromJson(json),
       TimepointType.rollRNG => RollRNGPointModel.fromJson(json),
       TimepointType.statusEffect => StatusEffectPointModel.fromJson(json),
+      TimepointType.setVar => SetVarPointModel.fromJson(json),
+      TimepointType.setEObjState => SetEObjStatePointModel.fromJson(json)
     };
   }
 
@@ -142,6 +146,8 @@ extension TimepointTypeExtension on TimepointType {
       case TimepointType.rollRNG:
         return Colors.orangeAccent;
       case TimepointType.statusEffect:
+      case TimepointType.setVar:
+      case TimepointType.setEObjState:
         return Colors.purpleAccent;
     }
   }
@@ -184,6 +190,10 @@ extension TimepointTypeExtension on TimepointType {
         return "Roll RNG";
       case TimepointType.statusEffect:
         return "Status Effect";
+      case TimepointType.setVar:
+        return "Set Var";
+      case TimepointType.setEObjState:
+        return "Set EObj State";
     }
   }
 }
@@ -224,5 +234,9 @@ enum TimepointType {
   @JsonValue("snapshot")
   snapshot,
   @JsonValue("statusEffect")
-  statusEffect
+  statusEffect,
+  @JsonValue("setVar")
+  setVar,
+  @JsonValue("setEObjState")
+  setEObjState
 }

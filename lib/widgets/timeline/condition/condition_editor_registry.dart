@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/condition/trigger_model.dart';
 import 'package:sapphire_editor/models/timeline/condition/types/eobjinteract_condition_model.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/combatstate_condition_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/condition/eobjanimation_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/eobjinteract_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/getaction_condition_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/condition/hpminmax_condition_widget.dart';
@@ -45,6 +46,9 @@ class ConditionEditorRegistry {
     ConditionType.varEquals: (context) => VarEqualsConditionWidget(
           paramData: context.conditionModel.paramData,
         ),
+    ConditionType.eobjAnimation: (context) => EObjAnimationConditionWidget(
+      paramData: context.conditionModel.paramData,
+      ),
   };
 
   static Widget buildEditor(ConditionEditorContext context) {
