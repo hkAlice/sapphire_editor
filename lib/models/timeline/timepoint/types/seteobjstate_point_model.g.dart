@@ -14,6 +14,7 @@ SetEObjStatePointModel _$SetEObjStatePointModelFromJson(
       animation: (json['animation'] as num?)?.toInt() ?? 0,
       permissionInvisibility:
           (json['permissionInvisibility'] as num?)?.toInt() ?? 0,
+      collision: json['collision'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SetEObjStatePointModelToJson(
@@ -23,4 +24,5 @@ Map<String, dynamic> _$SetEObjStatePointModelToJson(
       'state': instance.state,
       'animation': instance.animation,
       'permissionInvisibility': instance.permissionInvisibility,
+      'collision': instance.collision,
     };

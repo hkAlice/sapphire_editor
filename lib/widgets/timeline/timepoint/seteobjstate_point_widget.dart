@@ -7,6 +7,7 @@ import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
+import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_scope.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
 import 'package:signals/signals_flutter.dart';
@@ -21,11 +22,14 @@ class SetEObjStatePointWidget extends StatefulWidget {
 }
 
 class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
+  late TextEditingController _eobjNameTextEditingController;
 
   late SetEObjStatePointModel pointData = widget.timepointModel.data as SetEObjStatePointModel;
 
   @override
   void initState() {
+    _eobjNameTextEditingController = TextEditingController(text: pointData.eobjName);
+
     super.initState();
   }
 
@@ -60,6 +64,7 @@ class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
                   decoration: InputDecoration(
                     labelText: "EObjName",
                   ),
+                  controller: _eobjNameTextEditingController,
                   onChanged: (value) {
                     pointData.eobjName = value;
                     _updateTimepoint(signals, actor, schedule);
@@ -80,7 +85,7 @@ class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
               ),
               const SizedBox(width: 18.0,),
               SizedBox(
-                width: 90,
+                width: 100,
                 child: SimpleNumberField(
                   label: "Animation",
                   initialValue: pointData.animation,
@@ -92,7 +97,7 @@ class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
               ),
               const SizedBox(width: 18.0,),
               SizedBox(
-                width: 90,
+                width: 100,
                 child: SimpleNumberField(
                   label: "Permission Invisibility",
                   initialValue: pointData.animation,
@@ -102,6 +107,17 @@ class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
                   }
                 ),
               ),
+              const SizedBox(width: 18.0),
+              SizedBox(
+                width: 100,
+                child: SwitchTextWidget(
+                  toggleText: ("Collision ON", "Collision OFF"),
+                  enabled: pointData.collision, 
+                  onPressed: () {
+                    pointData.collision = !pointData.collision;
+                    _updateTimepoint(signals, actor, schedule);
+                })
+              )
             ],
           ),
         ],

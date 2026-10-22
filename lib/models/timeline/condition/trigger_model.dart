@@ -153,7 +153,7 @@ class TriggerModel {
           "${treatEnumName(param.type)} var Index #${param.index} Value is #${param.val}";
     } else if(condition == ConditionType.eobjAnimation){
       var param = paramData as EObjAnimationConditionModel;
-      summary += "EObj ${param.eobjName} Animation is ${param.animation}";
+      summary += "EObj ${param.eobjName} Animation & ${param.animation}";
     } else {
       // keep as is, break shit
       summary += "condition ${treatEnumName(condition)}";
