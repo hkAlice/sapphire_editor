@@ -11,6 +11,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/directorvar_point_wid
 import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/interruptaction_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/mechanic_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/rollrng_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/settrigger_point_widget.dart';
@@ -92,7 +93,10 @@ class TimepointEditorRegistry {
         ),
     TimepointType.setEObjState: (context) => SetEObjStatePointWidget(
           timepointModel: context.timepointModel
-    )
+        ),
+    TimepointType.mechanic: (context) => MechanicPointWidget(
+          timepointModel: context.timepointModel
+        )
   };
 
   static Widget buildEditor(TimepointEditorContext context) {

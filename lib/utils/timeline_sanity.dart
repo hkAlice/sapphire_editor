@@ -1348,6 +1348,7 @@ class TimelineSanitySvc {
         break;
         case TimepointType.setVar:
         case TimepointType.setEObjState:
+        case TimepointType.mechanic:
         break;
 
     }
