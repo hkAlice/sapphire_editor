@@ -45,4 +45,5 @@ const _$TimepointTypeEnumMap = {
   TimepointType.statusEffect: 'statusEffect',
   TimepointType.setVar: 'setVar',
   TimepointType.setEObjState: 'setEObjState',
+  TimepointType.mechanic: 'mechanic',
 };

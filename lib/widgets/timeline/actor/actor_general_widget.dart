@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
+import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
 import 'package:sapphire_editor/widgets/number_button.dart';
 import 'package:sapphire_editor/widgets/signals_provider.dart';
 import 'package:sapphire_editor/widgets/simple_number_field.dart';
@@ -86,6 +87,18 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
               ),
               Row(
                 children: [
+                  SizedBox(
+                    width: 100,
+                    child: GenericItemPickerWidget<String>(
+                      label: "Type",
+                      items: ["bnpc", "eobj"],
+                      initialValue: "test",
+                      onChanged: (newValue) => {
+                        signals.updateActor(actor.id, actor.copyWith(type: newValue))
+                      },
+                    )
+                  ),
+                  const SizedBox(width:18.0),
                   SizedBox(
                     width: 80,
                     child: SimpleNumberField(

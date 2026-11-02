@@ -714,7 +714,7 @@ class TimelineEditorSignal {
   }
 
   void addActor(
-      {required String bnpcName, required int layoutId, required int hp}) {
+      {required String bnpcName, required int layoutId, required int hp, bool? isEobj}) {
     List<ActorModel> newActors = [...timeline.value.actors];
     if(newActors.length == 1 &&
         newActors.first.name == "Generic Actor" &&
@@ -735,10 +735,11 @@ class TimelineEditorSignal {
     final actorModel = ActorModel(
         id: nextId,
         name: uniqueActorName,
-        type: "bnpc",
+        type: isEobj == true ? "eobj" :"bnpc",
         layoutId: layoutId,
         hp: hp,
     );
+
     newActors.add(actorModel);
     timeline.value = timeline.value.copyWith(actors: newActors);
     _saveToHistory();
