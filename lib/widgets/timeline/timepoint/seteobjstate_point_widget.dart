@@ -100,9 +100,9 @@ class _SetEObjStatePointWidgetState extends State<SetEObjStatePointWidget> {
                 width: 100,
                 child: SimpleNumberField(
                   label: "Permission Invisibility",
-                  initialValue: pointData.animation,
+                  initialValue: pointData.permissionInvisibility,
                   onChanged: (value) {
-                    pointData.animation = value;
+                    pointData.permissionInvisibility = value;
                     _updateTimepoint(signals, actor, schedule);
                   }
                 ),
