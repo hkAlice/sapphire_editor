@@ -4,6 +4,7 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/actiontimeline_point_
 import 'package:sapphire_editor/widgets/timeline/timepoint/battletalk_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcdespawn_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/bnpcflags_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/bubbletext_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/castaction_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorflags_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/directorseq_point_widget.dart';
@@ -12,6 +13,8 @@ import 'package:sapphire_editor/widgets/timeline/timepoint/idle_point_widget.dar
 import 'package:sapphire_editor/widgets/timeline/timepoint/interruptaction_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/logmessage_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/mechanic_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/npcyell_point_widget.dart';
+import 'package:sapphire_editor/widgets/timeline/timepoint/pathto_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/rollrng_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/setbgm_point_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/settrigger_point_widget.dart';
@@ -96,7 +99,16 @@ class TimepointEditorRegistry {
         ),
     TimepointType.mechanic: (context) => MechanicPointWidget(
           timepointModel: context.timepointModel
-        )
+        ),
+    TimepointType.bubbleText: (context) => BubbleTextPointWidget(
+          timepointModel: context.timepointModel
+        ),
+    TimepointType.pathTo: (context) => PathToPointWidget(
+          timepointModel: context.timepointModel
+        ),
+    TimepointType.npcYell: (context) => NpcYellPointWidget(
+          timepointModel: context.timepointModel
+        ),
   };
 
   static Widget buildEditor(TimepointEditorContext context) {

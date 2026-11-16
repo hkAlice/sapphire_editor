@@ -92,7 +92,7 @@ class _ActorGeneralWidgetState extends State<ActorGeneralWidget> {
                     child: GenericItemPickerWidget<String>(
                       label: "Type",
                       items: ["bnpc", "eobj"],
-                      initialValue: "test",
+                      initialValue: actor.type,
                       onChanged: (newValue) => {
                         signals.updateActor(actor.id, actor.copyWith(type: newValue))
                       },

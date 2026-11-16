@@ -46,4 +46,7 @@ const _$TimepointTypeEnumMap = {
   TimepointType.setVar: 'setVar',
   TimepointType.setEObjState: 'setEObjState',
   TimepointType.mechanic: 'mechanic',
+  TimepointType.bubbleText: 'bubbleText',
+  TimepointType.pathTo: 'pathTo',
+  TimepointType.npcYell: 'npcYell',
 };

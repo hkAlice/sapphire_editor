@@ -124,7 +124,7 @@ class TriggerModel {
     if(condition == ConditionType.hpPctBetween) {
       var param = paramData as HPPctBetweenConditionModel;
       summary +=
-          "${param.sourceActor} has ${param.hpMin}% < HP < ${param.hpMax}%";
+          "${param.sourceActor} has ${param.hpMin}% <= HP <= ${param.hpMax}%";
     } else if(condition == ConditionType.getAction) {
       var param = paramData as GetActionConditionModel;
       summary += "${param.sourceActor} casts Action#${param.actionId}";
