@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/battletalk_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bubbletext_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcflags_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
@@ -12,6 +13,8 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/idle_point_model
 import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/logmessage_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/mechanic_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/npcyell_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/pathto_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/seteobjstate_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
@@ -108,7 +111,10 @@ class TimepointModel {
       TimepointType.statusEffect => StatusEffectPointModel.fromJson(json),
       TimepointType.setVar => SetVarPointModel.fromJson(json),
       TimepointType.setEObjState => SetEObjStatePointModel.fromJson(json),
-      TimepointType.mechanic => MechanicPointModel.fromJson(json)
+      TimepointType.mechanic => MechanicPointModel.fromJson(json),
+      TimepointType.bubbleText => BubbleTextPointModel.fromJson(json),
+      TimepointType.pathTo => PathToPointModel.fromJson(json),
+      TimepointType.npcYell => NpcYellPointModel.fromJson(json),
     };
   }
 
@@ -136,10 +142,13 @@ extension TimepointTypeExtension on TimepointType {
       case TimepointType.setBGM:
       case TimepointType.logMessage:
       case TimepointType.battleTalk:
+      case TimepointType.bubbleText:
+      case TimepointType.npcYell:
         return Colors.green;
       case TimepointType.bNpcDespawn:
       case TimepointType.bNpcFlags:
       case TimepointType.bNpcSpawn:
+      case TimepointType.pathTo:
         return Colors.deepPurpleAccent;
       case TimepointType.snapshot:
       case TimepointType.setTrigger:
@@ -199,6 +208,12 @@ extension TimepointTypeExtension on TimepointType {
         return "Set EObj State";
       case TimepointType.mechanic:
         return "Mechanic";
+      case TimepointType.bubbleText:
+        return "BubbleText";
+      case TimepointType.pathTo:
+        return "PathTo";
+      case TimepointType.npcYell:
+        return "NpcYell";
     }
   }
 }
@@ -245,5 +260,11 @@ enum TimepointType {
   @JsonValue("setEObjState")
   setEObjState,
   @JsonValue("mechanic")
-  mechanic
+  mechanic,
+  @JsonValue("bubbleText")
+  bubbleText,
+  @JsonValue("pathTo")
+  pathTo,
+  @JsonValue("npcYell")
+  npcYell
 }

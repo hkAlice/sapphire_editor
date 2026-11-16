@@ -124,17 +124,17 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
                     ),
                     SizedBox(
                       width: 70,
-              child: GenericItemPickerWidget<String>(
-                label: "#",
-                items: List.generate(selectorCount, (e) => (e + 1).toString()),
-                initialValue: (pointData.selectorIndex + 1).toString(),
-                enabled: pointData.targetType == ActorTargetType.selectorPos ||
-                         pointData.targetType == ActorTargetType.selectorTarget,
-                onChanged: (newValue) {
-                  pointData.selectorIndex = int.parse(newValue) - 1;
-                  _updateTimepoint(signals, actor, schedule);
-                },
-              ),
+                      child: GenericItemPickerWidget<String>(
+                        label: "#",
+                        items: List.generate(selectorCount, (e) => (e + 1).toString()),
+                        initialValue: (pointData.selectorIndex + 1).toString(),
+                        enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                                 pointData.targetType == ActorTargetType.selectorTarget,
+                        onChanged: (newValue) {
+                          pointData.selectorIndex = int.parse(newValue) - 1;
+                          _updateTimepoint(signals, actor, schedule);
+                        },
+                      ),
                     )
                   ],
                 )

@@ -13,8 +13,10 @@ import 'package:sapphire_editor/models/timeline/timepoint/types/actiontimeline_p
 import 'package:sapphire_editor/models/timeline/timepoint/types/battletalk_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcdespawn_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/bnpcspawn_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/bubbletext_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/interruptaction_point_model.dart';
+import 'package:sapphire_editor/models/timeline/timepoint/types/pathto_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/rollrng_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/settrigger_point_model.dart';
@@ -1350,7 +1352,42 @@ class TimelineSanitySvc {
         case TimepointType.setEObjState:
         case TimepointType.mechanic:
         break;
+        case TimepointType.bubbleText:
+          final data = _asTimepointData<BubbleTextPointModel>(
+            point,
+            context,
+            sink,
+          );
+          if(data == null) {
+            return;
+          }
 
+          _checkGlobalActorRef(
+            actorName: data.talkerActorName,
+            context: context,
+            lookup: lookup,
+            sink: sink,
+          );
+        break;
+        case TimepointType.pathTo:
+          final data = _asTimepointData<PathToPointModel>(
+            point,
+            context,
+            sink,
+          );
+          if(data == null) {
+            return;
+          }
+
+          _checkGlobalActorRef(
+            actorName: data.actorName,
+            context: context,
+            lookup: lookup,
+            sink: sink,
+          );
+        break;
+        case TimepointType.npcYell:
+        break;
     }
   }
 
