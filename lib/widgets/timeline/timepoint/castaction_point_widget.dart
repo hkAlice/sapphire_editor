@@ -42,6 +42,14 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
       var selectedSelector = timeline.selectors.where((e) => e.name == pointData.selectorName).firstOrNull;
       var selectorCount = selectedSelector != null ? selectedSelector.count : 0;
       
+      var validTargetActors = List<String>.from([]);
+      for(var tmpActor in timeline.actors)
+      {
+        var tmpActors = List<String>.from(tmpActor.subactors)..insert(0, tmpActor.name);
+
+        validTargetActors.addAll(tmpActors);
+      }
+
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -71,7 +79,7 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
           ),
           const SizedBox(width: 18.0,),
           SizedBox(
-            width: 110,
+            width: 180,
               child: GenericItemPickerWidget<ActorTargetType>(
                 label: "Target Type",
                 items: ActorTargetType.values,
@@ -84,34 +92,54 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
               ),
           ),
           const SizedBox(width: 18.0,),
-          SizedBox(
-            width: 170,
-              child: GenericItemPickerWidget<String>(
-                label: "Target Selector",
-                items: timeline.selectors.map((e) => e.name).toList(),
-                initialValue: pointData.selectorName,
-                enabled: pointData.targetType == ActorTargetType.selectorPos ||
-                         pointData.targetType == ActorTargetType.selectorTarget,
-                onChanged: (newValue) {
-                  pointData.selectorName = newValue;
-                  _updateTimepoint(signals, actor, schedule);
-                },
+          Row(children: [
+            if(pointData.targetType == ActorTargetType.timelineActor) 
+              SizedBox(
+                width: 360,
+                child: GenericItemPickerWidget<String>(
+                  label: "Target Timeline Actor",
+                  items: validTargetActors,
+                  initialValue: pointData.targetActor,
+                  onChanged: (newValue) {
+                    pointData.targetActor = newValue;
+                    _updateTimepoint(signals, actor, schedule);
+                  },
+                )
+              )
+            else if(pointData.targetType == ActorTargetType.fixedPos)
+              _PosWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData )
+            else if(pointData.targetType == ActorTargetType.selectorPos || pointData.targetType == ActorTargetType.selectorTarget)
+              Row(children: [
+                SizedBox(
+                  width: 170,
+                  child: GenericItemPickerWidget<String>(
+                  label: "Target Selector",
+                  items: timeline.selectors.map((e) => e.name).toList(),
+                  initialValue: pointData.selectorName,
+                  enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                           pointData.targetType == ActorTargetType.selectorTarget,
+                  onChanged: (newValue) {
+                    pointData.selectorName = newValue;
+                    _updateTimepoint(signals, actor, schedule);
+                  },
+                ),
               ),
-          ),
-          SizedBox(
-            width: 70,
-              child: GenericItemPickerWidget<String>(
-                label: "#",
-                items: List.generate(selectorCount, (e) => (e + 1).toString()),
-                initialValue: (pointData.selectorIndex + 1).toString(),
-                enabled: pointData.targetType == ActorTargetType.selectorPos ||
-                         pointData.targetType == ActorTargetType.selectorTarget,
-                onChanged: (newValue) {
-                  pointData.selectorIndex = int.parse(newValue) - 1;
-                  _updateTimepoint(signals, actor, schedule);
-                },
-              ),
-          ),
+              SizedBox(
+                width: 70,
+                child: GenericItemPickerWidget<String>(
+                  label: "#",
+                  items: List.generate(selectorCount, (e) => (e + 1).toString()),
+                  initialValue: (pointData.selectorIndex + 1).toString(),
+                  enabled: pointData.targetType == ActorTargetType.selectorPos ||
+                           pointData.targetType == ActorTargetType.selectorTarget,
+                  onChanged: (newValue) {
+                    pointData.selectorIndex = int.parse(newValue) - 1;
+                    _updateTimepoint(signals, actor, schedule);
+                  },
+                ),
+              )]
+            )
+          ])
         ],
       );
     });
@@ -131,5 +159,111 @@ class _CastActionPointWidgetState extends State<CastActionPointWidget> {
       data: pointData,
     );
     signals.updateTimepoint(actor.id, schedule.id, oldTimepoint.id, newTimepoint);
+  }
+}
+
+Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged, bool enabled = true}) {
+    return SizedBox(
+      width: 110,
+      child: TextFormField(
+        maxLines: 1,
+        controller: textEditingController,
+        enabled: enabled,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          label: Text(label),
+        ),
+        onChanged: (value) { onChanged(value); }
+      ),
+    );
+  }
+
+class _PosWidget extends StatefulWidget {
+  // todo: hax, this should not be like this at all
+  final Function() onUpdate;
+  final CastActionPointModel pointData;
+
+  const _PosWidget({required this.onUpdate, required this.pointData});
+
+  @override
+  State<_PosWidget> createState() => _PosWidgetState();
+}
+
+class _PosWidgetState extends State<_PosWidget> {
+  late TextEditingController _xPosTextEditingController;
+  late TextEditingController _yPosTextEditingController;
+  late TextEditingController _zPosTextEditingController;
+
+  @override
+  void initState() {
+    _xPosTextEditingController = TextEditingController(text: widget.pointData.pos[0].toString());
+    _yPosTextEditingController = TextEditingController(text: widget.pointData.pos[1].toString());
+    _zPosTextEditingController = TextEditingController(text: widget.pointData.pos[2].toString());
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _xPosTextEditingController.dispose();
+    _yPosTextEditingController.dispose();
+    _zPosTextEditingController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _generateFloatInput(
+          textEditingController: _xPosTextEditingController,
+          label: "Pos X",
+          enabled: widget.pointData.targetType == ActorTargetType.fixedPos,
+          onChanged: (value) {
+            double newParamValue = 0.0;
+            try {
+              newParamValue = double.tryParse(value) ?? 0;
+              widget.pointData.pos[0] = newParamValue;
+              widget.onUpdate();
+            }
+            catch(_) { }
+
+            }
+        ),
+        const SizedBox(width: 18.0,),
+        _generateFloatInput(
+          textEditingController: _yPosTextEditingController,
+          label: "Pos Y",
+          enabled: widget.pointData.targetType == ActorTargetType.fixedPos,
+          onChanged: (value) {
+            double newParamValue = 0.0;
+            try {
+              newParamValue = double.tryParse(value) ?? 0;
+              widget.pointData.pos[1] = newParamValue;
+              widget.onUpdate();
+            }
+            catch(_) { }
+
+            }
+        ),
+        const SizedBox(width: 18.0,),
+        _generateFloatInput(
+          textEditingController: _zPosTextEditingController,
+          label: "Pos Z",
+          enabled: widget.pointData.targetType == ActorTargetType.fixedPos,
+          onChanged: (value) {
+            double newParamValue = 0.0;
+            try {
+              newParamValue = double.tryParse(value) ?? 0;
+              widget.pointData.pos[2] = newParamValue;
+              widget.onUpdate();
+            }
+            catch(_) { }
+
+            }
+        ),
+      ],
+    );
   }
 }

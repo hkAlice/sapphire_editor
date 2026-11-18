@@ -59,6 +59,14 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
       var localActors = List<String>.from(actor.subactors)..insert(0, actor.name);
       var selectedSelector = timeline.selectors.where((e) => e.name == pointData.selectorName).firstOrNull;
       var selectorCount = selectedSelector != null ? selectedSelector.count : 0;
+      
+      var validTargetActors = List<String>.from([]);
+      for(var tmpActor in timeline.actors)
+      {
+        var tmpActors = List<String>.from(tmpActor.subactors)..insert(0, tmpActor.name);
+
+        validTargetActors.addAll(tmpActors);
+      }
 
       return Column(
         children: [
@@ -68,7 +76,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
                 width: 180,
                 child: GenericItemPickerWidget<String>(
                   label: "Actor",
-                  initialValue: localActors.firstWhereOrNull((e) => e == pointData.targetActor),
+                  initialValue: localActors.firstWhereOrNull((e) => e == pointData.actorName),
                   items: localActors,
                   onChanged: (newValue) {
                     pointData.actorName = newValue;
@@ -92,7 +100,7 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
               ),
               const SizedBox(width: 18.0,),
               SizedBox(
-                width: 110,
+                width: 180,
                 child: GenericItemPickerWidget<ActorTargetType>(
                   label: "Target Type",
                   items: ActorTargetType.values,
@@ -105,7 +113,20 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
                 ),
               ),
               const SizedBox(width: 18.0,),
-              if(pointData.targetType == ActorTargetType.selectorPos || pointData.targetType == ActorTargetType.selectorTarget)
+              if(pointData.targetType == ActorTargetType.timelineActor)
+                SizedBox(
+                  width: 360,
+                  child: GenericItemPickerWidget<String>(
+                    label: "Target Timeline Actor",
+                    items: validTargetActors,
+                    initialValue: pointData.targetActor, 
+                    onChanged: (newValue) {
+                      pointData.targetActor = newValue;
+                      _updateTimepoint(signals, actor, schedule);
+                    }
+                  )
+                )
+              else if(pointData.targetType == ActorTargetType.selectorPos || pointData.targetType == ActorTargetType.selectorTarget)
                 Row(
                   children: [
                     SizedBox(
@@ -154,9 +175,9 @@ class _SetPosPointWidgetState extends State<SetPosPointWidget> {
             ],
           ),
           const SizedBox(height: 18.0,),
-          if(pointData.positionType == PositionType.absolute && pointData.targetType == ActorTargetType.self)
+          if(pointData.positionType == PositionType.absolute && (pointData.targetType == ActorTargetType.self || pointData.targetType == ActorTargetType.fixedPos))
             _SetPosAbsoluteWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData)
-          else
+          else if(pointData.positionType == PositionType.relative)
             _SetPosRelativeWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData),
 
         ],
@@ -225,7 +246,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _xPosTextEditingController,
           label: "Pos X",
-          enabled: widget.pointData.targetType == ActorTargetType.self,
+          enabled: widget.pointData.targetType == ActorTargetType.self || widget.pointData.targetType == ActorTargetType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -241,7 +262,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _yPosTextEditingController,
           label: "Pos Y",
-          enabled: widget.pointData.targetType == ActorTargetType.self,
+          enabled: widget.pointData.targetType == ActorTargetType.self || widget.pointData.targetType == ActorTargetType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -257,7 +278,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _zPosTextEditingController,
           label: "Pos Z",
-          enabled: widget.pointData.targetType == ActorTargetType.self,
+          enabled: widget.pointData.targetType == ActorTargetType.self || widget.pointData.targetType == ActorTargetType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -273,7 +294,7 @@ class _SetPosAbsoluteWidgetState extends State<_SetPosAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _rotPosTextEditingController,
           label: "Rot",
-          enabled: widget.pointData.targetType == ActorTargetType.self,
+          enabled: widget.pointData.targetType == ActorTargetType.self || widget.pointData.targetType == ActorTargetType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {

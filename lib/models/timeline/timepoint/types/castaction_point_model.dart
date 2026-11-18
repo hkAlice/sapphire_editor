@@ -12,7 +12,10 @@ class CastActionPointModel {
   int selectorIndex;
   bool snapshot;
   int snapshotTime;
-
+  String targetActor;  
+  @JsonKey(defaultValue: [0.0, 0.0, 0.0])
+  List<double> pos = [0.0, 0.0, 0.0];
+  
   CastActionPointModel({
     this.sourceActor = "<unknown>",
     this.actionId = 6116,
@@ -20,7 +23,8 @@ class CastActionPointModel {
     this.selectorName = "<unset>",
     this.selectorIndex = 0,
     this.snapshot = false,
-    this.snapshotTime = 0
+    this.snapshotTime = 0,
+    this.targetActor = "<unknown>",
   });
 
   factory CastActionPointModel.fromJson(Map<String, dynamic> json) => _$CastActionPointModelFromJson(json);
@@ -31,6 +35,14 @@ class CastActionPointModel {
   String toString() {
     var sum = "Cast Action $actionId from $sourceActor to ${treatEnumName(targetType)}";
     
+    if(targetType == ActorTargetType.timelineActor) {
+      sum += " Actor: $targetActor";
+    }
+
+    if(targetType == ActorTargetType.fixedPos) {
+      sum += " Pos: $pos";
+    }
+
     if(targetType == ActorTargetType.selectorTarget || targetType == ActorTargetType.selectorPos) {
       sum += " $selectorName#${selectorIndex + 1}";
     }
@@ -52,6 +64,10 @@ enum ActorTargetType {
   selectorPos,
   @JsonValue("selectorTarget")
   selectorTarget,
+  @JsonValue("fixedPos")
+  fixedPos,
+  @JsonValue("timelineActor")
+  timelineActor,
   @JsonValue("none")
   none
 }

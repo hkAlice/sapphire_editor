@@ -18,7 +18,11 @@ CastActionPointModel _$CastActionPointModelFromJson(
       selectorIndex: (json['selectorIndex'] as num?)?.toInt() ?? 0,
       snapshot: json['snapshot'] as bool? ?? false,
       snapshotTime: (json['snapshotTime'] as num?)?.toInt() ?? 0,
-    );
+      targetActor: json['targetActor'] as String? ?? "<unknown>",
+    )..pos = (json['pos'] as List<dynamic>?)
+            ?.map((e) => (e as num).toDouble())
+            .toList() ??
+        [0.0, 0.0, 0.0];
 
 Map<String, dynamic> _$CastActionPointModelToJson(
         CastActionPointModel instance) =>
@@ -30,6 +34,8 @@ Map<String, dynamic> _$CastActionPointModelToJson(
       'selectorIndex': instance.selectorIndex,
       'snapshot': instance.snapshot,
       'snapshotTime': instance.snapshotTime,
+      'targetActor': instance.targetActor,
+      'pos': instance.pos,
     };
 
 const _$ActorTargetTypeEnumMap = {
@@ -37,5 +43,7 @@ const _$ActorTargetTypeEnumMap = {
   ActorTargetType.target: 'target',
   ActorTargetType.selectorPos: 'selectorPos',
   ActorTargetType.selectorTarget: 'selectorTarget',
+  ActorTargetType.fixedPos: 'fixedPos',
+  ActorTargetType.timelineActor: 'timelineActor',
   ActorTargetType.none: 'none',
 };
