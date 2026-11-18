@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:sapphire_editor/models/timeline/actor_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/timepoint_model.dart';
 import 'package:sapphire_editor/models/timeline/timepoint/types/pathto_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/setpos_point_model.dart';
-import 'package:sapphire_editor/models/timeline/timepoint/types/castaction_point_model.dart';
 import 'package:sapphire_editor/models/timeline/timeline_schedule_model.dart';
 import 'package:sapphire_editor/services/timeline_editor_signal.dart';
 import 'package:sapphire_editor/utils/text_utils.dart';
 import 'package:sapphire_editor/widgets/generic_item_picker_widget.dart';
+import 'package:sapphire_editor/widgets/simple_number_field.dart';
 import 'package:sapphire_editor/widgets/switch_text_widget.dart';
 import 'package:sapphire_editor/widgets/timeline/timepoint/timepoint_editor_scope.dart';
 import 'package:sapphire_editor/widgets/timeline/timeline_lookup.dart';
@@ -22,22 +21,6 @@ class PathToPointWidget extends StatefulWidget {
   @override
   State<PathToPointWidget> createState() => _PathToPointWidgetState();
 }
-
-Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged, bool enabled = true}) {
-    return SizedBox(
-      width: 110,
-      child: TextFormField(
-        maxLines: 1,
-        controller: textEditingController,
-        enabled: enabled,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          label: Text(label),
-        ),
-        onChanged: (value) { onChanged(value); }
-      ),
-    );
-  }
 
 class _PathToPointWidgetState extends State<PathToPointWidget> {
   late PathToPointModel pointData = widget.timepointModel.data as PathToPointModel;
@@ -56,9 +39,19 @@ class _PathToPointWidgetState extends State<PathToPointWidget> {
       final actor = lookup.actor;
       final schedule = lookup.schedule;
       final timeline = signals.timeline.value;
+      var selectedSelector = timeline.selectors.where((e) => e.name == pointData.selectorName).firstOrNull;
+      var selectorCount = selectedSelector != null ? selectedSelector.count : 0;
 
       var validActors = List<String>.from(timeline.actors.map((e) => e.name))..remove(pointData.actorName);
       var localActors = List<String>.from(actor.subactors)..insert(0, actor.name);
+
+      var validTargetActors = List<String>.from([]);
+      for(var tmpActor in timeline.actors)
+      {
+        var tmpActors = List<String>.from(tmpActor.subactors)..insert(0, tmpActor.name);
+
+        validTargetActors.addAll(tmpActors);
+      }
 
       return Column(
         children: [
@@ -80,8 +73,99 @@ class _PathToPointWidgetState extends State<PathToPointWidget> {
             ]
           ),
           const SizedBox(height: 18.0,),
-          _PathToAbsoluteWidget(onUpdate: () { _updateTimepoint(signals, actor, schedule); }, pointData: pointData),
+          Row(children: [
+          SizedBox(
+                width: 180,
+                child: GenericItemPickerWidget<PathToType>(
+                  label: "Target Type",
+                  items: PathToType.values,
+                  initialValue: pointData.pathType,
+                  propertyBuilder: (value) => treatEnumName(value),
+                  onChanged: (newValue) {
+                    pointData.pathType = newValue;
+                    _updateTimepoint(signals, actor, schedule);
+                    },
+                ),
+              ),
+              const SizedBox(width: 18.0,),
+              if(pointData.pathType == PathToType.selectorPos || pointData.pathType == PathToType.selectorTarget)
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 170,
+                      child: GenericItemPickerWidget<String>(
+                        label: "Target Selector",
+                        items: timeline.selectors.map((e) => e.name).toList(),
+                        initialValue: pointData.selectorName,
+                        enabled: pointData.pathType == PathToType.selectorPos ||
+                            pointData.pathType == PathToType.selectorTarget,
+                        onChanged: (newValue) {
+                          pointData.selectorName = newValue;
+                          _updateTimepoint(signals, actor, schedule);
+                          },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 70,
+                      child: GenericItemPickerWidget<String>(
+                        label: "#",
+                        items: List.generate(selectorCount, (e) => (e + 1).toString()),
+                        initialValue: (pointData.selectorIndex + 1).toString(),
+                        enabled: pointData.pathType == PathToType.selectorPos ||
+                                 pointData.pathType == PathToType.selectorTarget,
+                        onChanged: (newValue) {
+                          pointData.selectorIndex = int.parse(newValue) - 1;
+                          _updateTimepoint(signals, actor, schedule);
+                        },
+                      ),
+                    )
+                  ],
+                )
+              else if(pointData.pathType case PathToType.timelineActor)
+                SizedBox(
+                  width: 360,
+                  child: GenericItemPickerWidget<String>(
+                    label: "Target Timeline Actor",
+                    items: validTargetActors,
+                    initialValue: validTargetActors.firstWhereOrNull((e) => e == pointData.targetActor),
+                    onChanged: (newValue) {
+                      pointData.targetActor = newValue;
+                      _updateTimepoint(signals, actor, schedule);
+                      },
+                  ),
+                )
+              else if(pointData.pathType case PathToType.serverPath)
+                  SizedBox(
+                  width: 170,
+                  child: SimpleNumberField(
+                    label: "Server Path ID",
+                    initialValue: pointData.serverPathId,
+                    onChanged: (newValue) {
+                      pointData.serverPathId = newValue;
+                      _updateTimepoint(signals, actor, schedule);
+                    },
+                  ),
+                )
+              else if(pointData.pathType case PathToType.fixedPos)
+                _PosWidget(
+                  onUpdate: (){ 
+                    _updateTimepoint(signals, actor, schedule);
+                  }, pointData: pointData
+                ),
+              const SizedBox(height: 18.0,),
+              SizedBox(
+              width: 100,
+              child: SwitchTextWidget(
+                toggleText: ("UseNavi ON", "UseNavi OFF"),
+                enabled: pointData.useNavi, 
+                onPressed: () {
+                  pointData.useNavi = !pointData.useNavi;
+                  _updateTimepoint(signals, actor, schedule);
+                }
+              )
+          )
         ],
+        )]
       );
     });
   }
@@ -103,18 +187,35 @@ class _PathToPointWidgetState extends State<PathToPointWidget> {
   }
 }
 
-class _PathToAbsoluteWidget extends StatefulWidget {
+
+Widget _generateFloatInput({required TextEditingController textEditingController, required String label, required Function(String) onChanged, bool enabled = true}) {
+    return SizedBox(
+      width: 110,
+      child: TextFormField(
+        maxLines: 1,
+        controller: textEditingController,
+        enabled: enabled,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          label: Text(label),
+        ),
+        onChanged: (value) { onChanged(value); }
+      ),
+    );
+  }
+
+class _PosWidget extends StatefulWidget {
   // todo: hax, this should not be like this at all
   final Function() onUpdate;
   final PathToPointModel pointData;
 
-  const _PathToAbsoluteWidget({required this.onUpdate, required this.pointData});
+  const _PosWidget({required this.onUpdate, required this.pointData});
 
   @override
-  State<_PathToAbsoluteWidget> createState() => _PathToAbsoluteWidgetState();
+  State<_PosWidget> createState() => _PosWidgetState();
 }
 
-class _PathToAbsoluteWidgetState extends State<_PathToAbsoluteWidget> {
+class _PosWidgetState extends State<_PosWidget> {
   late TextEditingController _xPosTextEditingController;
   late TextEditingController _yPosTextEditingController;
   late TextEditingController _zPosTextEditingController;
@@ -144,7 +245,7 @@ class _PathToAbsoluteWidgetState extends State<_PathToAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _xPosTextEditingController,
           label: "Pos X",
-          enabled: true,
+          enabled: widget.pointData.pathType == PathToType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -160,7 +261,7 @@ class _PathToAbsoluteWidgetState extends State<_PathToAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _yPosTextEditingController,
           label: "Pos Y",
-          enabled: true,
+          enabled: widget.pointData.pathType == PathToType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -176,7 +277,7 @@ class _PathToAbsoluteWidgetState extends State<_PathToAbsoluteWidget> {
         _generateFloatInput(
           textEditingController: _zPosTextEditingController,
           label: "Pos Z",
-          enabled: true,
+          enabled: widget.pointData.pathType == PathToType.fixedPos,
           onChanged: (value) {
             double newParamValue = 0.0;
             try {
@@ -188,18 +289,6 @@ class _PathToAbsoluteWidgetState extends State<_PathToAbsoluteWidget> {
 
             }
         ),
-        const SizedBox(width: 18.0),
-        SizedBox(
-          width: 100,
-          child: SwitchTextWidget(
-            toggleText: ("UseNavi ON", "UseNavi OFF"),
-            enabled: widget.pointData.useNavi, 
-            onPressed: () {
-              widget.pointData.useNavi = !widget.pointData.useNavi;
-              widget.onUpdate();
-            }
-          )
-        )
       ],
     );
   }

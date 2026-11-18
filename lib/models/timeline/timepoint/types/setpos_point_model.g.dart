@@ -42,6 +42,8 @@ const _$ActorTargetTypeEnumMap = {
   ActorTargetType.target: 'target',
   ActorTargetType.selectorPos: 'selectorPos',
   ActorTargetType.selectorTarget: 'selectorTarget',
+  ActorTargetType.fixedPos: 'fixedPos',
+  ActorTargetType.timelineActor: 'timelineActor',
   ActorTargetType.none: 'none',
 };
 

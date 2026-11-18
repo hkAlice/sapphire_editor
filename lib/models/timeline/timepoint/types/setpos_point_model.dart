@@ -36,9 +36,12 @@ class SetPosPointModel {
       String sumStr = "Actor $actorName to ";
       switch(targetType) {
         case ActorTargetType.self:
+        case ActorTargetType.fixedPos:
           sumStr += "(X: ${pos[0]}, Y: ${pos[1]}, Z: ${pos[2]}, Rot: $rot)";
           return sumStr;
         case ActorTargetType.target:
+          sumStr += "target";
+        case ActorTargetType.timelineActor:
           sumStr += "actor $targetActor";
           break;
         case ActorTargetType.selectorPos:
@@ -60,6 +63,9 @@ class SetPosPointModel {
           sumStr += "self";
           break;
         case ActorTargetType.target:
+          sumStr += "target";
+          break;
+        case ActorTargetType.timelineActor:
           sumStr += "actor $targetActor";
           break;
         case ActorTargetType.selectorPos:
